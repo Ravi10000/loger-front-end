@@ -1,0 +1,64 @@
+.customInput {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .inputContainer {
+    position: relative;
+    input {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #e9e9e9;
+      color: #72787f;
+      border-radius: 5px;
+      &:focus {
+        outline: 1px solid var(--text-color);
+      }
+      &.otp {
+        text-align: center;
+        letter-spacing: 5px;
+        font-weight: 600;
+        font-size: 1.5rem;
+      }
+      &::placeholder {
+        font-family: var(--primary-font);
+        letter-spacing: 1px;
+        font-weight: 300;
+        color: #72787f;
+      }
+    }
+    .togglePassword {
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      height: 100%;
+      padding: 0 1rem;
+      align-items: center;
+      color: #72787f;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.8rem;
+      text-transform: capitalize;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      .eyeLogo {
+        width: 1.5rem;
+        height: fit-content;
+        opacity: 0.5;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .error {
+    text-align: left;
+    padding: 5px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    // font-weight: 500;
+  }
+}

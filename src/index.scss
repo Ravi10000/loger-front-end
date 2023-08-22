@@ -1,0 +1,44 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --main-brand-color: #0868f8;
+  --text-color: #1a232f;
+  --icon-color: #323e4c;
+  --max-width: 1600px;
+  --primary-font: "Nordnet Mono";
+}
+
+img {
+  object-fit: contain;
+}
+
+body {
+  font-family: var(--primary-font);
+  background: #fff;
+  min-height: 100vh;
+}
+
+button,
+label,
+input,
+textarea {
+  font-family: var(--primary-font);
+}
+label,
+button,
+a {
+  cursor: pointer;
+}
+a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+._form_logo {
+  height: 100px;
+  width: fit-content;
+}

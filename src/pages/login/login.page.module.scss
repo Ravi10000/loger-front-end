@@ -1,0 +1,37 @@
+.loginPage {
+  .formContainer {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      .actionsContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .forgotPassword {
+          text-align: end;
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+        .registerLink {
+          text-align: center;
+          cursor: pointer;
+          span {
+            font-weight: 700;
+            color: var(--main-brand-color);
+          }
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

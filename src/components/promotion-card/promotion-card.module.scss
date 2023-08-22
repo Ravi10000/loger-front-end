@@ -1,0 +1,40 @@
+.promotionCard {
+  background: linear-gradient(45deg, #0868f82a 0%, rgba(8, 104, 248, 0) 100%);
+  box-shadow: 0px 4px 2px 0px rgba(0, 0, 0, 0.089);
+  border-radius: 20px;
+  overflow: hidden;
+  width: fit-content;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  .info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  img {
+    width: 100%;
+    height: fit-content;
+    max-height: 300px;
+    object-fit: cover;
+  }
+}
+
+@media (min-width: 768px) {
+  .promotionCard {
+    width: 100%;
+    max-width: 700px;
+    flex-direction: row;
+    .info {
+      text-align: start;
+      align-items: flex-start;
+      padding: 0 20px;
+    }
+    img {
+      max-width: 300px;
+      border-radius: 100px 20px 20px 0;
+    }
+  }
+}

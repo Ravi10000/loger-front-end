@@ -1,0 +1,26 @@
+.loadingPage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  place-content: center;
+  background: #fff;
+  z-index: 999999999;
+  .loader {
+    width: 35px;
+    height: 35px;
+    border: 2px solid var(--main-brand-color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    animation: spin 0.5s linear forwards infinite;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,29 @@
+.registerPage {
+  .formContainer {
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      .loginLink {
+        text-align: center;
+        cursor: pointer;
+        span {
+          font-weight: 700;
+          color: var(--main-brand-color);
+        }
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .inputGroup {
+      display: flex;
+      gap: 20px;
+    }
+  }
+}

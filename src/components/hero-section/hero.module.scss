@@ -1,0 +1,25 @@
+.heroSection {
+  height: 100vh;
+  width: 100%;
+  background: #1a232f4c;
+  background-size: cover;
+  background-image: linear-gradient(#1a232f4d, #1a232f4d),
+    url("/images/hero.png");
+  .container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+    }
+    p {
+      letter-spacing: 1px;
+      font-weight: 300;
+    }
+  }
+}

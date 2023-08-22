@@ -1,0 +1,68 @@
+.formLayout {
+  .container {
+    padding: 20px;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    .formContainer {
+      width: 100%;
+      min-width: 300px;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .logo {
+        height: 100px;
+        width: fit-content;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .forgotPassword {
+        text-align: end;
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      .registerLink {
+        text-align: center;
+        cursor: pointer;
+        span {
+          font-weight: 700;
+          color: var(--main-brand-color);
+        }
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .imageContainer {
+      img {
+        width: 100%;
+        height: fit-content;
+      }
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .formLayout {
+    display: flex;
+    justify-content: center;
+    // padding: 20px;
+    .container {
+      max-width: 1200px;
+      //   flex-direction: row;
+      display: grid;
+      gap: 100px;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+}

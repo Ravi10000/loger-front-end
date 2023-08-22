@@ -1,0 +1,20 @@
+@font-face {
+  font-family: "Nordnet Mono";
+  src: url("/fonts/Nordnet Sans Mono Light.ttf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Nordnet Mono";
+  src: url("/fonts/Nordnet Sans Mono.ttf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Nordnet Mono";
+  src: url("/fonts/Nordnet Sans Mono Bold.ttf");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Nordnet Mono";
+  src: url("/fonts/Nordnet Sans Mono Extrabold.ttf");
+  font-weight: 800;
+}

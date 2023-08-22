@@ -1,0 +1,52 @@
+.customButton {
+  background: var(--main-brand-color);
+  border: none;
+  color: #fff;
+  width: 100%;
+  padding: 0.75rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.25);
+  font-size: 1.1rem;
+  border-radius: 5px;
+  &:disabled {
+    cursor: not-allowed;
+    filter: brightness(1.3);
+    opacity: 0.8;
+  }
+  &.fit {
+    width: fit-content;
+  }
+  &.rounded {
+    border-radius: 10px;
+  }
+  &.outlined {
+    border: 2px solid var(--main-brand-color);
+    background: transparent;
+    color: var(--main-brand-color);
+    &::before {
+      display: none;
+    }
+  }
+  &.danger {
+    background: var(--error-clr);
+    color: #fff;
+  }
+  &.cancel {
+    background: var(--light-bg-clr);
+    color: var(--light-text-clr);
+  }
+  &.small {
+    padding: 10px 20px;
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+}
