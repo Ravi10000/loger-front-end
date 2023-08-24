@@ -2,11 +2,19 @@ import styles from "./home.page.module.scss";
 import RecentPropertyCard from "#components/recent-property-card/recent-property-card";
 import { recentProperties } from "#data/recent-properties";
 import HeroSection from "#components/hero-section/hero-section";
-import { properties } from "#data/properties.info";
-import PropertyCard from "#components/property-card/property-card";
 import { useState } from "react";
 import PropertyCarousel from "#components/property-carousel/property-carousel";
 import PromotionCard from "#components/promotion-card/promotion-card";
+import DownloadSection from "#components/download-section/download-section";
+import { properties } from "#data/properties.info";
+import PropertyCard from "#components/property-card/property-card";
+import LocationCard from "#components/location-card/location-card";
+import { locations } from "#data/locations";
+import FeedbackCard from "#components/feedback-card/feedback-card";
+import { feedbacks } from "#data/feedbacks";
+import FeedbackCarousel from "#components/feedback-carousel/feedback-carousel";
+import { typesOfProperties } from "#data/types-of-properties";
+import ImageGrid from "#components/image-grid/image-grid";
 
 const cities = [
   "Delhi NCR",
@@ -47,7 +55,7 @@ function HomePage() {
         </div>
       </div>
       <div className={styles.carouselContainer}>
-        <PropertyCarousel />
+        <PropertyCarousel items={properties} Component={PropertyCard} />
       </div>
       <div className={styles.promotionsContainer}>
         <h2>Accommodation Promotions</h2>
@@ -70,6 +78,37 @@ function HomePage() {
           />
         </div>
       </div>
+      <h2 className={styles.title}>Heavy Discount Properties</h2>
+      <div className={styles.carouselContainer}>
+        <PropertyCarousel items={properties} Component={PropertyCard} />
+      </div>
+      <DownloadSection />
+      <div className={styles.title}>
+        <h2>Around You</h2>
+      </div>
+      <div className={styles.carouselContainer}>
+        <PropertyCarousel items={locations} Component={LocationCard} />
+      </div>
+      <div className={styles.title}>
+        <h2>Our Testimonials</h2>
+      </div>
+      <div className={styles.carouselContainer}>
+        <FeedbackCarousel items={feedbacks} Component={FeedbackCard} />
+      </div>
+      <div className={styles.title}>
+        <h2>Explore by Property Type</h2>
+      </div>
+      <div className={styles.carouselContainer}>
+        <PropertyCarousel
+          propertyType
+          items={typesOfProperties}
+          Component={LocationCard}
+        />
+      </div>
+      <div className={styles.title}>
+        <h2>Trend Destinations</h2>
+      </div>
+      <ImageGrid />
     </div>
   );
 }

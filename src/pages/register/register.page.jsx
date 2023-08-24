@@ -11,11 +11,13 @@ function RegisterPage() {
     <div className={styles.registerPage}>
       <FormLayout image="/images/graphics/registration-hero.png">
         <div className={styles.formContainer}>
-          <img
-            className="_form_logo"
-            src="/images/logos/loger-logo-large.png"
-            alt="loger"
-          />
+          <Link to="/">
+            <img
+              className="_form_logo"
+              src="/images/logos/loger-logo-large.png"
+              alt="loger"
+            />
+          </Link>
           <h2>Log In</h2>
           <form>
             <div className={styles.inputGroup}>

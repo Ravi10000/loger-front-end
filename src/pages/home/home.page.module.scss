@@ -62,8 +62,6 @@
   .carouselContainer {
     width: 80%;
     background: #f2f6fa80;
-    // padding: 20px;
-    // border-radius: 20px;
   }
   .promotionsContainer {
     padding: 20px;
@@ -81,6 +79,11 @@
 
 @media (min-width: 768px) {
   .homePage {
+    .title {
+      width: 100%;
+      max-width: var(--max-width);
+      padding: 0 50px;
+    }
     .recentPropertiesContainer {
       padding: 0 50px;
       h2 {

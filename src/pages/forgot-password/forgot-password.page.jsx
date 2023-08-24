@@ -12,11 +12,13 @@ function ForgotPasswordPage() {
     <div className={styles.forgotPassword}>
       <FormLayout image="/images/graphics/change-password-hero.png">
         <div className={styles.formContainer}>
-          <img
-            className="_form_logo"
-            src="/images/logos/loger-logo-large.png"
-            alt="loger"
-          />
+          <Link to="/">
+            <img
+              className="_form_logo"
+              src="/images/logos/loger-logo-large.png"
+              alt="loger"
+            />
+          </Link>
           <h2>Forgot Password ?</h2>
           <form>
             <CustomInput

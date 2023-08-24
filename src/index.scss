@@ -42,3 +42,46 @@ a {
   height: 100px;
   width: fit-content;
 }
+
+.PhoneInputInput {
+  width: 100%;
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+}
+
+.PhoneInputCountrySelect {
+  padding: 10px 15px;
+  /* border-radius: 5px; */
+  // border: 1px solid #edf0f2;
+}
+.PhoneInputCountrySelect:focus {
+  outline: 1px solid var(--mainBrandColor);
+}
+.PhoneInputInput:focus {
+  outline: 1px solid var(--mainBrandColor);
+  /* outline: none; */
+}
+
+.slick-dots.slick-thumb {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.slick-dots.slick-thumb li {
+  width: 10px;
+  height: 10px;
+  margin: 0 3px;
+  border-radius: 999px;
+  transition: all 0.25s ease-in-out;
+  will-change: width;
+  background: transparent;
+  color: transparent;
+  border: 1px solid var(--main-brand-color);
+}
+
+.slick-dots.slick-thumb li.slick-active {
+  background: var(--main-brand-color);
+}

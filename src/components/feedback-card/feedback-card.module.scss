@@ -1,0 +1,113 @@
+.feedbackCard {
+  background: #1a232f;
+  border-radius: 20px;
+  padding: 20px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+  .userImageContainer {
+    position: relative;
+    padding: 20px 0;
+    img {
+      height: 150px;
+      width: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #fff;
+      position: relative;
+      z-index: 2;
+    }
+    &:before {
+      position: absolute;
+      top: -20px;
+      left: 10px;
+      z-index: 1;
+      content: "";
+      height: 100px;
+      width: 25px;
+      background: #84b4fc;
+      border-radius: 20px;
+    }
+    &:after {
+      position: absolute;
+      top: 0;
+      left: 40px;
+      z-index: 1;
+      content: "";
+      height: 100px;
+      width: 25px;
+      background: #f89494;
+      border-radius: 20px;
+    }
+  }
+  .feedbackInfo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    .heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      .client {
+        text-align: start;
+        font-size: 0.9rem;
+        p {
+          font-weight: 300;
+          font-size: 12px;
+        }
+      }
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 700;
+
+      .star {
+        height: 1rem;
+        width: fit-content;
+        color: #f02929;
+      }
+    }
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      font-weight: 300;
+    }
+  }
+  .quote {
+    width: 40px;
+    height: fit-content;
+    &:last-child {
+      align-self: flex-end;
+    }
+  }
+  .content {
+    h3 {
+      text-transform: uppercase;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .feedbackCard {
+    max-width: 700px;
+    flex-direction: row;
+    .feedbackInfo {
+      text-align: start;
+      .client {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .content {
+        gap: 5px;
+      }
+    }
+  }
+}

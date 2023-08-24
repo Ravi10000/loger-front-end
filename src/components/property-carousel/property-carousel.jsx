@@ -4,10 +4,11 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { properties } from "#data/properties.info";
 import PropertyCard from "#components/property-card/property-card";
-function PropertyCarousel() {
+
+function PropertyCarousel({ items, Component, propertyType }) {
   const settings = {
     dots: false,
-    infinite: properties.length > 4 ? true : false,
+    infinite: items.length > 4 ? true : false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
@@ -39,17 +40,17 @@ function PropertyCarousel() {
     ],
   };
   return (
-    <div style={{ borderRadius: "20px", overflow: "hidden" }}>
-      <Slider {...settings}>
-        {properties.map((property) => (
-          <div key={property?._id}>
-            <div style={{ padding: "10px" }}>
-              <PropertyCard property={property} />
-            </div>
+    // <div style={{ borderRadius: "20px" }}>
+    <Slider {...settings}>
+      {items.map((item) => (
+        <div key={item?._id}>
+          <div style={{ padding: "10px" }}>
+            <Component item={item} propertyType={propertyType || false} />
           </div>
-        ))}
-      </Slider>
-    </div>
+        </div>
+      ))}
+    </Slider>
+    // </div>
   );
 }
 
