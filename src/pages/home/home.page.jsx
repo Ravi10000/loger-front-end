@@ -30,8 +30,8 @@ function HomePage() {
   return (
     <div className={styles.homePage}>
       <HeroSection />
+      <h2 className={styles.title}>Recently Viewed Properties</h2>
       <div className={styles.recentPropertiesContainer}>
-        <h2>Recently Viewed Properties</h2>
         <div className={styles.recentProperties}>
           {recentProperties.map((property, index) => (
             <RecentPropertyCard property={property} key={index} />
@@ -54,11 +54,13 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <div className={styles.carouselContainer}>
-        <PropertyCarousel items={properties} Component={PropertyCard} />
-      </div>
-      <div className={styles.promotionsContainer}>
-        <h2>Accommodation Promotions</h2>
+      <section className={styles.section}>
+        <div className={styles.carouselContainer}>
+          <PropertyCarousel items={properties} Component={PropertyCard} />
+        </div>
+      </section>
+      <h2 className={styles.title}>Accommodation Promotions</h2>
+      <section className={styles.promotionsContainer}>
         <div className={styles.promotions}>
           <PromotionCard
             promotion={{
@@ -77,40 +79,61 @@ function HomePage() {
             }}
           />
         </div>
-      </div>
+      </section>
       <h2 className={styles.title}>Heavy Discount Properties</h2>
-      <div className={styles.carouselContainer}>
-        <PropertyCarousel items={properties} Component={PropertyCard} />
-      </div>
+      <section className={styles.section}>
+        <div className={styles.carouselContainer}>
+          <PropertyCarousel items={properties} Component={PropertyCard} />
+        </div>
+      </section>
       <DownloadSection />
-      <div className={styles.title}>
-        <h2>Around You</h2>
-      </div>
-      <div className={styles.carouselContainer}>
-        <PropertyCarousel items={locations} Component={LocationCard} />
-      </div>
-      <div className={styles.title}>
-        <h2>Our Testimonials</h2>
-      </div>
-      <div className={styles.carouselContainer}>
+      <h2 className={styles.title}>Around You</h2>
+      <section className={styles.section}>
+        <div className={styles.carouselContainer}>
+          <PropertyCarousel items={locations} Component={LocationCard} />
+        </div>
+      </section>
+      <h2 className={styles.title}>Our Testimonials</h2>
+      <section className={styles.carouselContainer}>
         <FeedbackCarousel items={feedbacks} Component={FeedbackCard} />
-      </div>
-      <div className={styles.title}>
-        <h2>Explore by Property Type</h2>
-      </div>
-      <div className={styles.carouselContainer}>
-        <PropertyCarousel
-          propertyType
-          items={typesOfProperties}
-          Component={LocationCard}
-        />
-      </div>
-      <div className={styles.title}>
-        <h2>Trend Destinations</h2>
-      </div>
-      <ImageGrid />
+      </section>
+      <h2 className={styles.title}>Explore by Property Type</h2>
+      <section className={styles.section}>
+        <div className={styles.carouselContainer}>
+          <PropertyCarousel
+            propertyType
+            items={typesOfProperties}
+            Component={LocationCard}
+          />
+        </div>
+      </section>
+      <h2 className={styles.title}>Trending Destinations</h2>
+      <section className={styles.section}>
+        <ImageGrid />
+      </section>
     </div>
   );
 }
 
 export default HomePage;
+
+function RecommendedProperties({ city, selectedCity, setSelectedCity }) {
+  return (
+    <div className={styles.recommendedPropertiesContainer}>
+      <div className={styles.selectors}>
+        <h2>Recommended Properties</h2>
+        <div className={styles.locations}>
+          {cities.map((city) => (
+            <div
+              className={`${city === selectedCity ? styles.selected : ""}`}
+              key={city}
+              onClick={() => setSelectedCity(city)}
+            >
+              {city}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

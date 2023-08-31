@@ -10,7 +10,8 @@
       "#api/*": ["./src/api/*"],
       "#data/*": ["./src/data/*"],
       "#hooks/*": ["./src/hooks/*"],
-      "#utils/*": ["./src/utils/*"]
+      "#utils/*": ["./src/utils/*"],
+      "#contexts/*": ["./src/contexts/*"]
     }
   },
   "include": ["./src/**/*"],

@@ -15,6 +15,7 @@ export default defineConfig({
       "#data": "/src/data",
       "#hooks": "/src/hooks",
       "#utilities": "/src/utilities",
+      "#contexts": "/src/contexts",
     },
   },
 });

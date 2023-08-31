@@ -53,7 +53,7 @@
 @media (min-width: 768px) {
   .imageGrid {
     grid-template-rows: repeat(2, 1fr);
-    max-width: 1200px;
+    max-width: 1400px;
     height: 450px;
     .imageContainer {
       &:first-child {
@@ -79,5 +79,11 @@
         grid-row: 2;
       }
     }
+  }
+}
+
+@media (min-width: 1400px) {
+  .imageGrid {
+    height: 600px;
   }
 }

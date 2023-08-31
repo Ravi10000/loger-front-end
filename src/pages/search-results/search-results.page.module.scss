@@ -1,0 +1,138 @@
+.searchResultsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  .searchPath {
+    padding: 0 20px;
+    .searchPathTerm {
+      display: flex;
+      align-items: center;
+      p:last-child {
+        font-weight: 600;
+        color: var(--main-brand-color);
+        margin-right: 10px;
+      }
+    }
+  }
+  .sortingContainer {
+    padding: 20px;
+    background: #e9e9eb;
+    display: flex;
+    justify-content: center;
+    h2 {
+      font-size: 1.5rem;
+      width: fit-content;
+    }
+    .container {
+      width: 100%;
+      max-width: 1300px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .innerContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .sort {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+  .left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    .menuIcon {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+      background: #f2f6fa;
+      .icon {
+        height: 1.5rem;
+        width: fit-content;
+      }
+    }
+    .filterGroupContainer {
+      display: none;
+    }
+    .map {
+      width: 100%;
+      max-width: 450px;
+    }
+  }
+}
+
+.sortingBox {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #bbbdc1;
+  background: #fff;
+  border-radius: 5px;
+  width: fit-content;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .icon {
+    height: 1rem;
+    width: fit-content;
+  }
+}
+
+@media (min-width: 768px) {
+  .searchResultsPage {
+    .sortingContainer {
+      .innerContainer {
+        flex-direction: row;
+        align-self: center;
+      }
+    }
+  }
+}
+@media (min-width: 1024px) {
+  .searchResultsPage {
+    .sortingContainer {
+      .container {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .innerContainer {
+        flex-direction: row;
+        align-self: center;
+      }
+    }
+    main {
+      display: flex;
+      padding: 20px;
+      .left {
+        width: 40%;
+        max-width: 450px;
+        .filterGroupContainer {
+          display: block;
+          width: 100%;
+          background: #f2f6fa;
+        }
+        .menuIcon {
+          display: none;
+        }
+      }
+      .right {
+        width: 60%;
+      }
+    }
+  }
+}

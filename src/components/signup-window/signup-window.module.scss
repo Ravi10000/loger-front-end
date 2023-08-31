@@ -1,0 +1,85 @@
+.signupWindow {
+  width: 100%;
+  height: fit-content;
+  max-width: 450px;
+  border-radius: 15px;
+  padding: 25px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  .heading {
+    width: fit-content;
+    align-self: start;
+    p {
+      font-size: 0.8rem;
+    }
+  }
+  .icons {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    .iconContainer {
+      height: 60px;
+      width: 60px;
+      border-radius: 5px;
+      box-shadow: 15px 15px 33px 0px rgba(35, 45, 51, 0.17);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      img {
+        height: 30px;
+        width: fit-content;
+      }
+    }
+  }
+  .seperator {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    &::before,
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: 2px;
+      transform: translate(20%, -50%);
+      content: "";
+      width: 30%;
+      background: #1a232f27;
+    }
+    &::before {
+      transform: translate(-120%, -50%);
+    }
+  }
+  .inputsContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .inputsNforgotPassword {
+    width: 100%;
+    p {
+      cursor: pointer;
+      margin-top: 5px;
+      padding-right: 5px;
+      color: #1a232f;
+      font-size: 0.8rem;
+      text-align: end;
+    }
+  }
+  .buttonContainer {
+    width: 100%;
+    max-width: 250px;
+  }
+  p {
+    text-align: center;
+    color: #1a232fb5;
+  }
+  .link {
+    cursor: pointer;
+    color: var(--main-brand-color);
+  }
+}

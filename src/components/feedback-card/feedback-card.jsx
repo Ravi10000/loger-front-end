@@ -33,9 +33,14 @@ function FeedbackCard({ item }) {
           <h3>{item?.feedbackTitle}</h3>
           <p>{item?.feedbackText}</p>
         </div>
-        <img
+        {/* <img
           className={styles.quote}
           src="/images/icons/quote-closing.png"
+          alt="quotes"
+        /> */}
+        <img
+          className={styles.quote}
+          src="/images/icons/quote-opening.png"
           alt="quotes"
         />
       </div>

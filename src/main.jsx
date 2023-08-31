@@ -4,11 +4,14 @@ import App from "./App.jsx";
 import "./fonts.css";
 import "./index.scss";
 import { BrowserRouter } from "react-router-dom";
+import AuthWindowProvider from "#contexts/auth-window-context.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthWindowProvider>
+        <App />
+      </AuthWindowProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
