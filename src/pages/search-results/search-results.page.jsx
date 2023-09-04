@@ -9,6 +9,8 @@ import FilterSidebar, {
 import { filterOptions } from "#data/filter-options.data";
 import { useState } from "react";
 import { BsFilter } from "react-icons/bs";
+import { searchResult } from "#data/search-results-data";
+import SearchResultCard from "#components/search-result-card/search-result-card";
 
 function SearchResultsPage() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -59,7 +61,13 @@ function SearchResultsPage() {
             <FilterGroup filterOptions={filterOptions} />
           </div>
         </div>
-        <div className={styles.right}></div>
+        <div className={styles.right}>
+          {Array(10)
+            .fill()
+            .map((_, i) => (
+              <SearchResultCard key={i} property={searchResult} />
+            ))}
+        </div>
       </main>
     </div>
   );

@@ -5,6 +5,8 @@
   overflow-y: auto;
   z-index: 999999999;
   background: #f2f6fa;
+  transform: translateX(-100%);
+  animation: slideIn 0.3s ease-in-out forwards;
   .close {
     display: flex;
     justify-content: flex-end;
@@ -40,5 +42,12 @@
 @media (min-width: 1024px) {
   .filterSidebar {
     display: none;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
   }
 }

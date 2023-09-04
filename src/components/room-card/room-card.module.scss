@@ -1,0 +1,124 @@
+.roomCard {
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+
+  .imageCarousel {
+    position: relative;
+    z-index: 1;
+    height: fit-content;
+    .label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #00c965;
+      color: #fff;
+      padding: 10px 20px;
+      z-index: 3;
+    }
+    .backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      height: 100%;
+      width: 100%;
+      background: #231c1c66;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      .carouselNavigator {
+        padding: 20px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        .arrow {
+          height: 25px;
+          width: fit-content;
+          cursor: pointer;
+          &:first-child {
+            transform: rotate(180deg);
+          }
+        }
+      }
+    }
+    img {
+      width: 100%;
+      max-width: 450px;
+      aspect-ratio: 1 / 0.8;
+      object-fit: cover;
+    }
+  }
+  .roomInfo {
+    border-radius: 0 0 20px 20px;
+    padding: 20px;
+    border: 2px solid #b7bbc0;
+    border-top: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    &.colored {
+      color: #00c965;
+    }
+    &.lg {
+      font-size: 1.5rem;
+    }
+    img {
+      height: 25px;
+      width: fit-content;
+    }
+  }
+  .viewMore {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: var(--main-brand-color);
+  }
+  .discount {
+    background: #f02929;
+    color: #fff;
+    width: fit-content;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }
+  .price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #8b9096;
+    .priceText {
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+    .discountedPrice {
+      color: var(--main-brand-color);
+    }
+  }
+  .bottomMsg {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p:last-child {
+      font-size: 0.8rem;
+      color: #f02929;
+    }
+  }
+}

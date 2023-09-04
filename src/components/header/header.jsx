@@ -3,14 +3,24 @@ import CurrencySelector from "#components/currency-selector/currency-selector";
 import CountrySelector from "#components/country-selector/country-selector";
 import CustomButton from "#components/custom-button/custom-button";
 import { RiUserFill } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthWindow } from "#contexts/auth-window-context";
 
 function Header() {
   const navigate = useNavigate();
   const { openAuthWindow } = useAuthWindow();
+  const { pathname } = useLocation();
+  const specialRoutes = ["/search-results", "/"];
+  console.log({ pathname });
+  const isSpecialRoutes = specialRoutes.includes(pathname);
+  console.log({ isSpecialRoutes });
+
   return (
-    <div className={styles.header}>
+    <div
+      className={`${styles.header} ${
+        isSpecialRoutes ? styles.specialRoute : ""
+      }`}
+    >
       <div className={styles.container}>
         <Link to="/">
           <img className={styles.logo} src="/images/logos/loger-logo.png" />

@@ -1,0 +1,116 @@
+.searchResultCard {
+  border-radius: 15px;
+  overflow: hidden;
+  background: #f2f6fa;
+  cursor: pointer;
+
+  .imageContainer {
+    width: 100%;
+    position: relative;
+    img {
+      width: 100%;
+      height: fit-content;
+      max-height: 400px;
+    }
+    .likeIconContainer {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      height: 35px;
+      width: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      .likeIcon {
+        width: 25px;
+        height: fit-content;
+        color: var(--main-brand-color);
+        &.liked {
+          color: #f44336;
+        }
+      }
+    }
+  }
+  .infoContainer {
+    padding: 20px;
+  }
+  .propertyInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .locationContainer {
+      display: flex;
+      align-items: center;
+      span {
+        color: var(--main-brand-color);
+      }
+      .locationIcon {
+        color: var(--main-brand-color);
+      }
+    }
+    .servicesGroup {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+  .reviewNbooking {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    &::before {
+      content: "";
+      width: 200px;
+      height: 2px;
+      background: #e9e9eb;
+    }
+    .amount {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--main-brand-color);
+    }
+    .reviews {
+      .rating {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 700;
+
+        .star {
+          height: 1rem;
+          width: fit-content;
+          color: var(--main-brand-color);
+        }
+      }
+    }
+    .btnContainer {
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .searchResultCard {
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    .imageContainer {
+      align-self: stretch;
+      max-width: 400px;
+      img {
+        height: 100%;
+        max-height: none;
+        object-fit: cover;
+      }
+    }
+    .infoContainer {
+      display: flex;
+    }
+  }
+}

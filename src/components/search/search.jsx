@@ -1,15 +1,11 @@
 import styles from "./search.module.scss";
-import { useEffect, useId, useRef } from "react";
+import { useId } from "react";
 import MemberInfo from "#components/member-info/member-info";
 import { useNavigate } from "react-router-dom";
 
 function Search() {
   const id = useId();
   const navigate = useNavigate();
-  const dateRef = useRef(null);
-  useEffect(() => {
-    if (dateRef.current) dateRef.current.focus();
-  }, [dateRef]);
 
   return (
     <div className={styles.searchContainer}>
@@ -27,7 +23,7 @@ function Search() {
         <div className={styles.dates}>
           <div className={styles.inputContainer}>
             <img src="/images/icons/calender.svg" alt="check in" />
-            <input type="date" ref={dateRef} />
+            <input type="date" />
           </div>
           <div className={styles.inputContainer}>
             <img src="/images/icons/calender.svg" alt="check in" />

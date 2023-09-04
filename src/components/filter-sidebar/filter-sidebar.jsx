@@ -21,23 +21,6 @@ function FilterSidebar({ filterOptions, close }) {
         <div className={styles.close}>
           <MdClose className={styles.closeIcon} onClick={close} />
         </div>
-        {/* <div className={styles.container}>
-          {filterOptions.map((filterOption) => (
-            <div className={styles.filterGroup} key={filterOption?.id}>
-              <h3>{filterOption?.title}</h3>
-              <div className={styles.options}>
-                {filterOption?.options?.map((option) => (
-                  <FilterOption
-                    key={option?.filterText}
-                    title="500 - 1500"
-                    count="2516"
-                    isPrice
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div> */}
         <FilterGroup filterOptions={filterOptions} />
       </div>
     </WithBackdrop>
@@ -56,7 +39,7 @@ export function FilterGroup({ filterOptions }) {
               <FilterOption
                 key={option?.filterText}
                 title={option?.filterText}
-                count={option?.count}
+                count={option?.matchedCount}
                 isPrice={filterOption?.isPriceFilter}
               />
             ))}

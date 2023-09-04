@@ -17,6 +17,7 @@ const ForgotPasswordPage = lazy(() =>
   import("#pages/forgot-password/forgot-password.page")
 );
 const RegisterPage = lazy(() => import("#pages/register/register.page"));
+const PropertyPage = lazy(() => import("#pages/property/property.page"));
 const VerifyEmailPage = lazy(() =>
   import("#pages/verify-email/verify-email.page")
 );
@@ -43,6 +44,7 @@ function App() {
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
             <Route path="/search-results" element={<SearchResultsPage />} />
+            <Route path="/property" element={<PropertyPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>
