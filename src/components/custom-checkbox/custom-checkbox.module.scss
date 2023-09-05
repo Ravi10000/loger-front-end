@@ -1,0 +1,32 @@
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--main-brand-color);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    .icon {
+      color: transparent;
+    }
+    &.checked {
+      background: var(--main-brand-color);
+      color: #fff;
+      .icon {
+        color: #fff;
+        height: 1rem;
+        width: fit-content;
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import { GoShareAndroid } from "react-icons/go";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { FaLocationDot } from "react-icons/fa6";
+import { BsArrowRight } from "react-icons/bs";
 
 import CustomButton from "#components/custom-button/custom-button";
 import Search from "#components/search/search";
@@ -17,6 +18,7 @@ import { roomDetail } from "#data/room.data";
 import RatingBar from "#components/review-bar/rating-bar";
 import { RiStarFill } from "react-icons/ri";
 import UserReviewCard from "#components/user-review-card/user-review-card";
+import { HashLink } from "react-router-hash-link";
 
 const gridFooterOptions = [
   "Overview",
@@ -31,6 +33,19 @@ function PropertyPage() {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
   const [isSaved, setIsSaved] = useState(false);
+  const [currentUserReviewPage, setCurrentUserReviewPage] = useState(1);
+
+  const nextReviewPage = () => {
+    if (currentUserReviewPage < 5) {
+      setCurrentUserReviewPage((prevState) => prevState + 1);
+    }
+  };
+  const prevReviewPage = () => {
+    if (currentUserReviewPage > 0) {
+      setCurrentUserReviewPage((prevState) => prevState - 1);
+    }
+  };
+
   return (
     <div className={styles.propertyPage}>
       <div className={styles.headContainer}>
@@ -145,7 +160,9 @@ function PropertyPage() {
           </div>
           <div className={styles.right}>
             <p>7 days left</p>
-            <CustomButton fit>Reserve a Room</CustomButton>
+            <HashLink to="/property/#reserve-room">
+              <CustomButton fit>Reserve a Room</CustomButton>
+            </HashLink>
           </div>
         </div>
       </div>
@@ -325,7 +342,7 @@ function PropertyPage() {
             <h2>Availability</h2>
             <p className={styles.link}>View All</p>
           </div>
-          <div className={styles.availableRoomsGroup}>
+          <div className={styles.availableRoomsGroup} id="reserve-room">
             {Array(4)
               .fill()
               .map((_, i) => (
@@ -448,6 +465,35 @@ function PropertyPage() {
           <UserReviewCard />
           <UserReviewCard />
           <UserReviewCard />
+        </div>
+        <div className={styles.reviewNav}>
+          <div
+            className={`${styles.arrowContainer} ${
+              currentUserReviewPage <= 1 ? styles.disabled : ""
+            }`}
+            onClick={prevReviewPage}
+          >
+            <BsArrowRight className={styles.arrow} />
+          </div>
+          <div className={styles.pages}>
+            {[...Array(5)].map((_, i) => (
+              <p
+                className={`${styles.page} ${
+                  currentUserReviewPage === i + 1 ? styles.active : ""
+                }`}
+              >
+                {i + 1}
+              </p>
+            ))}
+          </div>
+          <div
+            className={`${styles.arrowContainer} ${
+              currentUserReviewPage >= 5 ? styles.disabled : ""
+            }`}
+            onClick={nextReviewPage}
+          >
+            <BsArrowRight className={styles.arrow} />
+          </div>
         </div>
       </div>
     </div>

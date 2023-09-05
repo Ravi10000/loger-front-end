@@ -2,7 +2,15 @@ import styles from "./custom-input.module.scss";
 import { useId, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
-function CustomInput({ label, error, otp, register, ...otherProps }) {
+function CustomInput({
+  label,
+  secondary,
+  error,
+  otp,
+  register,
+  bold,
+  ...otherProps
+}) {
   const id = useId();
   const [show, setShow] = useState(false);
   function handleTooglePassword() {
@@ -10,9 +18,14 @@ function CustomInput({ label, error, otp, register, ...otherProps }) {
   }
 
   return (
-    <div className={styles.customInput}>
+    <div
+      className={`${styles.customInput} ${secondary ? styles.secondary : ""}`}
+    >
       {label && (
-        <label className={styles.label} htmlFor={id}>
+        <label
+          className={`${styles.label} ${bold ? styles.bold : ""}`}
+          htmlFor={id}
+        >
           {label}
         </label>
       )}

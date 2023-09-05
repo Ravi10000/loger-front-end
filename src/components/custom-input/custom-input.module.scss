@@ -3,6 +3,22 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  &.secondary {
+    .inputContainer {
+      input {
+        background: #f3f4f4;
+        border-color: #b3b6b9;
+        &::placeholder {
+          color: #464d57;
+        }
+      }
+    }
+  }
+  .label {
+    &.bold {
+      font-weight: 600;
+    }
+  }
   .inputContainer {
     position: relative;
     input {
@@ -10,7 +26,7 @@
       padding: 1rem;
       border: 1px solid #e9e9e9;
       color: #72787f;
-      border-radius: 5px;
+      border-radius: 10px;
       &:focus {
         outline: 1px solid var(--main-brand-color);
       }

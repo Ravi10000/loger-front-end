@@ -21,6 +21,8 @@ const PropertyPage = lazy(() => import("#pages/property/property.page"));
 const VerifyEmailPage = lazy(() =>
   import("#pages/verify-email/verify-email.page")
 );
+const CheckoutPage = lazy(() => import("#pages/checkout/checkout.page"));
+import ScrollTop from "#hooks/scroll-to-top";
 function App() {
   const { pathname } = useLocation();
   const isAuthRoute = pathname.includes("/auth");
@@ -28,6 +30,7 @@ function App() {
   console.log({ authWindow });
   return (
     <div className={styles.App}>
+      <ScrollTop />
       {authWindow === "signin" && <SigninWindow />}
       {authWindow === "signup" && <SignupWindow />}
       {!isAuthRoute && <Header />}
@@ -45,6 +48,7 @@ function App() {
             <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/property" element={<PropertyPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

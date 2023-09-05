@@ -11,9 +11,7 @@ function Header() {
   const { openAuthWindow } = useAuthWindow();
   const { pathname } = useLocation();
   const specialRoutes = ["/search-results", "/"];
-  console.log({ pathname });
   const isSpecialRoutes = specialRoutes.includes(pathname);
-  console.log({ isSpecialRoutes });
 
   return (
     <div

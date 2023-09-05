@@ -3,8 +3,11 @@ import CustomButton from "#components/custom-button/custom-button";
 import { HiOutlineChevronRight } from "react-icons/hi";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PiWarningCircle } from "react-icons/pi";
 
-function RoomCard({ room }) {
+function RoomCard({ room, booking }) {
+  const navigate = useNavigate();
   const [currentImage, setCurrentImage] = useState(0);
   const nextImage = () => {
     if (currentImage < room?.images?.length - 1) {
@@ -84,16 +87,72 @@ function RoomCard({ room }) {
           <p>View Details</p>
           <HiOutlineChevronRight className={styles.icon} />
         </div>
-        <p className={styles.discount}>{room?.discount}</p>
-        <div className={styles.price}>
-          <p className={styles.priceText}>&nbsp;₹ {room?.price} &nbsp;</p>
-          <p className={styles.discountedPrice}>₹ {room?.discountedPrice}</p>
-        </div>
-        <div className={styles.bottomMsg}>
-          <p>Includes Taxes & Fees</p>
-          <p>{room?.daysLeft}</p>
-        </div>
-        <CustomButton>Reserve a Room</CustomButton>
+
+        {!booking ? (
+          <>
+            <p className={styles.discount}>{room?.discount}</p>
+            <div className={styles.price}>
+              <p className={styles.priceText}>&nbsp;₹ {room?.price} &nbsp;</p>
+              <p className={styles.discountedPrice}>
+                ₹ {room?.discountedPrice}
+              </p>
+            </div>
+            <div className={styles.bottomMsg}>
+              <p>Includes Taxes & Fees</p>
+              <p>{room?.daysLeft}</p>
+            </div>
+            <CustomButton onClick={() => navigate("/checkout")}>
+              Reserve a Room
+            </CustomButton>
+          </>
+        ) : (
+          <>
+            <div className={styles.topBorder}></div>
+            <h3>Your Booking Details</h3>
+            <div className={`${styles.bookingDetails}`}>
+              <div className={styles.info}>
+                <p>check in</p>
+                <h3>Friday, 29/06/2023</h3>
+                <p>Time - 12:00 - 00:00</p>
+                <div className={styles.iconInfo}>
+                  <PiWarningCircle className={styles.icon} />
+                  <p>Just 3 Days To Go!</p>
+                </div>
+              </div>
+              <div className={styles.info}>
+                <p>check out</p>
+                <h3>Thursday, 04/07/2023</h3>
+                <p>Time - 00:00 - 11:00</p>
+                <h3>Total Length of Stay:</h3>
+                <p>2 Night & 3 Days</p>
+              </div>
+            </div>
+            <div className={styles.bookingDetails}>
+              <h3>You Selected</h3>
+              <p className={styles.link}>Change Your Selection</p>
+            </div>
+            <p>Superior King Room</p>
+            <div className={styles.topBorder}></div>
+            <h3>Your Price Summary</h3>
+            <div className={styles.bookingDetails}>
+              <div className={styles.breakdown}>
+                <p>Original Price</p>
+                <p>Getaway Deal</p>
+                <p>Genius Discount</p>
+              </div>
+              <div className={styles.breakdown + " " + styles.prices}>
+                <p>₹ 5,388</p>
+                <p>- ₹ 768.60</p>
+                <p>- ₹ 1,120</p>
+              </div>
+            </div>
+            <div className={styles.topBorder}></div>
+            <div className={styles.bookingDetails}>
+              <p className={styles.coloredBold}>Total</p>
+              <p className={styles.coloredBold}>₹ 3,500</p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

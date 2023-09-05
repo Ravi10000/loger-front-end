@@ -1,0 +1,395 @@
+.checkoutPage {
+  .iconLink {
+    color: var(--main-brand-color);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+  }
+  .notification {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: 0px 2px 4px 0px #00000026;
+    p {
+      max-width: 600px;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      height: 30px;
+      width: fit-content;
+    }
+    .message {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid #00000026;
+    }
+    .head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .notificationFooter {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .logoContainer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        img {
+          height: 60px;
+          width: fit-content;
+        }
+      }
+    }
+  }
+  .coloredContainer {
+    display: flex;
+    justify-content: center;
+    background: #f9fbfd;
+    padding: 20px;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  .contentContainer {
+    width: 100%;
+    max-width: 1600px;
+  }
+
+  .title {
+    color: #00c965;
+  }
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  .innerContainer {
+    h2 {
+      margin-top: 20px;
+      color: var(--main-brand-color);
+    }
+    p {
+      max-width: 800px;
+    }
+  }
+  .bookingGrid {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 20px;
+  }
+  .formContainer {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #b3b6b9;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .head {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    .inputsContainer {
+      padding: 10px 0;
+      .inputContainer {
+        min-width: 250px;
+        max-width: 400px;
+      }
+    }
+    .subscribeSection {
+      h3 {
+        color: var(--main-brand-color);
+      }
+      .checkboxContainer {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .checkbox {
+          width: 20px;
+          height: 20px;
+          border: 1px solid var(--main-brand-color);
+          border-radius: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          .icon {
+            color: transparent;
+          }
+          &.checked {
+            background: var(--main-brand-color);
+            color: #fff;
+            .icon {
+              color: #fff;
+              height: 1rem;
+              width: fit-content;
+            }
+          }
+        }
+      }
+    }
+    .subscribeSection {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      textarea {
+        height: 150px;
+        overflow: auto;
+        resize: none;
+        border: 1px solid #b3b6b9;
+        border-radius: 10px;
+        padding: 10px;
+        max-width: 450px;
+        &:focus {
+          outline: 1px solid var(--main-brand-color);
+        }
+      }
+    }
+  }
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+  }
+  .feature {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .included {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .features {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      gap: 20px;
+    }
+  }
+  .preference {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .protectBooking {
+    background: #f3f4f4;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    .head {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      p {
+        border-radius: 5px;
+        padding: 10px 20px;
+        background: #00c965;
+        color: #fff;
+      }
+    }
+    .description {
+      margin-top: 20px;
+    }
+  }
+  .checkinoutDetails {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    p {
+      span {
+        margin-right: 10px;
+        font-weight: 600;
+      }
+    }
+  }
+  .cancellation {
+    margin-top: 20px;
+    border: 1px solid #00c965;
+    border-radius: 10px;
+    max-width: 1000px;
+    .head {
+      border-radius: 10px;
+      padding: 20px;
+      color: #00c965;
+      background: #f2fcf7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .icon {
+        height: 25px;
+        width: fit-content;
+      }
+    }
+    .progress {
+      padding: 20px;
+      .stage {
+        display: flex;
+        gap: 10px;
+        height: 150px;
+        position: relative;
+        &:last-child {
+          .status {
+            &::after {
+              display: none;
+            }
+          }
+        }
+        &:first-child {
+          color: #00c965;
+          .status {
+            &::after {
+              border-left: 1px solid #00c965;
+            }
+          }
+        }
+        p {
+          max-width: 700px;
+        }
+        .status {
+          position: relative;
+          height: fit-content;
+          &::after {
+            content: "";
+            position: absolute;
+            height: 130px;
+            border-left: 1px dashed var(--text-color);
+            top: 80%;
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+        .icon {
+          width: 1rem;
+          height: fit-content;
+        }
+      }
+    }
+  }
+  .tNc {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    img {
+      height: 20px;
+      width: fit-content;
+    }
+    .link {
+      color: var(--main-brand-color);
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+}
+
+.multiSelect {
+  min-width: 250px;
+  position: relative;
+  text-align: center;
+  &.flexible {
+    min-width: auto;
+  }
+  .label {
+    cursor: pointer;
+    background: #f3f4f4;
+    border: 1px solid #b3b6b9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    .icon {
+      height: 25px;
+      width: fit-content;
+      transition: all 0.3s ease-in-out;
+      &.visible {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .optionsContainer {
+    width: 100%;
+    position: absolute;
+    z-index: 1000;
+    padding: 20px;
+    background: #f3f4f4;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@keyframes flip {
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+@media (min-width: 768px) {
+  .checkoutPage {
+    .formContainer {
+      .inputsContainer {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+    .cancellation {
+      .progress {
+        .stage {
+          height: 70px;
+          .status {
+            &::after {
+              height: 50px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (min-width: 1024px) {
+  .checkoutPage {
+    .formContainer {
+      .inputsContainer {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  .checkoutPage {
+    .bookingGrid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+    }
+    .roomContainer {
+      position: relative;
+      top: -100px;
+    }
+  }
+}

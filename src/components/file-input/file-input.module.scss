@@ -1,0 +1,37 @@
+.fileInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  .inputContainer {
+    background: #f3f4f4;
+    border: 1px solid #b3b6b9;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 10px;
+
+    .placeholder {
+      color: #464d57;
+      font-family: var(--primary-font);
+      letter-spacing: 1px;
+      font-weight: 300;
+      font-size: 0.9rem;
+    }
+    input {
+      cursor: pointer;
+      outline: 2px solid red;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      opacity: 0;
+    }
+  }
+  .icon {
+    height: 20px;
+    width: fit-content;
+  }
+  label {
+    font-weight: 600;
+  }
+}
