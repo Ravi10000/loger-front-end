@@ -89,3 +89,9 @@ a {
 .slick-dots.slick-thumb li.slick-active {
   background: var(--main-brand-color);
 }
+
+.react-date-picker__wrapper {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+}

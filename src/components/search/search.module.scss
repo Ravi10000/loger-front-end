@@ -31,9 +31,15 @@
       }
     }
     .dates {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      .inputContainer:first-child {
+        border-radius: 10px 0 0 10px;
+      }
+      .inputContainer:last-child {
+        border-radius: 0 10px 10px 0;
+        border-left: 0px;
+      }
       .input {
         padding: 0;
       }
@@ -49,23 +55,23 @@
   }
 }
 
-@media (min-width: 420px) {
-  .searchContainer {
-    .search {
-      .dates {
-        gap: 0;
-        flex-direction: row;
-        .inputContainer:first-child {
-          border-radius: 10px 0 0 10px;
-        }
-        .inputContainer:last-child {
-          border-radius: 0 10px 10px 0;
-          border-left: 0px;
-        }
-      }
-    }
-  }
-}
+// @media (min-width: 420px) {
+//   .searchContainer {
+//     .search {
+//       .dates {
+//         gap: 0;
+//         flex-direction: row;
+//         .inputContainer:first-child {
+//           border-radius: 10px 0 0 10px;
+//         }
+//         .inputContainer:last-child {
+//           border-radius: 0 10px 10px 0;
+//           border-left: 0px;
+//         }
+//       }
+//     }
+//   }
+// }
 
 @media (min-width: 1024px) {
   .searchContainer {

@@ -2,7 +2,7 @@ import styles from "./search.module.scss";
 import { useId } from "react";
 import MemberInfo from "#components/member-info/member-info";
 import { useNavigate } from "react-router-dom";
-
+import CustomDatePicker from "#components/custom-date-picker/custom-date-picker";
 function Search() {
   const id = useId();
   const navigate = useNavigate();
@@ -22,12 +22,10 @@ function Search() {
         </div>
         <div className={styles.dates}>
           <div className={styles.inputContainer}>
-            <img src="/images/icons/calender.svg" alt="check in" />
-            <input type="date" />
+            <CustomDatePicker label="Check In" />
           </div>
           <div className={styles.inputContainer}>
-            <img src="/images/icons/calender.svg" alt="check in" />
-            <input type="date" />
+            <CustomDatePicker label="Check Out" />
           </div>
         </div>
         <MemberInfo />
