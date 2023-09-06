@@ -55,7 +55,10 @@ function HomePage() {
         </div>
       </div>
       <section className={styles.section}>
-        <div className={styles.carouselContainer}>
+        <div
+          className={styles.carouselContainer}
+          // style={{ padding: "20px", outline: "2px solid red" }}
+        >
           <PropertyCarousel items={properties} Component={PropertyCard} />
         </div>
       </section>

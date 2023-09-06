@@ -4,6 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { properties } from "#data/properties.info";
 import PropertyCard from "#components/property-card/property-card";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 function PropertyCarousel({ items, Component, propertyType }) {
   const settings = {
@@ -38,6 +39,8 @@ function PropertyCarousel({ items, Component, propertyType }) {
         },
       },
     ],
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
   return (
     // <div style={{ borderRadius: "20px" }}>
@@ -54,4 +57,18 @@ function PropertyCarousel({ items, Component, propertyType }) {
   );
 }
 
+export function NextArrow({ onClick }) {
+  return (
+    <div onClick={onClick} className={`${styles.arrow} ${styles.next}`}>
+      <MdOutlineKeyboardArrowRight className={styles.icon} />
+    </div>
+  );
+}
+export function PrevArrow({ onClick }) {
+  return (
+    <div onClick={onClick} className={`${styles.arrow} ${styles.prev}`}>
+      <MdOutlineKeyboardArrowRight className={styles.icon} />
+    </div>
+  );
+}
 export default PropertyCarousel;

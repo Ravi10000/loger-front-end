@@ -6,26 +6,15 @@ import Slider from "react-slick";
 function FeedbackCarousel({ items, Component }) {
   const settings = {
     dots: true,
-    appendDots: (dots) => (
-      <div
-        className="dots-container"
-        style={{
-          width: "100%",
-          display: "flex",
-          height: "10px",
-          overflowY: "hidden",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ width: "80%" }}>{dots}</div>
-      </div>
-    ),
+    customPaging: function (i) {
+      return <></>;
+    },
     dotsClass: "slick-dots slick-thumb",
     infinite: items.length > 4 ? true : false,
     speed: 500,
     slidesToShow: 2,
     slidesToScroll: 2,
-    arrows: true,
+    arrows: false,
     draggable: true,
     initialSlide: 0,
     responsive: [
@@ -39,7 +28,6 @@ function FeedbackCarousel({ items, Component }) {
     ],
   };
   return (
-    // <div style={{ borderRadius: "20px" }}>
     <Slider {...settings}>
       {items.map((item) => (
         <div key={item?._id}>
@@ -55,7 +43,6 @@ function FeedbackCarousel({ items, Component }) {
         </div>
       ))}
     </Slider>
-    // </div>
   );
 }
 

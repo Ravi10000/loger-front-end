@@ -1,0 +1,27 @@
+.arrow {
+  background: #fff;
+  height: 40px;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  cursor: pointer;
+  &.next {
+    right: 10px;
+  }
+  &.prev {
+    left: 10px;
+    .icon {
+      transform: rotate(180deg);
+    }
+  }
+  .icon {
+    color: #bbbdc1;
+    height: 30px;
+    width: fit-content;
+  }
+}
