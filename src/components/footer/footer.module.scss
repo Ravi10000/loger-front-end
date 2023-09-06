@@ -28,6 +28,7 @@
             flex-direction: column;
             gap: 10px;
             li {
+              cursor: pointer;
               font-weight: 300;
             }
           }
@@ -43,7 +44,21 @@
           border: none;
           padding: 20px;
           background: transparent;
+          border-radius: 10px;
+          height: 100%;
           width: 100%;
+          color: #fff;
+          font-size: 1.1rem;
+          letter-spacing: 1px;
+          caret-color: #fff;
+          font-weight: 600;
+          &::placeholder {
+            font-size: 0.9rem;
+            letter-spacing: 0;
+          }
+          &:focus {
+            outline: transparent;
+          }
         }
         button {
           min-height: 60px;

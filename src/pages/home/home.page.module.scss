@@ -23,8 +23,8 @@
     max-width: var(--max-width);
     .recentProperties {
       display: flex;
-      gap: 1rem;
       flex-direction: column;
+      gap: 1rem;
     }
   }
 
@@ -97,6 +97,7 @@
       padding: 0 50px;
     }
     .recentPropertiesContainer {
+      align-items: unset;
       padding: 0 50px;
       h2 {
         align-self: flex-start;

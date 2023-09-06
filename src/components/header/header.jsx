@@ -10,7 +10,14 @@ function Header() {
   const navigate = useNavigate();
   const { openAuthWindow } = useAuthWindow();
   const { pathname } = useLocation();
-  const specialRoutes = ["/search-results", "/"];
+  const specialRoutes = [
+    "/search-results",
+    "/",
+    "/about",
+    "/contact",
+    "/terms",
+    "/faqs",
+  ];
   const isSpecialRoutes = specialRoutes.includes(pathname);
 
   return (

@@ -5,6 +5,7 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 function CustomInput({
   label,
   secondary,
+  transparent,
   error,
   otp,
   register,
@@ -19,7 +20,9 @@ function CustomInput({
 
   return (
     <div
-      className={`${styles.customInput} ${secondary ? styles.secondary : ""}`}
+      className={`${styles.customInput} ${secondary ? styles.secondary : ""} ${
+        transparent ? styles.transparent : ""
+      }`}
     >
       {label && (
         <label

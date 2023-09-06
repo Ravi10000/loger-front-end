@@ -1,6 +1,9 @@
 import styles from "./footer.module.scss";
 import { footerOptions } from "#data/footer-options";
+import { useNavigate } from "react-router-dom";
+
 function Footer() {
+  const navigate = useNavigate();
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
@@ -11,7 +14,9 @@ function Footer() {
                 <h2>{option?.title}</h2>
                 <ul>
                   {option?.options.map((item, index) => (
-                    <li key={index}>{item?.name}</li>
+                    <li onClick={() => navigate(item?.path)} key={index}>
+                      {item?.name}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -24,10 +29,7 @@ function Footer() {
                 <p>Sign up and we'll send the best deals to you</p>
               </div>
               <div className={styles.inputContainer}>
-                <input
-                  type="text"
-                  placeholder="Please Enter Your Email Address"
-                />
+                <input placeholder="Please Enter Your Email Address" />
                 <button>Subscribe</button>
               </div>
             </form>

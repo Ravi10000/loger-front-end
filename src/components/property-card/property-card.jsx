@@ -2,7 +2,9 @@ import styles from "./property-card.module.scss";
 import CustomButton from "#components/custom-button/custom-button";
 import { RiStarFill } from "react-icons/ri";
 import Balancer from "react-wrap-balancer";
+import { useNavigate } from "react-router-dom";
 function PropertyCard({ item }) {
+  const navigate = useNavigate();
   return (
     <div className={styles.propertyCard}>
       <img className={styles.propertyImage} src={item?.image} alt="property" />
@@ -31,7 +33,9 @@ function PropertyCard({ item }) {
         </p>
         <div className={styles.priceInfo}>
           <p>₹ {item?.price}</p>
-          <CustomButton fit>View Details</CustomButton>
+          <CustomButton fit onClick={() => navigate("/property")}>
+            View Details
+          </CustomButton>
         </div>
       </div>
     </div>

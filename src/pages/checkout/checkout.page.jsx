@@ -14,8 +14,10 @@ import RoomCard from "#components/room-card/room-card";
 import { roomDetail } from "#data/room.data";
 import { RiCheckboxBlankCircleLine, RiErrorWarningFill } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 function CheckoutPage() {
+  const navigate = useNavigate();
   const [showNotification, setShowNotification] = useState(true);
   const [showSelectPartner, setShowSelectPartner] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
@@ -331,7 +333,9 @@ function CheckoutPage() {
       </div>
       <div className={styles.container}>
         <div className={styles.contentContainer}>
-          <CustomButton fit>Reserve Room</CustomButton>
+          <CustomButton fit onClick={() => navigate("/booking-details")}>
+            Reserve Room
+          </CustomButton>
           <div className={styles.tNc}>
             <img src="/images/icons/lock.svg" alt="lock" />
             <p>

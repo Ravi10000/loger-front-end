@@ -1,0 +1,60 @@
+.aboutPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  
+  .socialMediaLinks {
+    display: flex;
+    gap: 20px;
+    img {
+      cursor: pointer;
+    }
+  }
+  .container,
+  .bottomContainer {
+    margin-top: 20px;
+    max-width: 1600px;
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+  .aboutInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    h2 {
+      font-size: 2.5rem;
+    }
+  }
+  .aboutUsImage {
+    width: 100%;
+    height: fit-content;
+    max-width: 500px;
+  }
+  a {
+    align-self: flex-end;
+  }
+  .contactUs {
+    border: none;
+    background: #1a232f;
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .aboutPage {
+    .container {
+      display: grid;
+      gap: 30px;
+      grid-template-columns: 7fr 4fr;
+    }
+  }
+}

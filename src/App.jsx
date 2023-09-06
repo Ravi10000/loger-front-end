@@ -22,6 +22,14 @@ const VerifyEmailPage = lazy(() =>
   import("#pages/verify-email/verify-email.page")
 );
 const CheckoutPage = lazy(() => import("#pages/checkout/checkout.page"));
+const AboutPage = lazy(() => import("#pages/about/about.page"));
+const ContactPage = lazy(() => import("#pages/contact/contact.page"));
+const TermsPage = lazy(() => import("#pages/terms/terms.page"));
+const FaqPage = lazy(() => import("#pages/faq/faq.page"));
+const BookingDetailsPage = lazy(() =>
+  import("#pages/booking-details/booking-details.page")
+);
+
 import ScrollTop from "#hooks/scroll-to-top";
 function App() {
   const { pathname } = useLocation();
@@ -49,6 +57,11 @@ function App() {
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/property" element={<PropertyPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/booking-details" element={<BookingDetailsPage />} />
+            <Route path="/faqs" element={<FaqPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

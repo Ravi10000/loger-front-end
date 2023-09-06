@@ -1,0 +1,126 @@
+.contactPage {
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  .contentBox {
+    background: #f2f6fa;
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 1px solid #b2b8bd;
+    }
+    h3 {
+      font-size: 1.5;
+    }
+    .heading {
+      padding: 20px;
+      border-bottom: 1px solid #b2b8bd;
+    }
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      .textareaContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        label {
+          font-weight: 600;
+        }
+      }
+      textarea {
+        height: 150px;
+        overflow: auto;
+        resize: none;
+        border: 1px solid #464d57;
+        border-radius: 10px;
+        padding: 10px;
+        max-width: 450px;
+        background: transparent;
+        &:focus {
+          outline: 1px solid var(--main-brand-color);
+        }
+      }
+    }
+    .socialMediaLinks {
+      display: flex;
+      gap: 20px;
+      img {
+        height: 20px;
+        width: fit-content;
+        cursor: pointer;
+      }
+    }
+  }
+  .contactInfo {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+  .map {
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .contactPage {
+    .content {
+      width: 100%;
+      max-width: 800px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      div {
+        height: fit-content;
+      }
+    }
+    .map {
+      max-width: 700px;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .contactPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 400px;
+    }
+    .container {
+      max-width: 1600px;
+      flex-direction: row;
+      justify-content: center;
+      padding: 20px;
+    }
+    .map {
+      align-self: flex-start;
+      width: 50%;
+      max-width: 1000px;
+    }
+  }
+}

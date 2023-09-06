@@ -131,15 +131,15 @@ export const footerOptions = [
     options: [
       {
         name: "About Us",
-        path: "/about us",
+        path: "/about",
       },
       {
         name: "Contact Us",
-        path: "/contact us",
+        path: "/contact",
       },
       {
         name: "Terms & Conditions",
-        path: "/terms & conditions",
+        path: "/terms",
       },
       {
         name: "Privacy Policy",
