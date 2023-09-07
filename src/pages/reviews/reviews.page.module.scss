@@ -1,0 +1,33 @@
+.reviewsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  .head {
+    padding: 20px;
+    width: 100%;
+    max-width: 1600px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 1600px;
+    padding: 20px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .reviewsPage {
+    .head {
+      padding: 20px 0;
+    }
+    .container {
+      padding: 20px 0;
+    }
+  }
+}

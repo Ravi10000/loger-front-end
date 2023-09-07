@@ -155,7 +155,7 @@ export const footerOptions = [
       },
       {
         name: "FAQ",
-        path: "/faq",
+        path: "/faqs",
       },
       {
         name: "How to Work",

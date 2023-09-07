@@ -1,0 +1,239 @@
+.myTripsPage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  .head {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    border-bottom: 1px solid #bbbec1;
+    .link {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 1600px;
+      color: var(--main-brand-color);
+    }
+  }
+  .container {
+    padding: 20px;
+    width: 100%;
+    max-width: 1600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    // outline: 1px solid rgba(75, 118, 75, 0.178);
+  }
+  .tabsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    h1 {
+      font-size: 1.5rem;
+    }
+    .tabSwitcher {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      .tab {
+        padding: 10px;
+        border: none;
+        background: transparent;
+        border-bottom: 1px solid #8d9297;
+        transition: all 0.2s ease-in-out;
+        &.selected {
+          border: none;
+          border-radius: 5px;
+          color: #fff;
+          font-weight: 600;
+          background: var(--main-brand-color);
+        }
+      }
+    }
+  }
+  .cardsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .cardsHeading {
+      p {
+        margin-top: 5px;
+        max-width: 1000px;
+      }
+    }
+  }
+}
+
+.tripCardContainer {
+  background: #f2f6fa;
+  border-radius: 15px;
+  .tripCard {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #f2f6fa;
+    .image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background-position: center;
+      background-size: cover;
+      position: relative;
+      .iconContainer {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: #fff;
+        height: 35px;
+        width: 35px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        .icon {
+          height: 20px;
+          width: fit-content;
+          color: var(--main-brand-color);
+          &.liked {
+            color: #f02929;
+          }
+        }
+      }
+    }
+    .tripInfo {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .location {
+        display: flex;
+        align-items: center;
+        span,
+        .icon {
+          height: 20px;
+          width: fit-content;
+          color: var(--main-brand-color);
+        }
+      }
+      .description {
+        p {
+          margin-top: 5px;
+        }
+      }
+    }
+    .bottomSection {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      padding: 20px;
+      .button {
+        padding: 15px 30px;
+        border-radius: 5px;
+        border: none;
+        color: #fff;
+        &.active {
+          background: #f02929;
+        }
+        &.completed {
+          background: var(--main-brand-color);
+        }
+        &.cancelled {
+          background: #868d94;
+          color: #c2c6c9;
+          cursor: not-allowed;
+        }
+      }
+    }
+    .priceContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      .priceText {
+        color: var(--main-brand-color);
+        font-weight: 600;
+        font-size: 2rem;
+      }
+      p {
+        &:last-child {
+          font-size: 0.7rem;
+        }
+      }
+    }
+  }
+  .extraInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    .successText {
+      color: #00b95c;
+    }
+    .dateNTime {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+    .date {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      img {
+        height: 20px;
+        width: fit-content;
+      }
+    }
+    .link {
+      cursor: pointer;
+      color: var(--main-brand-color);
+      font-weight: 600;
+    }
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 700;
+
+      .star {
+        height: 1rem;
+        width: fit-content;
+        color: var(--main-brand-color);
+      }
+    }
+    .reviewBtn {
+      padding: 12px 30px;
+      background: #fff;
+      border: 1px solid var(--main-brand-color);
+      border-radius: 10px;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .tripCardContainer {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    .tripCard {
+      flex-direction: row;
+      min-width: 800px;
+      width: 100%;
+      max-width: 1000px;
+      .image {
+        max-width: 300px;
+      }
+    }
+    .extraInfo {
+      max-width: 300px;
+    }
+  }
+}

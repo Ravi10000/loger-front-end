@@ -26,6 +26,9 @@ const AboutPage = lazy(() => import("#pages/about/about.page"));
 const ContactPage = lazy(() => import("#pages/contact/contact.page"));
 const TermsPage = lazy(() => import("#pages/terms/terms.page"));
 const FaqPage = lazy(() => import("#pages/faq/faq.page"));
+const WorkPage = lazy(() => import("#pages/work/work.page"));
+const MyTripsPage = lazy(() => import("#pages/my-trips/my-trips.page"));
+const ReviewsPage = lazy(() => import("#pages/reviews/reviews.page"));
 const BookingDetailsPage = lazy(() =>
   import("#pages/booking-details/booking-details.page")
 );
@@ -62,6 +65,9 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/booking-details" element={<BookingDetailsPage />} />
             <Route path="/faqs" element={<FaqPage />} />
+            <Route path="/work" element={<WorkPage />} />
+            <Route path="/my-trips" element={<MyTripsPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

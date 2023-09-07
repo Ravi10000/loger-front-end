@@ -17,6 +17,7 @@ function Header() {
     "/contact",
     "/terms",
     "/faqs",
+    "/work",
   ];
   const isSpecialRoutes = specialRoutes.includes(pathname);
 
