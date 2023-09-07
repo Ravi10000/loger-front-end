@@ -3,11 +3,15 @@ import { Suspense, lazy } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Header from "#components/header/header";
 import Footer from "#components/footer/footer";
-import { useAuthWindow } from "#contexts/auth-window-context";
+import { useAuthWindow } from "#contexts/auth-window.context";
 import SigninWindow from "#components/signin-window/signin-window";
 import SignupWindow from "#components/signup-window/signup-window";
 
 import LoadingPage from "#pages/loading/loading";
+import ScrollTop from "#hooks/scroll-to-top";
+import { useReviewWindow } from "#contexts/review-window.context";
+import ReviewPopup from "#components/review-popup/review-popup";
+
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
 );
@@ -29,19 +33,23 @@ const FaqPage = lazy(() => import("#pages/faq/faq.page"));
 const WorkPage = lazy(() => import("#pages/work/work.page"));
 const MyTripsPage = lazy(() => import("#pages/my-trips/my-trips.page"));
 const ReviewsPage = lazy(() => import("#pages/reviews/reviews.page"));
+const PrivacyPolicyPage = lazy(() =>
+  import("#pages/privacy-policy/privacy-policy.page")
+);
 const BookingDetailsPage = lazy(() =>
   import("#pages/booking-details/booking-details.page")
 );
-
-import ScrollTop from "#hooks/scroll-to-top";
 function App() {
   const { pathname } = useLocation();
   const isAuthRoute = pathname.includes("/auth");
   const { authWindow } = useAuthWindow();
+  const { isReviewWindowOpen } = useReviewWindow();
+
   console.log({ authWindow });
   return (
     <div className={styles.App}>
       <ScrollTop />
+      {isReviewWindowOpen && <ReviewPopup />}
       {authWindow === "signin" && <SigninWindow />}
       {authWindow === "signup" && <SignupWindow />}
       {!isAuthRoute && <Header />}
@@ -68,6 +76,7 @@ function App() {
             <Route path="/work" element={<WorkPage />} />
             <Route path="/my-trips" element={<MyTripsPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

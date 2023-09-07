@@ -1,0 +1,25 @@
+.textbox {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  label {
+    font-weight: 600;
+  }
+}
+textarea {
+  height: 120px;
+  overflow: auto;
+  resize: none;
+  border: 1px solid #bbbdc1;
+  border-radius: 10px;
+  padding: 10px;
+  background: transparent;
+  &::placeholder {
+    color: #bbbdc1;
+  }
+  &:focus {
+    border-color:transparent;
+    outline: 2px solid var(--main-brand-color);
+  }
+}

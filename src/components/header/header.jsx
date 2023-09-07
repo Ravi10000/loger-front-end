@@ -4,7 +4,7 @@ import CountrySelector from "#components/country-selector/country-selector";
 import CustomButton from "#components/custom-button/custom-button";
 import { RiUserFill } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuthWindow } from "#contexts/auth-window-context";
+import { useAuthWindow } from "#contexts/auth-window.context";
 
 function Header() {
   const navigate = useNavigate();

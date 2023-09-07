@@ -3,7 +3,7 @@ import WithBackdrop from "#components/with-backdrop/with-backdrop";
 import CustomButton from "#components/custom-button/custom-button";
 import CustomInput from "#components/custom-input/custom-input";
 import { useEffect, useRef } from "react";
-import { useAuthWindow } from "#contexts/auth-window-context";
+import { useAuthWindow } from "#contexts/auth-window.context";
 
 function SigninWindow() {
   const popupRef = useRef(null);

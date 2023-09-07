@@ -143,7 +143,7 @@ export const footerOptions = [
       },
       {
         name: "Privacy Policy",
-        path: "/privacy policy",
+        path: "/privacy-policy",
       },
       {
         name: "Help & Support",
