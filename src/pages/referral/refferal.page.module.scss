@@ -1,0 +1,181 @@
+.refferalPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  .iconLink {
+    width: 100%;
+    padding: 20px;
+    max-width: 1600px;
+    color: var(--main-brand-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .heroSectionContainer {
+    background: var(--main-brand-color);
+    color: #fff;
+    padding: 20px 20px 100px 20px;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    .steps {
+      padding: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      p {
+        max-width: 350px;
+      }
+      .stepImg {
+        width: 200px;
+        height: fit-content;
+      }
+      .arrowContainer {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+  }
+  .refferalLink {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    width: 90%;
+    max-width: 700px;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    color: var(--text-color);
+    height: 70px;
+    overflow: hidden;
+    box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.25);
+    p {
+      padding-left: 20px;
+      font-size: 0.75rem;
+      word-break: break-all;
+    }
+    button {
+      height: 100%;
+      padding: 0 20px;
+      background-color: var(--main-brand-color);
+      color: #fff;
+      border: none;
+      border-radius: 0 10px 10px 0;
+    }
+  }
+  .container {
+    margin-top: 20px;
+    padding: 20px;
+    max-width: 1600px;
+    h2 {
+      margin: 20px 0;
+    }
+  }
+  .invitaionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    .invitation {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #bbbec1;
+      &:last-child {
+        padding: 0;
+        border: none;
+      }
+      p {
+        color: #8d9297;
+      }
+    }
+    .socialLink {
+      color: #fff;
+      background: #3b4db3;
+      border-radius: 5px;
+      padding: 10px 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      width: fit-content;
+      &.wa {
+        background: #25d366;
+      }
+      .icon {
+        height: 30px;
+        width: fit-content;
+      }
+    }
+  }
+  .inviteButton {
+    padding: 10px 20px;
+    background: var(--main-brand-color);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+}
+
+@media (min-width: 768px) {
+  .refferalPage {
+    .refferalLink {
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .refferalPage {
+    .heroSectionContainer {
+      .steps {
+        max-width: 1400px;
+        flex-direction: row;
+        .step {
+          .stepImg {
+            height: 150px;
+            width: fit-content;
+          }
+        }
+        .arrowContainer {
+          .arrow {
+            transform: rotate(0);
+          }
+        }
+      }
+    }
+    .invitaionsContainer {
+      flex-direction: row;
+      justify-content: space-evenly;
+      gap: 100px;
+      .invitation {
+        border: none;
+        border-right: 1px solid #bbbec1;
+        padding-right: 100px;
+      }
+    }
+  }
+}
+
+@media (min-width: 1600px) {
+  .refferalPage {
+    .iconLink {
+      padding: 20px 0;
+    }
+  }
+}
