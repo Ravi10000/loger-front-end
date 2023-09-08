@@ -80,7 +80,7 @@ function Reviews() {
             />
             <RatingBar
               ratingDetails={{
-                count: 5,
+                count: "05",
                 totalCount: 100,
                 name: "1 Stars",
               }}

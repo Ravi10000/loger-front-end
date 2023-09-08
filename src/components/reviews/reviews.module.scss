@@ -18,6 +18,7 @@
       display: flex;
       align-items: center;
       gap: 20px;
+      width: 100%;
     }
     .ratingInfo {
       display: flex;
@@ -30,8 +31,12 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
-    max-width: 350px;
     padding: 10px;
+  }
+  .left,
+  .ratingsContainer {
+    width: 100%;
+    max-width: 400px;
   }
   .right {
     padding: 20px;

@@ -3,10 +3,10 @@
   align-items: center;
   gap: 20px;
   width: 100%;
+  white-space: nowrap;
   .barContainer {
     width: 100%;
-    max-width: 200px;
-    height: 40px;
+    height: 35px;
     border-radius: 5px;
     overflow: hidden;
     display: flex;
