@@ -100,7 +100,7 @@ function BookingDetailsPage() {
         <div className={styles.contentBox}>
           <div className={styles.head}>
             <div className={styles.titleContainer}>
-              <h3>Best Reviews This Hotel</h3>
+              <h3>Best Reviews</h3>
               <p>Haridwar, India</p>
             </div>
             <div className={styles.ratingsContainer}>

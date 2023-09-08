@@ -73,16 +73,16 @@ function WalletPage() {
               </p>
               <div className={styles.balance}>
                 <img src="/images/icons/coin.svg" alt="coin" />
-                <p>0.00</p>
+                <p>1200</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className={styles.container}>
+        <h2>Transaction History</h2>
         <div className={styles.tableContainer}>
-          <h2>Transaction History</h2>
-          <table>
+          <table id="payment-history">
             <thead>
               <tr>
                 <th>Card Holder Name</th>
@@ -100,7 +100,39 @@ function WalletPage() {
                 <td>TND 123456789</td>
                 <td>Tirath View, Haridwar</td>
                 <td>June, 24, 2023</td>
-                <td>₹ 3,500</td>
+                <td className={styles.price}>₹ 3,500</td>
+              </tr>
+              <tr>
+                <td>Anil Sogra</td>
+                <td>123456789</td>
+                <td>TND 123456789</td>
+                <td>Tirath View, Haridwar</td>
+                <td>June, 24, 2023</td>
+                <td className={styles.price}>₹ 3,500</td>
+              </tr>
+              <tr>
+                <td>Anil Sogra</td>
+                <td>123456789</td>
+                <td>TND 123456789</td>
+                <td>Tirath View, Haridwar</td>
+                <td>June, 24, 2023</td>
+                <td className={styles.price}>₹ 3,500</td>
+              </tr>
+              <tr>
+                <td>Anil Sogra</td>
+                <td>123456789</td>
+                <td>TND 123456789</td>
+                <td>Tirath View, Haridwar</td>
+                <td>June, 24, 2023</td>
+                <td className={styles.price}>₹ 3,500</td>
+              </tr>
+              <tr>
+                <td>Anil Sogra</td>
+                <td>123456789</td>
+                <td>TND 123456789</td>
+                <td>Tirath View, Haridwar</td>
+                <td>June, 24, 2023</td>
+                <td className={styles.price}>₹ 3,500</td>
               </tr>
             </tbody>
           </table>

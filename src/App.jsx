@@ -35,6 +35,12 @@ const MyTripsPage = lazy(() => import("#pages/my-trips/my-trips.page"));
 const ReviewsPage = lazy(() => import("#pages/reviews/reviews.page"));
 const RefferalPage = lazy(() => import("#pages/referral/refferal.page"));
 const WalletPage = lazy(() => import("#pages/wallet/wallet.page"));
+const ManageAccountPage = lazy(() =>
+  import("#pages/manage-account/manage-account.page")
+);
+const AccountDetailsPage = lazy(() =>
+  import("#pages/account-details/account-details.page")
+);
 const PrivacyPolicyPage = lazy(() =>
   import("#pages/privacy-policy/privacy-policy.page")
 );
@@ -81,6 +87,8 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/refferal" element={<RefferalPage />} />
             <Route path="/wallet" element={<WalletPage />} />
+            <Route path="/account/:tab" element={<AccountDetailsPage />} />
+            <Route path="/account" element={<ManageAccountPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

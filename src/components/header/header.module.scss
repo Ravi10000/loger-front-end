@@ -34,6 +34,34 @@
       }
     }
   }
+  .accountButton {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: var(--main-brand-color);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    .icon {
+      height: 20px;
+      width: fit-content;
+      transition: all 0.3s ease-in-out;
+      &.flip {
+        transform: rotate(180deg);
+      }
+    }
+    .initials {
+      height: 30px;
+      width: 30px;
+      border-radius: 50px;
+      display: grid;
+      place-content: center;
+      background-color: #8e03cf;
+    }
+  }
 }
 
 @media (min-width: 768px) {

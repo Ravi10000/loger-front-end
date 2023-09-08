@@ -1,0 +1,18 @@
+.personalDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .inputGroup {
+    flex-direction: row;
+  }
+}

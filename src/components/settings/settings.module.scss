@@ -1,0 +1,70 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.notificationContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.notificationToggler {
+  padding: 15px 20px;
+  border: 1px solid #8d9197;
+  border-radius: 10px;
+  color: #8d9297;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  .toggler {
+    --togglerWidth: 52px;
+    --togglerPadding: 3px;
+    --pillWidth: 20px;
+    width: var(--togglerWidth);
+    aspect-ratio: 2 / 1;
+    border-radius: 50px;
+    background: var(--text-color);
+    position: relative;
+    &.active {
+      background: var(--main-brand-color);
+      &::after {
+        background: var(--text-color);
+        // transform: translate(24px, -50%);
+        transform: translate(
+          calc(
+            var(--togglerWidth) - calc(2 * var(--togglerPadding)) -
+              var(--pillWidth)
+          ),
+          -50%
+        );
+      }
+    }
+    &::after {
+      position: absolute;
+      transition: all 0.2s ease-in-out;
+      content: "";
+      width: var(--pillWidth);
+      height: var(--pillWidth);
+      background: var(--main-brand-color);
+      border-radius: 50px;
+      top: 50%;
+      left: var(--togglerPadding);
+      transform: translateY(-50%);
+    }
+  }
+}
+@media (min-width: 768px) {
+  .inputGroup {
+    flex-direction: row;
+  }
+}
