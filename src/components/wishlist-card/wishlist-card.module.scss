@@ -1,0 +1,95 @@
+.wishlistCard {
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: #f2f6fa;
+  max-width: 400px;
+  .image {
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    .iconContainer {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: var(--text-color);
+      height: 30px;
+      width: 30px;
+      display: grid;
+      place-content: center;
+      border-radius: 50px;
+      cursor: pointer;
+      .close {
+        height: 20px;
+        width: fit-content;
+        color: #fff;
+      }
+    }
+  }
+  .star {
+    color: var(--main-brand-color);
+    height: 20px;
+    width: fit-content;
+  }
+  .review {
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .rating {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    p {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+  }
+  .info,
+  .priceNReviews {
+    padding: 10px 20px 20px 20px;
+  }
+  .info {
+    border-bottom: 1px solid #b2b8bd;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .location {
+      span {
+        color: var(--main-brand-color);
+      }
+    }
+    .services {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      img {
+        height: 20px;
+        width: fit-content;
+      }
+    }
+  }
+  .priceNReviews {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    .price {
+      p {
+        font-weight: 600;
+      }
+      h3 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--main-brand-color);
+      }
+    }
+  }
+  .buttonContainer {
+    padding: 20px;
+  }
+
+}

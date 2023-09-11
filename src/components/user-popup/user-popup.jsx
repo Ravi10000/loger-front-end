@@ -6,13 +6,6 @@ import { useRef, useEffect } from "react";
 function UserPopup({ close }) {
   const popupRef = useRef(null);
   const navigate = useNavigate();
-//   useEffect(() => {
-//     function handleClickOutside(e) {
-//       if (popupRef.current && !popupRef.current.contains(e.target)) close();
-//     }
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => document.removeEventListener("mousedown", handleClickOutside);
-//   }, [popupRef.current]);
   return (
     <div className={styles.userPopup} ref={popupRef}>
       <div className={styles.option} onClick={() => navigate("/account")}>
@@ -20,6 +13,14 @@ function UserPopup({ close }) {
         <div className={styles.innerText}>
           <p>Manage Account</p>
           <p>anilsogra125@gmail.com</p>
+        </div>
+      </div>
+      <div className={styles.option} onClick={() => navigate("/wishlist")}>
+        <img src="/images/icons/heart.svg" alt="wishlist" />
+        <div className={styles.innerText}>
+          <p>
+            My Wishlist <span>04</span>
+          </p>
         </div>
       </div>
       <div className={styles.option} onClick={() => navigate("/my-trips")}>

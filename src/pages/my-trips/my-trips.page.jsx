@@ -46,7 +46,7 @@ function MyTripsPage() {
       <div className={styles.head}>
         <div className={styles.link} onClick={() => navigate("/")}>
           <PiArrowLeftBold className={styles.icon} />
-          <p>See all properties</p>
+          <p>Go Back</p>
         </div>
       </div>
       <div className={styles.container}>

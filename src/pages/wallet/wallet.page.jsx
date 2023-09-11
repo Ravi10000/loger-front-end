@@ -9,7 +9,7 @@ function WalletPage() {
     <div className={styles.walletPage}>
       <div className={styles.iconLink} onClick={() => navigate(-1)}>
         <PiArrowLeftBold className={`${styles.backIcon} ${styles.icon}`} />
-        <p>See all properties</p>
+        <p>Go Back</p>
       </div>
       <div className={styles.heroSectionContainer}>
         <div className={styles.heroSection}>

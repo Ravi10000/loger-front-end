@@ -35,6 +35,7 @@ const MyTripsPage = lazy(() => import("#pages/my-trips/my-trips.page"));
 const ReviewsPage = lazy(() => import("#pages/reviews/reviews.page"));
 const RefferalPage = lazy(() => import("#pages/referral/refferal.page"));
 const WalletPage = lazy(() => import("#pages/wallet/wallet.page"));
+const WishlistPage = lazy(() => import("#pages/wishlist/wishlist.page"));
 const ManageAccountPage = lazy(() =>
   import("#pages/manage-account/manage-account.page")
 );
@@ -89,6 +90,7 @@ function App() {
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/account/:tab" element={<AccountDetailsPage />} />
             <Route path="/account" element={<ManageAccountPage />} />
+            <Route path="/wishlist" element={<WishlistPage />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

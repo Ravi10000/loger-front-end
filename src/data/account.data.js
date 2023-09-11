@@ -25,7 +25,7 @@ export const accountData = [
   },
   {
     title: "Wallet & Rewards",
-    subtitle: "Lorem Ipsum is simply dummy text of the printing and",
+    subtitle: "See your wallet balance and rewards",
     icon: "/images/account-icons/wallet-add.svg",
     hoveredIcon: "/images/account-icons/wallet-add-active.svg",
     linkText: "Manage Your Rewards",
@@ -33,7 +33,7 @@ export const accountData = [
   },
   {
     title: "Payment Details",
-    subtitle: "Chnage your payment details",
+    subtitle: "Change your payment details",
     icon: "/images/account-icons/card.svg",
     hoveredIcon: "/images/account-icons/card-active.svg",
     linkText: "Change Payment Details",
@@ -41,7 +41,7 @@ export const accountData = [
   },
   {
     title: "Change Password",
-    subtitle: "Lorem Ipsum is simply dummy text of the printing and",
+    subtitle: "Choose a new password",
     icon: "/images/account-icons/card.svg",
     hoveredIcon: "/images/account-icons/card-active.svg",
     linkText: "Manage Password",

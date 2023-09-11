@@ -11,12 +11,12 @@ function RefferalPage() {
     <div className={styles.refferalPage}>
       <div className={styles.iconLink} onClick={() => navigate(-1)}>
         <PiArrowLeftBold className={`${styles.backIcon} ${styles.icon}`} />
-        <p>See all properties</p>
+        <p>Go Back</p>
       </div>
       <div className={styles.heroSectionContainer}>
         <div className={styles.heroSection}>
           <h1>
-            <Balancer>Invite Your Friends & Get Earn Coins</Balancer>
+            <Balancer>Invite Your Friends & Earn Coins</Balancer>
           </h1>
           <p>
             <Balancer>
