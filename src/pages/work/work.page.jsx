@@ -20,7 +20,7 @@ function WorkPage() {
             <p>
               <Balancer>
                 Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
+                industry. Lorem Ipsum has been the industry&apos;s standard dummy
                 text ever since the 1500s, when an unknown printer took a galley
                 of type and scrambled it to make a type specimen book. It has
                 survived not only five centuries, but also the leap into
@@ -29,7 +29,7 @@ function WorkPage() {
                 containing Lorem Ipsum passages, and more recently with desktop
                 publishing software like Aldus PageMaker including versions of
                 Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing
-                and typesetting industry. Lorem Ipsum has been the industry's
+                and typesetting industry. Lorem Ipsum has been the industry&apos;s
                 standard dummy text ever since the 1500s, when an unknown
                 printer took a galley of type and scrambled it to make a type
                 specimen book. It has survived not only five centuries, but also
@@ -39,7 +39,7 @@ function WorkPage() {
                 recently with desktop publishing software like Aldus PageMaker
                 including versions of Lorem Ipsum. Lorem Ipsum is simply dummy
                 text of the printing and typesetting industry. Lorem Ipsum has
-                been the industry's standard dummy text ever since the 1500s,
+                been the industry&apos;s standard dummy text ever since the 1500s,
                 when an unknown printer took a galley of type and scrambled it
                 to make a type specimen book. It has survived not only five
                 centuries, but also the leap into electronic typesetting,
@@ -81,7 +81,7 @@ function WorkPage() {
         <p>
           <Balancer>
             Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
+            industry. Lorem Ipsum has been the industry&apos;s standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
             and scrambled it to make a type specimen book. It has survived not
             only five centuries, but also the leap into electronic typesetting,
@@ -90,7 +90,7 @@ function WorkPage() {
             and more recently with desktop publishing software like Aldus
             PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply
             dummy text of the printing and typesetting industry. Lorem Ipsum has
-            been the industry's standard dummy text ever since the 1500s,
+            been the industry&apos;s standard dummy text ever since the 1500s,
             <br />
             <br />
             when an unknown printer took a galley of type and scrambled it to
@@ -101,7 +101,7 @@ function WorkPage() {
             with desktop publishing software like Aldus PageMaker including
             versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the
             printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s, when an unknown
+            industry&apos;s standard dummy text ever since the 1500s, when an unknown
             printer took a galley of type and scrambled it to make a type
             specimen book. It has survived not only five centuries, but also the
             leap into electronic typesetting, remaining essentially unchanged.
@@ -111,7 +111,7 @@ function WorkPage() {
         <p>
           <Balancer>
             Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
+            industry. Lorem Ipsum has been the industry&apos;s standard dummy text
             ever since the 1500s, when an unknown printer took a galley of type
             and scrambled it to make a type specimen book. It has survived not
             only five centuries,
@@ -123,7 +123,7 @@ function WorkPage() {
             with desktop publishing software like Aldus PageMaker including
             versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the
             printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s,
+            industry&apos;s standard dummy text ever since the 1500s,
             <br />
             <br />
             when an unknown printer took a galley of type and scrambled it to
@@ -134,7 +134,7 @@ function WorkPage() {
             with desktop publishing software like Aldus PageMaker including
             versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the
             printing and typesetting industry. Lorem Ipsum has been the
-            industry's standard dummy text ever since the 1500s,
+            industry&apos;s standard dummy text ever since the 1500s,
             <br />
             <br />
             when an unknown printer took a galley of type and scrambled it to

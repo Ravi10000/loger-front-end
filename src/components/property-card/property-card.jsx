@@ -7,32 +7,54 @@ function PropertyCard({ item }) {
   const navigate = useNavigate();
   return (
     <div className={styles.propertyCard}>
-      <img className={styles.propertyImage} src={item?.image} alt="property" />
+      {/* <img
+        className={styles.propertyImage}
+        src={
+          item?.photos?.[0]?.photoUrl
+            ? import.meta.env.VITE_SERVER_URL +
+              "/images/" +
+              item?.photos?.[0]?.photoUrl
+            : "/images/property (1).png"
+        }
+        alt="property"
+      /> */}
+      <div
+        className={styles.propertyImage}
+        style={{
+          backgroundImage: `url("${
+            item?.photos?.[0]?.photoUrl
+              ? import.meta.env.VITE_SERVER_URL +
+                "/images/" +
+                item?.photos?.[0]?.photoUrl
+              : "/images/property (1).png"
+          }")`,
+        }}
+      ></div>
       <div className={styles.infoContainer}>
         <div className={styles.info}>
           <h3>
-            <Balancer>{item?.name}</Balancer>
+            <Balancer>{item?.propertyName || "no name"}</Balancer>
           </h3>
           <div className={styles.rating}>
             <div className={styles.stars}>
-              {Array(item?.rating)
+              {Array(item?.rating || 1)
                 .fill()
                 .map((_, i) => (
                   <RiStarFill key={i} className={styles.star} />
                 ))}
             </div>
-            <p>{item?.rating}.0</p>
+            <p>{item?.rating || 1}.0</p>
           </div>
         </div>
         <div className={styles.location}>
           <img src="/images/icons/location.svg" alt="location" />
-          <p>{item?.location}</p>
+          <p>{item?.location || "unknown"}</p>
         </div>
         <p className={styles.description}>
-          <Balancer>{item?.description}</Balancer>
+          <Balancer>{item?.description || "no description"}</Balancer>
         </p>
         <div className={styles.priceInfo}>
-          <p>₹ {item?.price}</p>
+          <p>₹ {item?.price || 0}</p>
           <CustomButton fit onClick={() => navigate("/property")}>
             View Details
           </CustomButton>

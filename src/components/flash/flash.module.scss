@@ -1,0 +1,103 @@
+.flash {
+  width: fit-content;
+  display: flex;
+  gap: 50px;
+  color: var(--card-text-clr);
+  background: #fff;
+  padding: 5px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px 0px rgba(107, 105, 131, 0.419);
+  width: 80vw;
+  max-width: 500px;
+  position: relative;
+  animation: slideIn 0.5s ease-in-out,
+    outroAnimation 0.5s ease-in-out 7.5s forwards;
+  overflow: hidden;
+  transition: transform 0.5s ease-in-out;
+  &.outro {
+    transform: translateX(200%);
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    height: 3px;
+    width: 100%;
+    background: var(--success-clr);
+    bottom: 0;
+    left: 0;
+    animation: timeout 7.5s linear forwards;
+  }
+  &.info {
+    &::after {
+      background: var(--info-clr);
+    }
+  }
+  &.warning {
+    &::after {
+      background: var(--warning-clr);
+    }
+  }
+  &.error {
+    &::after {
+      background: var(--error-clr);
+    }
+  }
+  .icon {
+    height: 1.5rem;
+    width: fit-content;
+  }
+  .details {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: fit-content;
+    .message {
+      text-align: start;
+      letter-spacing: 1px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+  .closeBtn {
+    background: transparent;
+    border: none;
+    height: fit-content;
+    width: fit-content;
+    cursor: pointer;
+    padding: 10px;
+    .icon {
+      height: 1.2rem;
+      width: fit-content;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .flash {
+    width: fit-content;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  50% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes timeout {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes outroAnimation {
+  100% {
+    transform: translateX(200%);
+  }
+}

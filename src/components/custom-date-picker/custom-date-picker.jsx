@@ -6,12 +6,14 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import DatePicker from "react-date-picker";
 
-function CustomDatePicker({ label }) {
-  const [date, setDate] = useState(false);
+function CustomDatePicker({ label, date, setDate }) {
   const [showCalendar, setShowCalendar] = useState(false);
   let now = new Date();
   let maxDate = new Date();
   maxDate.setDate(now.getDate() + 365);
+  const datePickerProps = {
+    ...(date && { value: Date.parse(date) }),
+  };
   return (
     <div className={styles.datePickerContainer}>
       <button
@@ -34,8 +36,11 @@ function CustomDatePicker({ label }) {
         minDate={new Date()}
         maxDate={maxDate}
         isOpen={showCalendar}
-        onChange={(date) => setDate(dayjs(date).format("DD/MM/YYYY"))}
-        value={Date.parse(date)}
+        onChange={(date) =>
+          setDate && setDate(dayjs(date).format("DD-MM-YYYY"))
+        }
+        // value={Date.parse(date)}
+        {...datePickerProps}
       />
     </div>
   );

@@ -19,10 +19,10 @@
     &.checked {
       background: var(--text-color);
       color: #fff;
-      .icon {
-        height: 1rem;
-        width: fit-content;
-      }
+    }
+    .icon {
+      height: 1.2rem;
+      width: fit-content;
     }
   }
   .details {

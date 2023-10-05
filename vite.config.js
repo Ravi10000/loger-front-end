@@ -16,6 +16,7 @@ export default defineConfig({
       "#hooks": "/src/hooks",
       "#utilities": "/src/utilities",
       "#contexts": "/src/contexts",
+      "#redux": "/src/redux",
     },
   },
 });

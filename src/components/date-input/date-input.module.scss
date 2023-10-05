@@ -1,11 +1,18 @@
 .dateInputContainer {
   display: flex;
   flex-direction: column;
-//   gap: 10px;
+  //   gap: 10px;
   width: 100%;
   label {
     font-weight: 600;
     margin-bottom: 10px;
+  }
+  .error {
+    text-align: left;
+    padding: 5px;
+    width: fit-content;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
   }
 }
 .dateInput {
@@ -36,4 +43,5 @@
     align-items: center;
     gap: 10px;
   }
+
 }

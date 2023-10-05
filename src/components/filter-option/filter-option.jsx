@@ -18,6 +18,7 @@ function FilterOption({ title = "", count = 0, isPrice = false }) {
       >
         <BiCheck className={`${styles.icon}`} />
       </div>
+      {/* <input type="checkbox" style={{ accentColor: "black" }} /> */}
       <div className={styles.details}>
         <div className={styles.optionText}>
           {isPrice && <BiRupee className={styles.rupee} />}

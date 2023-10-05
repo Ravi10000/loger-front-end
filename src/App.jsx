@@ -1,5 +1,5 @@
 import styles from "./App.module.scss";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Header from "#components/header/header";
 import Footer from "#components/footer/footer";
@@ -11,6 +11,12 @@ import LoadingPage from "#pages/loading/loading";
 import ScrollTop from "#hooks/scroll-to-top";
 import { useReviewWindow } from "#contexts/review-window.context";
 import ReviewPopup from "#components/review-popup/review-popup";
+import FlashGroup from "#components/flash-group/flash-group";
+import { connect } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserDetails } from "#api/auth.req";
+import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
+import { getAuthToken, removeAuthToken } from "./api";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -48,16 +54,63 @@ const PrivacyPolicyPage = lazy(() =>
 const BookingDetailsPage = lazy(() =>
   import("#pages/booking-details/booking-details.page")
 );
-function App() {
+
+function App({ setCurrentUser, clearIsFetching }) {
   const { pathname } = useLocation();
   const isAuthRoute = pathname.includes("/auth");
   const { authWindow } = useAuthWindow();
   const { isReviewWindowOpen } = useReviewWindow();
 
-  console.log({ authWindow });
+  const userQuery = useQuery({
+    queryKey: ["user"],
+    enabled: getAuthToken() ? true : false,
+    queryFn: async () => {
+      const { data } = await fetchUserDetails();
+      setCurrentUser(data.user);
+      return data?.user;
+    },
+  });
+  useEffect(() => {
+    if (userQuery.isError) {
+      clearIsFetching();
+      // removeAuthToken();
+    }
+  }, [userQuery]);
+
+  // useEffect(() => {
+  //   if (userQuery?.isError) {
+  //     clearIsFetching();
+  //     setCurrentUser(null);
+  //   } else if (userQuery?.isSuccess) {
+  //     console.log("user query");
+  //     setCurrentUser(userQuery.data);
+  //   }
+  // }, []);
+
   return (
     <div className={styles.App}>
       <ScrollTop />
+      {/* <FlashGroup
+        flashList={[
+          {
+            type: "success",
+            message: "Hello",
+          },
+          {
+            type: "error",
+            message: "Hello",
+          },
+          {
+            type: "warning",
+            message: "Hello",
+          },
+          {
+            type: "info",
+            message: "Hello",
+          },
+        ]}
+      /> */}
+      <FlashGroup />
       {isReviewWindowOpen && <ReviewPopup />}
       {authWindow === "signin" && <SigninWindow />}
       {authWindow === "signup" && <SignupWindow />}
@@ -100,4 +153,8 @@ function App() {
   );
 }
 
-export default App;
+const mapState = (state) => ({
+  currentUser: state.user.currentUser,
+  isFetchingUser: state.user.isFetching,
+});
+export default connect(mapState, { setCurrentUser, clearIsFetching })(App);

@@ -6,25 +6,38 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import DatePicker from "react-date-picker";
 
-function DateInput({ label, placeholder, ...otherProps }) {
-  const [date, setDate] = useState(false);
+function DateInput({
+  label,
+  placeholder,
+  error,
+  date,
+  setDate,
+  ...otherProps
+}) {
+  // const [date, setDate] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   // let now = new Date();
   // let maxDate = new Date();
   // maxDate.setDate(now.getDate() + 365);
+  const datePickerProps = {
+    ...(date && { value: Date.parse(date) }),
+  };
   return (
     <div className={styles.dateInputContainer}>
-      <label>{label}</label>
+      {label && <label>{label}</label>}
       <DatePicker
         shouldCloseCalendar={() => {
           setShowCalendar(false);
           return true;
         }}
-        minDate={new Date()}
+        // minDate={new Date()}
         // maxDate={maxDate}
         isOpen={showCalendar}
-        onChange={(date) => setDate(dayjs(date).format("DD/MM/YYYY"))}
-        value={Date.parse(date)}
+        onChange={(date) =>
+          setDate && setDate(dayjs(date).format("DD-MM-YYYY"))
+        }
+        // value={date && Date.parse(data)}
+        {...datePickerProps}
       />
       <div className={styles.dateInput}>
         <button
@@ -40,6 +53,7 @@ function DateInput({ label, placeholder, ...otherProps }) {
           />
         </button>
       </div>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }

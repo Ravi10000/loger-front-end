@@ -1,0 +1,11 @@
+.flashGroup {
+  position: fixed;
+  z-index: 10000000000;
+  bottom: 100px;
+  right: 20px;
+  display: grid;
+  gap: 10px;
+  transition: all 0.5s ease-in-out;
+  overflow: hidden;
+  max-height: 400px;
+}

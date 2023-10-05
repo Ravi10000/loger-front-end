@@ -93,8 +93,8 @@ function MyTripsPage() {
                 <Balancer>{selectedTab?.subtitle}</Balancer>
               </p>
             </div>
-            {filteredTrips?.map((trip) => (
-              <TripCard trip={trip} />
+            {filteredTrips?.map((trip, idx) => (
+              <TripCard trip={trip} key={idx} />
             ))}
           </div>
         )}

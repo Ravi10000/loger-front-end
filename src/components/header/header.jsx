@@ -8,11 +8,9 @@ import { useAuthWindow } from "#contexts/auth-window.context";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useRef, useState } from "react";
 import UserPopup from "#components/user-popup/user-popup";
+import { connect } from "react-redux";
 
-function Header() {
-  const currentUser = {
-    name: "John Doe",
-  };
+function Header({ currentUser }) {
   const navigate = useNavigate();
   const { openAuthWindow } = useAuthWindow();
   const { pathname } = useLocation();
@@ -60,7 +58,7 @@ function Header() {
               className={styles.accountButton}
             >
               <div className={styles.initials}>
-                <p>{currentUser?.name?.[0]}</p>
+                <p>{currentUser?.fName?.[0].toUpperCase()}</p>
               </div>
               <IoIosArrowDown
                 className={`${styles.icon} ${isPopupOpen ? styles.flip : ""}`}
@@ -70,7 +68,7 @@ function Header() {
           ) : (
             <CustomButton rounded onClick={() => openAuthWindow()}>
               <RiUserFill />
-              <p>Sign In</p>
+              <p className={styles.signInText}>Sign In</p>
             </CustomButton>
           )}
         </div>
@@ -79,4 +77,7 @@ function Header() {
   );
 }
 
-export default Header;
+const mapState = (state) => ({
+  currentUser: state.user.currentUser,
+});
+export default connect(mapState)(Header);

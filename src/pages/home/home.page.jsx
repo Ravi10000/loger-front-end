@@ -15,6 +15,8 @@ import { feedbacks } from "#data/feedbacks";
 import FeedbackCarousel from "#components/feedback-carousel/feedback-carousel";
 import { typesOfProperties } from "#data/types-of-properties";
 import ImageGrid from "#components/image-grid/image-grid";
+import { fetchAllProperties } from "#api/properties.req";
+import { useQuery } from "@tanstack/react-query";
 
 const cities = [
   "Delhi NCR",
@@ -27,6 +29,14 @@ const cities = [
 
 function HomePage() {
   const [selectedCity, setSelectedCity] = useState(cities[0]);
+  const propertiesQuery = useQuery({
+    queryKey: ["properties"],
+    queryFn: async () => {
+      const response = await fetchAllProperties();
+      // console.log({ response });
+      return response.data?.properties;
+    },
+  });
   return (
     <div className={styles.homePage}>
       <HeroSection />
@@ -59,7 +69,17 @@ function HomePage() {
           className={styles.carouselContainer}
           // style={{ padding: "20px", outline: "2px solid red" }}
         >
-          <PropertyCarousel items={properties} Component={PropertyCard} />
+          {/* <PropertyCarousel items={properties} Component={PropertyCard} /> */}
+          {propertiesQuery?.isFetching ? (
+            "loading..."
+          ) : propertiesQuery?.isError ? (
+            "error loading properties"
+          ) : (
+            <PropertyCarousel
+              items={propertiesQuery?.data || []}
+              Component={PropertyCard}
+            />
+          )}
         </div>
       </section>
       <h2 className={styles.title}>Accommodation Promotions</h2>

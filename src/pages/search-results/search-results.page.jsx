@@ -11,12 +11,36 @@ import { useState } from "react";
 import { BsFilter } from "react-icons/bs";
 import { searchResult } from "#data/search-results-data";
 import SearchResultCard from "#components/search-result-card/search-result-card";
+import { useLocation } from "react-router-dom";
 
 function SearchResultsPage() {
+  const {
+    state: { checkIn, checkOut, location, noOfRooms, noOfAdults, noOfChildren },
+  } = useLocation();
+
+  console.log({
+    checkIn,
+    checkOut,
+    location,
+    noOfRooms,
+    noOfAdults,
+    noOfChildren,
+  });
+
   const [showSidebar, setShowSidebar] = useState(false);
   return (
     <div className={styles.searchResultsPage}>
-      <HeroSection small />
+      <HeroSection
+        small
+        state={{
+          checkIn,
+          checkOut,
+          location,
+          noOfRooms,
+          noOfAdults,
+          noOfChildren,
+        }}
+      />
       <div className={styles.searchPath}>
         <div className={styles.searchPathTerm}>
           <p>Home</p>

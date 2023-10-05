@@ -81,7 +81,7 @@ function AccountDetailsPage() {
                 onClick={() => {
                   navigate(tab.path);
                 }}
-                key={tab.path}
+                key={tab.name}
                 className={`${styles.tab} ${
                   selectedTab === tab.path ? styles.selected : ""
                 }`}

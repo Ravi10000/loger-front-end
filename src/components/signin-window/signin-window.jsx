@@ -4,8 +4,53 @@ import CustomButton from "#components/custom-button/custom-button";
 import CustomInput from "#components/custom-input/custom-input";
 import { useEffect, useRef } from "react";
 import { useAuthWindow } from "#contexts/auth-window.context";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { loginWithEmail } from "#api/auth.req";
+import { setCurrentUser } from "#redux/user/user.actions";
+import { pushFlash } from "#redux/flash/flash.actions";
+import { connect } from "react-redux";
+import { setAuthToken } from "#api/index";
+import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
 
-function SigninWindow() {
+const schema = z.object({
+  email: z.string().email({ message: "invalid email" }),
+  password: z.string().min(1, { message: "password required" }),
+});
+
+function SigninWindow({ setCurrentUser, pushFlash }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      email: "email@admin51.com",
+      password: "Password123@",
+    },
+  });
+
+  const mutation = useMutation({
+    mutationKey: ["user", "login"],
+    mutationFn: async (data) => {
+      console.log({ data });
+      const response = await loginWithEmail(data);
+      return response;
+    },
+    onSuccess: ({ data }) => {
+      setCurrentUser(data?.user);
+      setAuthToken(data?.accessToken);
+      pushFlash({ message: "Login Successfull", type: "success" });
+      closeAuthWindow();
+    },
+    onError: ({ response: { data } }) => {
+      console.error({ error: data });
+      pushFlash({ message: data?.message, type: "error" });
+    },
+  });
   const popupRef = useRef(null);
   const { closeAuthWindow, openAuthWindow } = useAuthWindow();
   useEffect(() => {
@@ -32,22 +77,36 @@ function SigninWindow() {
           <div className={styles.iconContainer}>
             <img src="/images/icons/facebook.png" alt="facebook" />
           </div>
-          <div className={styles.iconContainer}>
+          {/* <div className={styles.iconContainer}>
             <img src="/images/icons/google.png" alt="google" />
-          </div>
+          </div> */}
+          <GoogleAuthButton />
         </div>
         <div className={styles.seperator}>
           <p>or</p>
         </div>
-        <div className={styles.inputsNforgotPassword}>
+        <form
+          id="signin-form"
+          onSubmit={handleSubmit(mutation.mutate)}
+          className={styles.inputsNforgotPassword}
+        >
           <div className={styles.inputsContainer}>
-            <CustomInput placeholder="example@email.com" />
-            <CustomInput placeholder="password" type="password" />
+            <CustomInput
+              placeholder="example@email.com"
+              register={{ ...register("email") }}
+              error={errors?.email?.message}
+            />
+            <CustomInput
+              placeholder="password"
+              type="password"
+              register={{ ...register("password") }}
+              error={errors?.password?.message}
+            />
           </div>
           <p>Forgot Password?</p>
-        </div>
+        </form>
         <div className={styles.buttonContainer}>
-          <CustomButton>Signin</CustomButton>
+          <CustomButton form="signin-form">Signin</CustomButton>
         </div>
         <p className={styles.link} onClick={() => openAuthWindow("signup")}>
           Signup
@@ -63,4 +122,4 @@ function SigninWindow() {
   );
 }
 
-export default SigninWindow;
+export default connect(null, { setCurrentUser, pushFlash })(SigninWindow);
