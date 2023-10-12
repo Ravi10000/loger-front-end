@@ -37,7 +37,7 @@ function CustomDatePicker({ label, date, setDate }) {
         maxDate={maxDate}
         isOpen={showCalendar}
         onChange={(date) =>
-          setDate && setDate(dayjs(date).format("DD-MM-YYYY"))
+          setDate && setDate(dayjs(date).format("YYYY-MM-DD"))
         }
         // value={Date.parse(date)}
         {...datePickerProps}

@@ -7,24 +7,31 @@ import FilterSidebar, {
   FilterGroup,
 } from "#components/filter-sidebar/filter-sidebar";
 import { filterOptions } from "#data/filter-options.data";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { BsFilter } from "react-icons/bs";
 import { searchResult } from "#data/search-results-data";
 import SearchResultCard from "#components/search-result-card/search-result-card";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { searchProperties } from "#api/properties.req";
 
 function SearchResultsPage() {
   const {
     state: { checkIn, checkOut, location, noOfRooms, noOfAdults, noOfChildren },
   } = useLocation();
-
-  console.log({
-    checkIn,
-    checkOut,
-    location,
-    noOfRooms,
-    noOfAdults,
-    noOfChildren,
+  const propertiesQuery = useQuery({
+    queryKey: ["products", "search"],
+    queryFn: async () => {
+      const res = await searchProperties({
+        queryText: location,
+        checkIn,
+        checkOut,
+        noOfRooms,
+        noOfAdults,
+      });
+      console.log({ properties: res.data.properties });
+      return res?.data?.properties;
+    },
   });
 
   const [showSidebar, setShowSidebar] = useState(false);
@@ -55,7 +62,10 @@ function SearchResultsPage() {
       <div className={styles.sortingContainer}>
         <div className={styles.container}>
           <h2 className={styles.resultsCount}>
-            <Balancer>Uttarakhand: 104 Properties Found</Balancer>
+            <Balancer>
+              {location}: {propertiesQuery?.data?.length || "No"} Properties
+              Found
+            </Balancer>
           </h2>
           <div className={styles.innerContainer}>
             <h4>Sorting Result By:</h4>
@@ -86,11 +96,25 @@ function SearchResultsPage() {
           </div>
         </div>
         <div className={styles.right}>
-          {Array(10)
+          {/* {Array(10)
             .fill()
             .map((_, i) => (
               <SearchResultCard key={i} property={searchResult} />
-            ))}
+            ))} */}
+          {/* {propertiesQuery?.data?.map((property) => (
+            <SearchResultCard key={property._id} property={property} />
+          ))} */}
+          {propertiesQuery?.data?.map((property, idx) => {
+            return (
+              <Fragment key={idx}>
+                {property?.packages?.map((pkg, idx) => {
+                  return (
+                    <SearchResultCard key={idx} property={property} pkg={pkg} />
+                  );
+                })}
+              </Fragment>
+            );
+          })}
         </div>
       </main>
     </div>

@@ -48,7 +48,9 @@ function PropertyCard({ item }) {
         </div>
         <div className={styles.location}>
           <img src="/images/icons/location.svg" alt="location" />
-          <p>{item?.location || "unknown"}</p>
+          <p>
+          {item?.country}, {item?.city}
+          </p>
         </div>
         <p className={styles.description}>
           <Balancer>{item?.description || "no description"}</Balancer>

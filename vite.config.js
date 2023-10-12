@@ -14,7 +14,7 @@ export default defineConfig({
       "#api": "/src/api",
       "#data": "/src/data",
       "#hooks": "/src/hooks",
-      "#utilities": "/src/utilities",
+      "#utils": "/src/utils",
       "#contexts": "/src/contexts",
       "#redux": "/src/redux",
     },

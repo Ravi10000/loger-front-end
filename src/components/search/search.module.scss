@@ -7,6 +7,7 @@
     flex-direction: column;
     gap: 5px;
     .inputContainer {
+      position: relative;
       padding: 0 10px;
       background: #f2f6fa;
       border: 2px solid var(--main-brand-color);
@@ -30,6 +31,10 @@
         outline: transparent;
       }
     }
+    label {
+      display: flex;
+      align-items: center;
+    }
     .dates {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -52,6 +57,32 @@
     padding: 20px 20px;
     border: 2px solid var(--main-brand-color);
     border-radius: 10px;
+  }
+}
+
+.searchOptions {
+  background: #f9fbfc;
+  position: absolute;
+  bottom: 0;
+  transform: translateY(calc(100% + 5px));
+  max-height: 400px;
+  left: 0;
+  border-radius: 10px;
+  padding-block: 10px;
+  width: 100%;
+  overflow-y: auto;
+  color: var(--text-color);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  li {
+    padding: 10px 10px;
+    // border: 1px solid var(--main-brand-color);
+    &:hover {
+      background: #eaf3fe;
+    }
   }
 }
 

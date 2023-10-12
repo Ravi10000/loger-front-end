@@ -1,22 +1,19 @@
 import styles from "./App.module.scss";
 import { Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import Header from "#components/header/header";
-import Footer from "#components/footer/footer";
-import { useAuthWindow } from "#contexts/auth-window.context";
-import SigninWindow from "#components/signin-window/signin-window";
-import SignupWindow from "#components/signup-window/signup-window";
 
-import LoadingPage from "#pages/loading/loading";
-import ScrollTop from "#hooks/scroll-to-top";
-import { useReviewWindow } from "#contexts/review-window.context";
-import ReviewPopup from "#components/review-popup/review-popup";
-import FlashGroup from "#components/flash-group/flash-group";
 import { connect } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserDetails } from "#api/auth.req";
 import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
-import { getAuthToken, removeAuthToken } from "./api";
+
+import Header from "#components/header/header";
+import Footer from "#components/footer/footer";
+import LoadingPage from "#pages/loading/loading";
+import ScrollTop from "#hooks/scroll-to-top";
+import AuthWindow from "#components/auth-window";
+import ReviewPopup from "#components/review-popup/review-popup";
+import FlashGroup from "#components/flash-group/flash-group";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -56,14 +53,12 @@ const BookingDetailsPage = lazy(() =>
 );
 
 function App({ setCurrentUser, clearIsFetching }) {
+  console.count("render... <App />");
   const { pathname } = useLocation();
   const isAuthRoute = pathname.includes("/auth");
-  const { authWindow } = useAuthWindow();
-  const { isReviewWindowOpen } = useReviewWindow();
 
   const userQuery = useQuery({
     queryKey: ["user"],
-    enabled: getAuthToken() ? true : false,
     queryFn: async () => {
       const { data } = await fetchUserDetails();
       setCurrentUser(data.user);
@@ -71,49 +66,16 @@ function App({ setCurrentUser, clearIsFetching }) {
     },
   });
   useEffect(() => {
-    if (userQuery.isError) {
-      clearIsFetching();
-      // removeAuthToken();
-    }
+    if (userQuery.isError) clearIsFetching();
   }, [userQuery]);
-
-  // useEffect(() => {
-  //   if (userQuery?.isError) {
-  //     clearIsFetching();
-  //     setCurrentUser(null);
-  //   } else if (userQuery?.isSuccess) {
-  //     console.log("user query");
-  //     setCurrentUser(userQuery.data);
-  //   }
-  // }, []);
 
   return (
     <div className={styles.App}>
       <ScrollTop />
-      {/* <FlashGroup
-        flashList={[
-          {
-            type: "success",
-            message: "Hello",
-          },
-          {
-            type: "error",
-            message: "Hello",
-          },
-          {
-            type: "warning",
-            message: "Hello",
-          },
-          {
-            type: "info",
-            message: "Hello",
-          },
-        ]}
-      /> */}
+
       <FlashGroup />
-      {isReviewWindowOpen && <ReviewPopup />}
-      {authWindow === "signin" && <SigninWindow />}
-      {authWindow === "signup" && <SignupWindow />}
+      <ReviewPopup />
+      <AuthWindow />
       {!isAuthRoute && <Header />}
 
       <div className={styles.page}>
