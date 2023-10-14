@@ -2,7 +2,7 @@ import styles from "./hero.module.scss";
 import Search from "#components/search/search";
 import { Balancer } from "react-wrap-balancer";
 
-function HeroSection({ small, state }) {
+function HeroSection({ small }) {
   return (
     <div className={`${styles.heroSection} ${small && styles.small}`}>
       <div className={styles.container}>
@@ -14,7 +14,7 @@ function HeroSection({ small, state }) {
             </Balancer>
           </p>
         </div>
-        <Search state={state} />
+        <Search />
       </div>
     </div>
   );

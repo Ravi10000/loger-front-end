@@ -35,7 +35,7 @@ function Reviews() {
                 </p>
                 <div className={styles.stars}>
                   {[...Array(5)].map((_, i) => (
-                    <RiStarFill className={styles.star} />
+                    <RiStarFill key={i} className={styles.star} />
                   ))}
                 </div>
               </div>
@@ -43,6 +43,7 @@ function Reviews() {
           </div>
           <div className={styles.ratingGraph}>
             <RatingBar
+              key="5-stars"
               ratingDetails={{
                 count: 45,
                 totalCount: 100,
@@ -52,6 +53,7 @@ function Reviews() {
               }}
             />
             <RatingBar
+              key="4-stars"
               ratingDetails={{
                 count: 25,
                 totalCount: 100,
@@ -61,6 +63,7 @@ function Reviews() {
               }}
             />
             <RatingBar
+              key="3-stars"
               ratingDetails={{
                 count: 15,
                 totalCount: 100,
@@ -70,6 +73,7 @@ function Reviews() {
               }}
             />
             <RatingBar
+              key="2-stars"
               ratingDetails={{
                 count: 10,
                 totalCount: 100,
@@ -79,6 +83,7 @@ function Reviews() {
               }}
             />
             <RatingBar
+              key="1-stars"
               ratingDetails={{
                 count: "05",
                 totalCount: 100,
@@ -133,10 +138,10 @@ function Reviews() {
           <CustomButton fit>View All</CustomButton>
         </div>
         <div className={styles.userReviews}>
-          <UserReviewCard />
-          <UserReviewCard />
-          <UserReviewCard />
-          <UserReviewCard />
+          <UserReviewCard key="1"/>
+          <UserReviewCard key="2"/>
+          <UserReviewCard key="3"/>
+          <UserReviewCard key="4"/>
         </div>
         <div className={styles.reviewNav}>
           <div
@@ -150,6 +155,7 @@ function Reviews() {
           <div className={styles.pages}>
             {[...Array(5)].map((_, i) => (
               <p
+              key={i}
                 className={`${styles.page} ${
                   currentUserReviewPage === i + 1 ? styles.active : ""
                 }`}

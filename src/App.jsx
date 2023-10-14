@@ -90,7 +90,7 @@ function App({ setCurrentUser, clearIsFetching }) {
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
             <Route path="/search-results" element={<SearchResultsPage />} />
-            <Route path="/property" element={<PropertyPage />} />
+            <Route path="/property/:propertyId" element={<PropertyPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />

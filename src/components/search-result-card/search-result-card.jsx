@@ -3,24 +3,32 @@ import { useMemo, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Balancer } from "react-wrap-balancer";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { RiStarFill } from "react-icons/ri";
+import { RiStarFill, RiUser4Fill } from "react-icons/ri";
 import CustomButton from "#components/custom-button/custom-button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import findUniqueObjects from "#utils/find-unique-objects";
+import { IoIosMore } from "react-icons/io";
 
 function SearchResultCard({ property, pkg }) {
   console.log({ property });
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const checkIn = searchParams.get("checkIn");
+  const checkOut = searchParams.get("checkOut");
+  const location = searchParams.get("location");
+  const roomsCount = parseInt(searchParams.get("noOfRooms"));
+  const adultsCount = parseInt(searchParams.get("noOfAdults"));
+  // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
 
   const rooms = useMemo(
     () => findUniqueObjects(pkg?.rooms, "name"),
     [pkg?.rooms]
   );
-  const roomsCount = useMemo(
-    () => rooms?.reduce((acc, room) => acc + room.roomCount, 0),
-    [rooms]
-  );
+  // const roomsCount = useMemo(
+  //   () => rooms?.reduce((acc, room) => acc + room.roomCount, 0),
+  //   [rooms]
+  // );
   return (
     <div className={styles.searchResultCard}>
       <div className={styles.imageContainer}>
@@ -58,16 +66,32 @@ function SearchResultCard({ property, pkg }) {
           </div>
           <div className={styles.description}>
             <h4>Description</h4>
-            <p>{property?.description}</p>
+            <p>
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry Read More...
+            </p>
           </div>
           <div className={styles.rooms}>
-            <h3>
+            {/* <h4>
+              <span>
+                <span>
+                  <RiUser4Fill /> Capacity :
+                </span>
+                {adultsCount}
+              </span>
+            </h4> */}
+            <h4>
               {roomsCount > 1 ? `${roomsCount} Rooms` : `${roomsCount} Room`}
-            </h3>
+            </h4>
             <ul>
               {rooms?.map((room) => (
-                <li key={room.name}>
-                  {room.roomCount} &times; {room.name}
+                <li key={room.name} className={styles.room}>
+                  {room.roomCount} &times; {room.name} &nbsp;
+                  {Array(room.capacity)
+                    .fill()
+                    .map((_, i) => (
+                      <RiUser4Fill key={i} />
+                    ))}
                 </li>
               ))}
             </ul>
@@ -76,11 +100,26 @@ function SearchResultCard({ property, pkg }) {
           <div className={styles.services}>
             <h4>Services</h4>
             <div className={styles.servicesGroup}>
-              <img src="/images/services-icons/bed.svg" alt="" />
-              <img src="/images/services-icons/pool.svg" alt="" />
-              <img src="/images/services-icons/wifi.svg" alt="" />
-              <img src="/images/services-icons/plane.svg" alt="" />
-              <img src="/images/services-icons/phone.svg" alt="" />
+              {property?.facilities?.map((facility, idx) => {
+                if (idx > 5) return null;
+                return (
+                  <img
+                    key={facility._id}
+                    src={`${import.meta.env.VITE_SERVER_URL}/images/${
+                      facility?.image
+                    }`}
+                  />
+                );
+              })}{" "}
+              {property?.facilities?.length > 5 && (
+                <IoIosMore
+                  style={{
+                    fontSize: "2rem",
+                    marginLeft: "-20px",
+                    color: "gray",
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -105,7 +144,13 @@ function SearchResultCard({ property, pkg }) {
             <p>₹ 100 taxes and charges</p>
           </div>
           <div className={styles.btnContainer}>
-            <CustomButton onClick={() => navigate("/property")}>
+            <CustomButton
+              onClick={() =>
+                navigate(
+                  `/property/${property?._id}?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}`
+                )
+              }
+            >
               Check Availabilities
             </CustomButton>
           </div>

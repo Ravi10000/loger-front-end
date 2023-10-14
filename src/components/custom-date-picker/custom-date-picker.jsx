@@ -12,7 +12,7 @@ function CustomDatePicker({ label, date, setDate }) {
   let maxDate = new Date();
   maxDate.setDate(now.getDate() + 365);
   const datePickerProps = {
-    ...(date && { value: Date.parse(date) }),
+    // ...(date && { value: Date.parse(date) }),
   };
   return (
     <div className={styles.datePickerContainer}>

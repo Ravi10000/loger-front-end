@@ -1,7 +1,7 @@
 import styles from "./property.page.module.scss";
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Fragment, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Balancer } from "react-wrap-balancer";
 
 import { PiArrowLeftBold } from "react-icons/pi";
@@ -16,6 +16,8 @@ import RoomCard from "#components/room-card/room-card";
 import { roomDetail } from "#data/room.data";
 import { HashLink } from "react-router-hash-link";
 import Reviews from "#components/reviews/reviews";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProperty } from "#api/properties.req";
 
 const gridFooterOptions = [
   "Overview",
@@ -30,6 +32,32 @@ function PropertyPage() {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
   const [isSaved, setIsSaved] = useState(false);
+  const { propertyId } = useParams();
+  console.log({ propertyId });
+
+  const propertyQuery = useQuery({
+    queryKey: ["property", propertyId],
+    enabled: !!propertyId,
+    queryFn: async () => {
+      try {
+        const res = await fetchProperty(propertyId);
+        console.log({ res });
+        return res?.data || {};
+      } catch (err) {
+        console.error({ err: err.response.data });
+      }
+    },
+  });
+
+  const property = propertyQuery?.data?.property;
+  const rooms = propertyQuery?.data?.rooms;
+  console.log({ rooms });
+  console.log({ property });
+  const isError = propertyQuery.isError;
+  const isLoading = propertyQuery.isLoading;
+  const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
+  // const [foundMainPhoto, setFoundMainPhoto] = useState(false);
+  let foundMainPhoto = false;
 
   return (
     <div className={styles.propertyPage}>
@@ -68,7 +96,73 @@ function PropertyPage() {
           </div>
         </div>
         <div className={styles.imageGrid}>
-          <div
+          {!isLoading && !isError && (
+            <>
+              <div
+                key={mainPhoto?._id}
+                style={{
+                  background: `url("${import.meta.env.VITE_SERVER_URL}/images/${
+                    mainPhoto?.photoUrl
+                  }")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+              {property?.photos?.map((photo, idx) => {
+                if (photo?.isMain) {
+                  foundMainPhoto = true;
+                  return <Fragment key="mainPhotoSkipped"></Fragment>;
+                }
+
+                if (foundMainPhoto && idx > 6)
+                  return <Fragment key={photo?._id}></Fragment>;
+
+                if (!foundMainPhoto && idx > 5)
+                  return <Fragment key={photo?._id}></Fragment>;
+
+                return (
+                  <div
+                    key={photo?._id}
+                    style={{
+                      background: `url("${
+                        import.meta.env.VITE_SERVER_URL
+                      }/images/${photo?.photoUrl}")`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                );
+              })}
+              {property?.photos?.length - 8 > 0 &&
+              property?.photos?.length - 8 > 1 ? (
+                <div
+                  key="rest of the photos"
+                  style={{
+                    background: `linear-gradient(to bottom, #1c1c1e84, #1c1c1e84),
+            url("/images/property/seven.png")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <h4>+{property?.photos?.length - 8} photos</h4>
+                </div>
+              ) : (
+                <div
+                  key="last photo"
+                  style={{
+                    background: `url("${
+                      import.meta.env.VITE_SERVER_URL
+                    }/images/${
+                      property?.photos?.[property?.photos?.length - 1]?.photoUrl
+                    }")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                ></div>
+              )}
+            </>
+          )}
+          {/* <div
             style={{
               background: `url("/images/property/one.png")`,
               backgroundSize: "cover",
@@ -127,7 +221,7 @@ function PropertyPage() {
             }}
           >
             <h4>+20 photos</h4>
-          </div>
+          </div> */}
         </div>
         <div className={styles.gridFooter}>
           <div className={styles.navigation}>
@@ -155,7 +249,7 @@ function PropertyPage() {
         <div className={styles.details}>
           <div className={styles.title}>
             <h2>
-              <Balancer>Tirath View, Haridwar - A Four Star Luxury</Balancer>
+              <Balancer>{property?.propertyName}</Balancer>
             </h2>
             <p>
               <Balancer>
@@ -199,6 +293,19 @@ function PropertyPage() {
           </p>
           <div className={styles.services}>
             <div className={styles.highlights}>
+              {property?.facilities?.map((facility) => (
+                <div className={styles.service} key={facility?._id}>
+                  <img
+                    src={`${import.meta.env.VITE_SERVER_URL}/images/${
+                      facility?.image
+                    }`}
+                    alt={facility?.name}
+                  />
+                  <p>{facility?.name}</p>
+                </div>
+              ))}
+            </div>
+            {/* <div className={styles.highlights}>
               <div className={styles.service}>
                 <img src="/images/highlight-icons/bed.svg" alt="" />
                 <p>Luxury Bed</p>
@@ -239,7 +346,7 @@ function PropertyPage() {
                 <img src="/images/highlight-icons/parking.svg" alt="" />
                 <p>Free Parking</p>
               </div>
-            </div>
+            </div> */}
             <div className={styles.list}>
               <h4>Main Amenities</h4>
               <ul>
@@ -282,10 +389,7 @@ function PropertyPage() {
               <div className={styles.address}>
                 <FaLocationDot className={styles.icon} />
                 <p className={styles.addressText}>
-                  <Balancer>
-                    Mahipal Khandari, near Ramaya Inn, Haridwar, Pin
-                    Code:249410, Haridwar, India
-                  </Balancer>
+                  <Balancer>{property?.address}</Balancer>
                 </p>
               </div>
             </div>
@@ -328,11 +432,14 @@ function PropertyPage() {
             <p className={styles.link}>View All</p>
           </div>
           <div className={styles.availableRoomsGroup} id="reserve-room">
-            {Array(4)
+            {/* {Array(4)
               .fill()
               .map((_, i) => (
                 <RoomCard key={i} room={roomDetail} />
-              ))}
+              ))} */}
+            {rooms?.map((room) => (
+              <RoomCard key={room._id} room={room} />
+            ))}
           </div>
         </div>
       </div>

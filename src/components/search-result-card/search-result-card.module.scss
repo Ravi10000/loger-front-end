@@ -2,7 +2,6 @@
   border-radius: 15px;
   overflow: hidden;
   background: #f2f6fa;
-  // cursor: pointer;
 
   .imageContainer {
     width: 100%;
@@ -69,7 +68,8 @@
       content: "";
       width: 200px;
       height: 2px;
-      background: #e9e9eb;
+      // background: #e9e9eb;
+      background: #b2b8bd;
     }
     .amount {
       font-size: 2.5rem;
@@ -101,14 +101,18 @@
   ul {
     list-style: none;
     text-transform: capitalize;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
   }
   h3 {
     font-size: 1.3rem;
     font-weight: 600;
   }
-  // li{
-  //   padding-left: 10px;
-  // }
 }
 
 @media (min-width: 768px) {
@@ -124,7 +128,7 @@
         height: 75%;
         top: 50%;
         transform: translateY(-50%);
-        width: 2px;
+        width: 1px;
       }
     }
     .imageContainer {

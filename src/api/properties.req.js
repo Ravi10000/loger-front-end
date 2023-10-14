@@ -19,3 +19,5 @@ export const searchProperties = ({
 
 export const getValidSearchOptions = (queryText) =>
   api.get(`/properties/options?queryText=${queryText}`);
+
+export const fetchProperty = (id) => api.get(`/properties/${id}`);

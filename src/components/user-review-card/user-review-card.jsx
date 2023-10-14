@@ -13,7 +13,7 @@ function UserReviewCard({ review }) {
         </div>
         <div className={styles.stars}>
           {[...Array(5)].map((_, i) => (
-            <RiStarFill className={styles.star} />
+            <RiStarFill key={i} className={styles.star} />
           ))}
         </div>
       </div>

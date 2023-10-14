@@ -7,18 +7,26 @@ import FilterSidebar, {
   FilterGroup,
 } from "#components/filter-sidebar/filter-sidebar";
 import { filterOptions } from "#data/filter-options.data";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { BsFilter } from "react-icons/bs";
-import { searchResult } from "#data/search-results-data";
 import SearchResultCard from "#components/search-result-card/search-result-card";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { searchProperties } from "#api/properties.req";
 
 function SearchResultsPage() {
-  const {
-    state: { checkIn, checkOut, location, noOfRooms, noOfAdults, noOfChildren },
-  } = useLocation();
+  // const {
+  //   state: { checkIn, checkOut, location, noOfRooms, noOfAdults, noOfChildren },
+  // } = useLocation();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const checkIn = searchParams.get("checkIn");
+  const checkOut = searchParams.get("checkOut");
+  const location = searchParams.get("location");
+  const noOfRooms = parseInt(searchParams.get("noOfRooms"));
+  const noOfAdults = parseInt(searchParams.get("noOfAdults"));
+  // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
+
   const propertiesQuery = useQuery({
     queryKey: ["products", "search"],
     queryFn: async () => {
@@ -34,19 +42,24 @@ function SearchResultsPage() {
     },
   });
 
+  useEffect(() => {
+    // queryClient.invalidateQueries(["products", "search"]);
+    propertiesQuery.refetch();
+  }, [searchParams]);
+
   const [showSidebar, setShowSidebar] = useState(false);
   return (
     <div className={styles.searchResultsPage}>
       <HeroSection
         small
-        state={{
-          checkIn,
-          checkOut,
-          location,
-          noOfRooms,
-          noOfAdults,
-          noOfChildren,
-        }}
+        // state={{
+        //   checkIn,
+        //   checkOut,
+        //   location,
+        //   noOfRooms,
+        //   noOfAdults,
+        //   noOfChildren,
+        // }}
       />
       <div className={styles.searchPath}>
         <div className={styles.searchPathTerm}>
@@ -104,17 +117,38 @@ function SearchResultsPage() {
           {/* {propertiesQuery?.data?.map((property) => (
             <SearchResultCard key={property._id} property={property} />
           ))} */}
-          {propertiesQuery?.data?.map((property, idx) => {
-            return (
-              <Fragment key={idx}>
-                {property?.packages?.map((pkg, idx) => {
-                  return (
-                    <SearchResultCard key={idx} property={property} pkg={pkg} />
-                  );
-                })}
-              </Fragment>
-            );
-          })}
+
+          {/* <div className={styles.loaderContainer}>
+            <span className={styles.loader}></span>
+          </div> */}
+
+          {propertiesQuery?.isLoading ? (
+            <div className={styles.loaderContainer}>
+              <span className={styles.loader}></span>
+            </div>
+          ) : propertiesQuery?.isError ? (
+            <div className={styles.loaderContainer}>
+              <p>Erros occured while fetching properties, please try again.</p>
+            </div>
+          ) : (
+            propertiesQuery?.data?.map((property, idx) => {
+              return (
+                <Fragment key={idx}>
+                  {property?.packages?.map((pkg, idx) => {
+                    return (
+                      <SearchResultCard
+                        key={idx}
+                        property={property}
+                        pkg={pkg}
+                        roomsCount={noOfRooms}
+                        adultsCount={noOfAdults}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
+            })
+          )}
         </div>
       </main>
     </div>
