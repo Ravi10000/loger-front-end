@@ -431,9 +431,12 @@
     }
     .coloredContainer {
       .availableRoomsGroup {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        place-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        // display: grid;
+        // grid-template-columns: repeat(2, 1fr);
+        // place-items: center;
       }
     }
   }

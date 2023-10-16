@@ -17,6 +17,9 @@ export const searchProperties = ({
     }${noOfAdults ? `&noOfAdults=${noOfAdults}` : ""}`
   );
 
+export const filterProperties = (filterOptions) =>
+  api.post(`/properties/filter`, filterOptions);
+
 export const getValidSearchOptions = (queryText) =>
   api.get(`/properties/options?queryText=${queryText}`);
 

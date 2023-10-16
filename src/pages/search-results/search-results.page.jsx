@@ -12,7 +12,7 @@ import { BsFilter } from "react-icons/bs";
 import SearchResultCard from "#components/search-result-card/search-result-card";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { searchProperties } from "#api/properties.req";
+import { filterProperties, searchProperties } from "#api/properties.req";
 
 function SearchResultsPage() {
   // const {
@@ -25,19 +25,41 @@ function SearchResultsPage() {
   const location = searchParams.get("location");
   const noOfRooms = parseInt(searchParams.get("noOfRooms"));
   const noOfAdults = parseInt(searchParams.get("noOfAdults"));
-  // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
+  const price = searchParams.get("price")
+    ? JSON.parse(searchParams.get("price"))
+    : null;
+  const facilities = searchParams.get("facilities")
+    ? JSON.parse(searchParams.get("facilities"))
+    : null;
+  const propertyTypes = searchParams.get("propertyTypes")
+    ? JSON.parse(searchParams.get("propertyTypes"))
+    : null;
+  console.log({ price, facilities, propertyTypes });
 
   const propertiesQuery = useQuery({
     queryKey: ["products", "search"],
     queryFn: async () => {
-      const res = await searchProperties({
+      let res = {};
+      if (!price && !facilities && !propertyTypes) {
+        res = await searchProperties({
+          queryText: location,
+          checkIn,
+          checkOut,
+          noOfRooms,
+          noOfAdults,
+        });
+      }
+      res = await filterProperties({
         queryText: location,
         checkIn,
         checkOut,
         noOfRooms,
         noOfAdults,
+        ...(price && { price }),
+        ...(facilities && { facilities }),
+        ...(propertyTypes && { propertyTypes }),
       });
-      console.log({ properties: res.data.properties });
+      console.log({ properties: res?.data?.properties });
       return res?.data?.properties;
     },
   });

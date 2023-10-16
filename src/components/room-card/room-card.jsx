@@ -6,11 +6,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PiWarningCircle } from "react-icons/pi";
 
+// const photos = [
+//   "/images/property/one.png",
+//   "/images/property/seven.png",
+//   "/images/property/three.png",
+//   "/images/property/four.png",
+//   "/images/property/five.png",
+// ];
+
 function RoomCard({ room, booking }) {
   const navigate = useNavigate();
+  const photos = room.photos;
   const [currentImage, setCurrentImage] = useState(0);
   const nextImage = () => {
-    if (currentImage < room?.images?.length - 1) {
+    if (currentImage < photos?.length - 1) {
       setCurrentImage(currentImage + 1);
     } else {
       setCurrentImage(0);
@@ -20,14 +29,14 @@ function RoomCard({ room, booking }) {
     if (currentImage > 0) {
       setCurrentImage(currentImage - 1);
     } else {
-      setCurrentImage(room?.images?.length - 1);
+      setCurrentImage(photos?.length - 1);
     }
   };
   return (
     <div className={styles.roomCard}>
       <div className={styles.imageCarousel}>
         <p className={styles.label}>Popular Among Rooms</p>
-        <img src={room?.images?.[currentImage]} alt="room" />
+        <img src={import.meta.env.VITE_SERVER_URL + "/images/" + photos?.[currentImage]?.photoUrl} alt="room" />
         <div className={styles.backdrop}>
           <div className={styles.carouselNavigator}>
             <HiOutlineChevronRight
@@ -35,7 +44,7 @@ function RoomCard({ room, booking }) {
               onClick={prevImage}
             />
             <p>
-              {currentImage + 1} / {room?.images?.length}
+              {currentImage + 1} / {photos?.length}
             </p>
             <HiOutlineChevronRight
               className={styles.arrow}
@@ -52,11 +61,19 @@ function RoomCard({ room, booking }) {
         <div className={styles.features}>
           <div className={styles.feature}>
             <img src="/images/room-icons/size.svg" alt="size" />
-            <p>{room?.size}</p>
+            <p>{room?.roomSize}</p>
           </div>
           <div className={styles.feature}>
             <img src="/images/highlight-icons/bed.svg" alt="beds" />
-            <p>{room?.beds}</p>
+            <p>
+              {room?.singleBedCount} Single Bed
+              {room?.singleBedCount > 1 ? "s" : ""},
+              {room?.doubleBedCount
+                ? `${room?.doubleBedCount} Double Bed${
+                    room?.doubleBedCount > 1 ? "s" : ""
+                  }`
+                : ""}
+            </p>
           </div>
           <div className={styles.feature}>
             <img src="/images/room-icons/view.svg" alt="view" />
@@ -64,7 +81,7 @@ function RoomCard({ room, booking }) {
           </div>
           <div className={styles.feature}>
             <img src="/images/room-icons/users.svg" alt="users" />
-            <p>{room?.capacity}</p>
+            <p>Capacity - {room?.capacity}</p>
           </div>
           <div className={styles.feature}>
             <img src="/images/highlight-icons/parking.svg" alt="parking" />

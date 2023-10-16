@@ -27,6 +27,11 @@
   width: 100%;
   max-width: 450px;
   .filterGroup {
+    &:last-child {
+      &::after {
+        display: none;
+      }
+    }
     &::after {
       content: "";
       left: 0;

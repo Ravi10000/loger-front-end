@@ -2,13 +2,29 @@ import styles from "./filter-option.module.scss";
 import { useState } from "react";
 import { BiCheck, BiRupee } from "react-icons/bi";
 
-function FilterOption({ title = "", count = 0, isPrice = false }) {
-  const [checked, setChecked] = useState(false);
+function FilterOption({
+  title = "",
+  count = 0,
+  isPrice = false,
+  list = false,
+  checked,
+  setValue,
+  value,
+}) {
+  // const [checked, setChecked] = useState(false);
   return (
     <div
       className={styles.option}
       onClick={() => {
-        setChecked((prevState) => !prevState);
+        setValue((prevValue) => {
+          if (list) {
+            if (prevValue?.includes(value))
+              return prevValue?.filter((val) => val !== value);
+            else return [...prevValue, value];
+          }
+          if (prevValue?.min === value?.min) return null;
+          else return value;
+        });
       }}
     >
       <div
