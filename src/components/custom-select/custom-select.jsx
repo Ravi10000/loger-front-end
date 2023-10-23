@@ -17,6 +17,14 @@ function CustomSelect({ selected, setSelected, list, onCountChange }) {
       </div>
       {showOptions && (
         <ul className={styles.options}>
+          <li
+            key={0}
+            onClick={() => {
+              onCountChange(0);
+            }}
+          >
+            0
+          </li>
           {list.map((item) => (
             <li
               onClick={() => {

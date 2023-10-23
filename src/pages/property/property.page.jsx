@@ -1,7 +1,12 @@
 import styles from "./property.page.module.scss";
 
 import { Fragment, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Balancer } from "react-wrap-balancer";
 
 import { PiArrowLeftBold } from "react-icons/pi";
@@ -18,6 +23,7 @@ import { HashLink } from "react-router-hash-link";
 import Reviews from "#components/reviews/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProperty } from "#api/properties.req";
+import { Link } from "react-router-dom";
 
 const gridFooterOptions = [
   "Overview",
@@ -47,20 +53,14 @@ function PropertyPage() {
 
     return details;
   });
-
-  useEffect(() => {
-    let price = 0;
-    Object.values(pkgDetails).forEach((room) => {
-      price += room.count * room.discountedPrice;
-    });
-    setTotalPrice(price);
-  }, [pkgDetails]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentUrlParams = searchParams.toString();
+  const { propertyId } = useParams();
+  console.log({ propertyId, currentUrlParams });
 
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
   const [isSaved, setIsSaved] = useState(false);
-  const { propertyId } = useParams();
-  console.log({ propertyId });
 
   const propertyQuery = useQuery({
     queryKey: ["property", propertyId],
@@ -85,6 +85,14 @@ function PropertyPage() {
   const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
   // const [foundMainPhoto, setFoundMainPhoto] = useState(false);
   let foundMainPhoto = false;
+
+  useEffect(() => {
+    let price = 0;
+    Object.values(pkgDetails).forEach((room) => {
+      price += room.count * room.discountedPrice;
+    });
+    setTotalPrice(price);
+  }, [pkgDetails]);
 
   return (
     <div className={styles.propertyPage}>
@@ -206,9 +214,13 @@ function PropertyPage() {
           </div>
           <div className={styles.right}>
             <p>7 days left</p>
-            <HashLink to="/property/#reserve-room">
+            {/* <HashLink
+              to={`/property/${propertyId}?${currentUrlParams}/#reserve-room`}
+            > */}
+            <Link to="/checkout">
               <CustomButton fit>Book Now</CustomButton>
-            </HashLink>
+            </Link>
+            {/* </HashLink> */}
           </div>
         </div>
       </div>

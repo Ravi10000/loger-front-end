@@ -14,6 +14,7 @@ import ScrollTop from "#hooks/scroll-to-top";
 import AuthWindow from "#components/auth-window";
 import ReviewPopup from "#components/review-popup/review-popup";
 import FlashGroup from "#components/flash-group/flash-group";
+import ScrollToTop from "#components/scrollToTop";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -71,7 +72,7 @@ function App({ setCurrentUser, clearIsFetching }) {
 
   return (
     <div className={styles.App}>
-      <ScrollTop />
+      <ScrollToTop />
 
       <FlashGroup />
       <ReviewPopup />
