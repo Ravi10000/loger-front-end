@@ -8,13 +8,16 @@ export const searchProperties = ({
   checkOut,
   noOfRooms,
   noOfAdults,
+  propertyId,
 }) =>
   api.get(
-    `/properties/search?queryText=${queryText}${
-      checkIn ? `&checkIn=${checkIn}` : ""
-    }${checkOut ? `&checkOut=${checkOut}` : ""}${
-      noOfRooms ? `&noOfRooms=${noOfRooms}` : ""
-    }${noOfAdults ? `&noOfAdults=${noOfAdults}` : ""}`
+    `/properties/search${
+      propertyId ? "/" + propertyId : ""
+    }?queryText=${queryText}${checkIn ? `&checkIn=${checkIn}` : ""}${
+      checkOut ? `&checkOut=${checkOut}` : ""
+    }${noOfRooms ? `&noOfRooms=${noOfRooms}` : ""}${
+      noOfAdults ? `&noOfAdults=${noOfAdults}` : ""
+    }`
   );
 
 export const filterProperties = (filterOptions) =>

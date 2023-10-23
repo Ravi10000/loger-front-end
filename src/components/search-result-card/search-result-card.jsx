@@ -8,6 +8,7 @@ import CustomButton from "#components/custom-button/custom-button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import findUniqueObjects from "#utils/find-unique-objects";
 import { IoIosMore } from "react-icons/io";
+import { useFilter } from "#hooks/use-filter";
 
 function SearchResultCard({ property, pkg }) {
   console.log({ property });
@@ -19,16 +20,14 @@ function SearchResultCard({ property, pkg }) {
   const location = searchParams.get("location");
   const roomsCount = parseInt(searchParams.get("noOfRooms"));
   const adultsCount = parseInt(searchParams.get("noOfAdults"));
+
   // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
 
   const rooms = useMemo(
     () => findUniqueObjects(pkg?.rooms, "name"),
     [pkg?.rooms]
   );
-  // const roomsCount = useMemo(
-  //   () => rooms?.reduce((acc, room) => acc + room.roomCount, 0),
-  //   [rooms]
-  // );
+
   return (
     <div className={styles.searchResultCard}>
       <div className={styles.imageContainer}>
@@ -101,7 +100,7 @@ function SearchResultCard({ property, pkg }) {
             <h4>Services</h4>
             <div className={styles.servicesGroup}>
               {property?.facilities?.map((facility, idx) => {
-                if (idx > 5) return null;
+                if (idx > 3) return null;
                 return (
                   <img
                     key={facility._id}
@@ -111,7 +110,7 @@ function SearchResultCard({ property, pkg }) {
                   />
                 );
               })}{" "}
-              {property?.facilities?.length > 5 && (
+              {property?.facilities?.length > 3 && (
                 <IoIosMore
                   style={{
                     fontSize: "2rem",
@@ -147,7 +146,8 @@ function SearchResultCard({ property, pkg }) {
             <CustomButton
               onClick={() =>
                 navigate(
-                  `/property/${property?._id}?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}`
+                  `/property/${property?._id}?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}`,
+                  { state: { pkg } }
                 )
               }
             >

@@ -1,0 +1,36 @@
+.customSelect {
+  // border: 1px solid black;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  user-select: none;
+  padding: 5px 10px;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  //   overflow: visible;
+  .selected {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    .icon {
+      transition: 0.2s ease-in-out;
+      &.rotate {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  .options {
+    padding: 20px 0;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow: scroll;
+    width: 100%;
+    list-style: none;
+    background: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    transform: translateY(100%);
+    height: fit-content;
+  }
+}

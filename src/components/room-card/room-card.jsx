@@ -5,6 +5,7 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PiWarningCircle } from "react-icons/pi";
+import CustomSelect from "#components/custom-select/custom-select";
 
 // const photos = [
 //   "/images/property/one.png",
@@ -14,8 +15,17 @@ import { PiWarningCircle } from "react-icons/pi";
 //   "/images/property/five.png",
 // ];
 
-function RoomCard({ room, booking }) {
-  const navigate = useNavigate();
+function RoomCard({
+  room,
+  booking,
+  property,
+  count,
+  totalCount,
+  pkgDetails,
+  setPkgDetails,
+}) {
+  let roomCount = pkgDetails?.[room.roomName]?.count || 0;
+
   const photos = room.photos;
   const [currentImage, setCurrentImage] = useState(0);
   const nextImage = () => {
@@ -36,7 +46,14 @@ function RoomCard({ room, booking }) {
     <div className={styles.roomCard}>
       <div className={styles.imageCarousel}>
         <p className={styles.label}>Popular Among Rooms</p>
-        <img src={import.meta.env.VITE_SERVER_URL + "/images/" + photos?.[currentImage]?.photoUrl} alt="room" />
+        <img
+          src={
+            import.meta.env.VITE_SERVER_URL +
+            "/images/" +
+            photos?.[currentImage]?.photoUrl
+          }
+          alt="room"
+        />
         <div className={styles.backdrop}>
           <div className={styles.carouselNavigator}>
             <HiOutlineChevronRight
@@ -55,7 +72,7 @@ function RoomCard({ room, booking }) {
       </div>
       <div className={styles.roomInfo}>
         <div className={styles.head}>
-          <h4>{room?.title}</h4>
+          <h4>{room?.roomName}</h4>
           <p>{room?.rating}</p>
         </div>
         <div className={styles.features}>
@@ -75,21 +92,25 @@ function RoomCard({ room, booking }) {
                 : ""}
             </p>
           </div>
-          <div className={styles.feature}>
+          {/* <div className={styles.feature}>
             <img src="/images/room-icons/view.svg" alt="view" />
             <p>{room?.view}</p>
-          </div>
+          </div> */}
           <div className={styles.feature}>
             <img src="/images/room-icons/users.svg" alt="users" />
             <p>Capacity - {room?.capacity}</p>
           </div>
           <div className={styles.feature}>
             <img src="/images/highlight-icons/parking.svg" alt="parking" />
-            <p>{room?.parking}</p>
+            <p>
+              {property?.parkingAvailable
+                ? "Parking Available"
+                : "Parking Not Available"}
+            </p>
           </div>
           <div className={styles.feature}>
             <img src="/images/room-icons/meal.svg" alt="meal" />
-            <p>{room?.meal}</p>
+            <p>{room?.breakfastIncluded ? "Included" : "Not Included"}</p>
           </div>
           <div className={`${styles.feature} ${styles.colored}`}>
             <img src="/images/room-icons/refund.svg" alt="refund" />
@@ -97,7 +118,7 @@ function RoomCard({ room, booking }) {
           </div>
           <div className={`${styles.feature} ${styles.colored} ${styles.lg}`}>
             <img src="/images/room-icons/plus.svg" alt="cancellation" />
-            <p>{room?.cancellation}</p>
+            <p>Free Cancellation before {room?.freeCancellationBefore} Days</p>
           </div>
         </div>
         <div className={styles.viewMore}>
@@ -107,7 +128,12 @@ function RoomCard({ room, booking }) {
 
         {!booking ? (
           <>
-            <p className={styles.discount}>{room?.discount}</p>
+            <p className={styles.discount}>
+              {parseInt(
+                ((room?.price - room?.discountedPrice) / room?.price) * 100
+              ).toFixed(2)}
+              %
+            </p>
             <div className={styles.price}>
               <p className={styles.priceText}>&nbsp;₹ {room?.price} &nbsp;</p>
               <p className={styles.discountedPrice}>
@@ -118,9 +144,38 @@ function RoomCard({ room, booking }) {
               <p>Includes Taxes & Fees</p>
               <p>{room?.daysLeft}</p>
             </div>
-            <CustomButton onClick={() => navigate("/checkout")}>
+            <div className={styles.roomCount}>
+              <p>Rooms Selected:</p>
+              <CustomSelect
+                selected={roomCount}
+                onCountChange={(count) => {
+                  setPkgDetails((prevState) => {
+                    console.log("changeTo: ", {
+                      ...prevState,
+                      [room.roomName]: {
+                        price: room.price,
+                        count,
+                      },
+                    });
+                    return {
+                      ...prevState,
+                      [room.roomName]: {
+                        discountedPrice: room.discountedPrice,
+                        price: room.price,
+                        count,
+                      },
+                    };
+                  });
+                }}
+                // setPkgDetails={setPkgDetails}
+                list={Array(totalCount)
+                  .fill()
+                  .map((_, i) => i + 1)}
+              />
+            </div>
+            {/* <CustomButton onClick={() => navigate("/checkout")}>
               Reserve a Room
-            </CustomButton>
+            </CustomButton> */}
           </>
         ) : (
           <>

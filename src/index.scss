@@ -47,6 +47,9 @@ a {
   color: var(--text-color);
   text-decoration: none;
 }
+.__capitalize {
+  text-transform: capitalize;
+}
 
 ._form_logo {
   height: 100px;
@@ -137,6 +140,11 @@ a {
   padding: 5px 20px;
   border-radius: 10px;
 }
+.react-calendar__tile.react-calendar__month-view__days__day {
+  &:disabled {
+    opacity: 0.5 !important;
+  }
+}
 
 .react-calendar__month-view__weekdays__weekday {
   font-weight: 600;
@@ -168,7 +176,6 @@ a {
     z-index: 100;
   }
 }
-// .react-calendar__month-view__days__day
 
 .react-calendar__month-view__days {
   border-radius: 5px;
@@ -194,5 +201,30 @@ a {
 
 html,
 body {
+  width: 100vw;
   overflow-x: hidden;
+}
+
+.loader {
+  width: 35px;
+  height: 35px;
+  border: 2px solid var(--main-brand-color);
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  animation: spin 0.5s linear forwards infinite;
+  &.white {
+    border-left-color: #fff;
+    border-bottom-color: #fff;
+  }
+  &.sm {
+    height: 20px;
+    width: 20px;
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }

@@ -13,6 +13,8 @@ import SearchResultCard from "#components/search-result-card/search-result-card"
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { filterProperties, searchProperties } from "#api/properties.req";
+import LoadingPage from "#pages/loading/loading";
+import { useFilter } from "#hooks/use-filter";
 
 function SearchResultsPage() {
   // const {
@@ -25,6 +27,11 @@ function SearchResultsPage() {
   const location = searchParams.get("location");
   const noOfRooms = parseInt(searchParams.get("noOfRooms"));
   const noOfAdults = parseInt(searchParams.get("noOfAdults"));
+  const propertyId = searchParams.get("propertyId");
+  console.log({ propertyId });
+  // const [price, setPrice] = useFilter(null, "price");
+  // const [facilities, setFacilities] = useFilter([], "facilities");
+  // const [propertyTypes, setPropertyTypes] = useFilter([], "propertyTypes");
   const price = searchParams.get("price")
     ? JSON.parse(searchParams.get("price"))
     : null;
@@ -40,13 +47,14 @@ function SearchResultsPage() {
     queryKey: ["products", "search"],
     queryFn: async () => {
       let res = {};
-      if (!price && !facilities && !propertyTypes) {
+      if (!price && !facilities?.length && !propertyTypes?.length) {
         res = await searchProperties({
           queryText: location,
           checkIn,
           checkOut,
           noOfRooms,
           noOfAdults,
+          ...(propertyId && { propertyId }),
         });
       }
       res = await filterProperties({
@@ -56,8 +64,8 @@ function SearchResultsPage() {
         noOfRooms,
         noOfAdults,
         ...(price && { price }),
-        ...(facilities && { facilities }),
-        ...(propertyTypes && { propertyTypes }),
+        ...(facilities?.length && { facilities }),
+        ...(propertyTypes?.length && { propertyTypes }),
       });
       console.log({ properties: res?.data?.properties });
       return res?.data?.properties;
@@ -65,38 +73,26 @@ function SearchResultsPage() {
   });
 
   useEffect(() => {
-    // queryClient.invalidateQueries(["products", "search"]);
     propertiesQuery.refetch();
   }, [searchParams]);
 
   const [showSidebar, setShowSidebar] = useState(false);
   return (
     <div className={styles.searchResultsPage}>
-      <HeroSection
-        small
-        // state={{
-        //   checkIn,
-        //   checkOut,
-        //   location,
-        //   noOfRooms,
-        //   noOfAdults,
-        //   noOfChildren,
-        // }}
-      />
+      <HeroSection small />
       <div className={styles.searchPath}>
         <div className={styles.searchPathTerm}>
           <p>Home</p>
+          {/* <RiArrowRightSLine className={styles.arrow} />
+          <p>India</p> */}
           <RiArrowRightSLine className={styles.arrow} />
-          <p>India</p>
-          <RiArrowRightSLine className={styles.arrow} />
-          <p>Uttarakhand</p>
-          {/* <RiArrowRightSLine className={styles.arrow} /> */}
+          <p className="__capitalize">{location}</p>
         </div>
         {/* <p>Hotels List - Style</p> */}
       </div>
       <div className={styles.sortingContainer}>
         <div className={styles.container}>
-          <h2 className={styles.resultsCount}>
+          <h2 className={`__capitalize ${styles.resultsCount}`}>
             <Balancer>
               {location}: {propertiesQuery?.data?.length || "No"} Properties
               Found
@@ -145,10 +141,11 @@ function SearchResultsPage() {
           </div> */}
 
           {propertiesQuery?.isLoading ? (
-            <div className={styles.loaderContainer}>
-              <span className={styles.loader}></span>
-            </div>
-          ) : propertiesQuery?.isError ? (
+            <LoadingPage />
+          ) : // <div className={styles.loaderContainer}>
+          //   <span className={styles.loader}></span>
+          // </div>
+          propertiesQuery?.isError ? (
             <div className={styles.loaderContainer}>
               <p>Erros occured while fetching properties, please try again.</p>
             </div>

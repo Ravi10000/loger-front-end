@@ -131,7 +131,7 @@ function Search() {
           }}
         />
         <button className={styles.searchBtn} onClick={handleSearch}>
-          Search
+          <p>Search</p>
         </button>
       </div>
     </div>

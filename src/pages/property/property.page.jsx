@@ -1,7 +1,7 @@
 import styles from "./property.page.module.scss";
 
-import { Fragment, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Fragment, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Balancer } from "react-wrap-balancer";
 
 import { PiArrowLeftBold } from "react-icons/pi";
@@ -29,6 +29,33 @@ const gridFooterOptions = [
 ];
 
 function PropertyPage() {
+  const { state } = useLocation();
+  const pkg = state?.pkg || [];
+  console.log({ pkg });
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [pkgDetails, setPkgDetails] = useState(() => {
+    const details = {};
+    pkg?.rooms?.forEach((room) => {
+      if (details?.[room.name]) details[room.name].count += 1;
+      else
+        details[room.name] = {
+          count: 1,
+          discountedPrice: parseFloat(room.discountedPrice),
+          price: parseFloat(room.price),
+        };
+    });
+
+    return details;
+  });
+
+  useEffect(() => {
+    let price = 0;
+    Object.values(pkgDetails).forEach((room) => {
+      price += room.count * room.discountedPrice;
+    });
+    setTotalPrice(price);
+  }, [pkgDetails]);
+
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
   const [isSaved, setIsSaved] = useState(false);
@@ -162,66 +189,6 @@ function PropertyPage() {
               )}
             </>
           )}
-          {/* <div
-            style={{
-              background: `url("/images/property/one.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `url("/images/property/two.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `url("/images/property/three.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-
-          <div
-            style={{
-              background: `url("/images/property/five.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `url("/images/property/four.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `url("/images/property/six.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `url("/images/property/six.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          ></div>
-          <div
-            style={{
-              background: `linear-gradient(to bottom, #1c1c1e84, #1c1c1e84),
-            url("/images/property/seven.png")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            <h4>+20 photos</h4>
-          </div> */}
         </div>
         <div className={styles.gridFooter}>
           <div className={styles.navigation}>
@@ -240,7 +207,7 @@ function PropertyPage() {
           <div className={styles.right}>
             <p>7 days left</p>
             <HashLink to="/property/#reserve-room">
-              <CustomButton fit>Reserve a Room</CustomButton>
+              <CustomButton fit>Book Now</CustomButton>
             </HashLink>
           </div>
         </div>
@@ -261,7 +228,7 @@ function PropertyPage() {
           <div className={styles.priceContainer}>
             <div className={styles.price}>
               <p>Per Night</p>
-              <h3>₹ 3,500</h3>
+              <h3>₹ {totalPrice}</h3>
             </div>
             <p>₹ 100 taxes and charges</p>
           </div>
@@ -437,9 +404,29 @@ function PropertyPage() {
               .map((_, i) => (
                 <RoomCard key={i} room={roomDetail} />
               ))} */}
-            {rooms?.map((room) => (
-              <RoomCard key={room._id} room={room} />
-            ))}
+            {rooms?.map((room) => {
+              let count = 0;
+              let totalCount = 0;
+              pkg?.rooms?.forEach((pkgRoom) => {
+                console.log({ pkgRoom, room });
+                if (pkgRoom.name === room.roomName) count++;
+                if (!totalCount) totalCount = pkgRoom.count;
+              });
+              return (
+                <RoomCard
+                  pkgDetails={pkgDetails}
+                  setPkgDetails={setPkgDetails}
+                  key={room._id}
+                  room={room}
+                  count={count}
+                  totalCount={totalCount}
+                  property={{
+                    breakfastIncluded: property?.breakfastIncluded || false,
+                    parkingAvailable: property?.parkingAvailable || false,
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
