@@ -6,6 +6,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PiWarningCircle } from "react-icons/pi";
 import CustomSelect from "#components/custom-select/custom-select";
+import { currencyFormator } from "#utils/currency-formator";
+import dayjs from "dayjs";
+import Counter from "#components/counter/counter";
 
 // const photos = [
 //   "/images/property/one.png",
@@ -17,14 +20,19 @@ import CustomSelect from "#components/custom-select/custom-select";
 
 function RoomCard({
   room,
-  booking,
+  bookingDetails,
   property,
   count,
   totalCount,
   pkgDetails,
   setPkgDetails,
 }) {
-  let roomCount = pkgDetails?.[room.roomName]?.count || 0;
+  // let roomCount = pkgDetails?.[room.roomName]?.count || 0;
+  const [roomCount, setRoomCount] = useState(
+    parseInt(pkgDetails?.[room.roomName]?.count || 0)
+  );
+  console.log({ pkgDetails });
+  console.log({ bookingDetails });
 
   const photos = room.photos;
   const [currentImage, setCurrentImage] = useState(0);
@@ -126,7 +134,7 @@ function RoomCard({
           <HiOutlineChevronRight className={styles.icon} />
         </div>
 
-        {!booking ? (
+        {!bookingDetails ? (
           <>
             <p className={styles.discount}>
               {parseInt(
@@ -145,8 +153,8 @@ function RoomCard({
               <p>{room?.daysLeft}</p>
             </div>
             <div className={styles.roomCount}>
-              <p>Rooms Selected:</p>
-              <CustomSelect
+              {/* <p>Rooms Selected:</p> */}
+              {/* <CustomSelect
                 selected={roomCount}
                 onCountChange={(count) => {
                   setPkgDetails((prevState) => {
@@ -171,6 +179,11 @@ function RoomCard({
                 list={Array(totalCount)
                   .fill()
                   .map((_, i) => i + 1)}
+              /> */}
+              <Counter
+                value={roomCount}
+                title="No Of Rooms"
+                setValue={setRoomCount}
               />
             </div>
             {/* <CustomButton onClick={() => navigate("/checkout")}>
@@ -184,24 +197,49 @@ function RoomCard({
             <div className={`${styles.bookingDetails}`}>
               <div className={styles.info}>
                 <p>check in</p>
-                <h3>Friday, 29/06/2023</h3>
+                <h3>
+                  {dayjs(bookingDetails?.checkInDate).format(
+                    "dddd, DD/MM/YYYY"
+                  )}
+                </h3>
                 <p>Time - 12:00 - 00:00</p>
                 <div className={styles.iconInfo}>
                   <PiWarningCircle className={styles.icon} />
-                  <p>Just 3 Days To Go!</p>
+                  <p>
+                    Just{" "}
+                    {dayjs(bookingDetails?.checkInDate).diff(
+                      dayjs(new Date()),
+                      "day"
+                    ) + 1}{" "}
+                    Days To Go!
+                  </p>
                 </div>
               </div>
               <div className={styles.info}>
                 <p>check out</p>
-                <h3>Thursday, 04/07/2023</h3>
+                <h3>
+                  {dayjs(bookingDetails?.checkOutDate).format(
+                    "dddd, DD/MM/YYYY"
+                  )}
+                </h3>
                 <p>Time - 00:00 - 11:00</p>
                 <h3>Total Length of Stay:</h3>
-                <p>2 Night & 3 Days</p>
+                <p>
+                  {dayjs(bookingDetails?.checkOutDate).diff(
+                    bookingDetails?.checkInDate,
+                    "day"
+                  ) + 1}{" "}
+                  Days
+                </p>
               </div>
             </div>
             <div className={styles.bookingDetails}>
               <h3>You Selected</h3>
-              <p className={styles.link}>Change Your Selection</p>
+              {/* <p className={styles.link}>Change Your Selection</p> */}
+              {() => {
+                // const roomNames = Object.keys(pkgDetails.rooms);
+                return <></>;
+              }}
             </div>
             <p>Superior King Room</p>
             <div className={styles.topBorder}></div>
@@ -209,19 +247,26 @@ function RoomCard({
             <div className={styles.bookingDetails}>
               <div className={styles.breakdown}>
                 <p>Original Price</p>
-                <p>Getaway Deal</p>
+                {/* <p>Getaway Deal</p> */}
                 <p>Genius Discount</p>
               </div>
               <div className={styles.breakdown + " " + styles.prices}>
-                <p>₹ 5,388</p>
-                <p>- ₹ 768.60</p>
-                <p>- ₹ 1,120</p>
+                <p>{currencyFormator(pkgDetails?.amount)}</p>
+                {/* <p>- ₹ 768.60</p> */}
+                <p>
+                  -{" "}
+                  {currencyFormator(
+                    pkgDetails?.amount - pkgDetails?.discountedAmount
+                  )}
+                </p>
               </div>
             </div>
             <div className={styles.topBorder}></div>
             <div className={styles.bookingDetails}>
               <p className={styles.coloredBold}>Total</p>
-              <p className={styles.coloredBold}>₹ 3,500</p>
+              <p className={styles.coloredBold}>
+                {currencyFormator(pkgDetails?.discountedAmount)}
+              </p>
             </div>
           </>
         )}

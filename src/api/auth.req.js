@@ -1,11 +1,19 @@
-import api, { getAuthToken } from "./index";
+import api, { getAuthToken, setAuthToken } from "./index";
 
-export const fetchUserDetails = () =>
-  api.get("/user", {
+export const fetchUserDetails = async () => {
+  const response = await api.get("/user", {
     headers: {
       Authorization: `Bearer ${getAuthToken()}`,
     },
   });
+  if (response?.data?.accessToken) {
+    setAuthToken(response.data.accessToken);
+    api.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${response.data.accessToken}`;
+  }
+  return response;
+};
 
 export const signupWithEmail = (signupData) => {
   console.log({ signupData });
@@ -18,4 +26,13 @@ export const signupWithEmail = (signupData) => {
 
 export const googleSignIn = (creds) => api.post("/auth/google", creds);
 
-export const loginWithEmail = (creds) => api.post("/auth/login", creds);
+export const loginWithEmail = async (creds) => {
+  const response = await api.post("/auth/login", creds);
+  if (response?.data?.accessToken) {
+    setAuthToken(response.data.accessToken);
+    api.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${response.data.accessToken}`;
+  }
+  return response;
+};

@@ -7,6 +7,7 @@ import CustomButton from "#components/custom-button/custom-button";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { RiUser4Line } from "react-icons/ri";
 import { PiDoor } from "react-icons/pi";
+import Counter from "#components/counter/counter";
 
 function MemberInfo({ states }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -50,23 +51,17 @@ function MemberInfo({ states }) {
       </div>
       {showMenu && (
         <div className={styles.menu}>
-          <Detail
+          <Counter
             title="Rooms"
             value={states.noOfRooms}
             setValue={states.setNoOfRooms}
           />
-          <Detail
+          <Counter
             title="Adults"
             subtitle="Age above or equal to 18"
             value={states.noOfAdults}
             setValue={states.setNoOfAdults}
           />
-          {/* <Detail
-            title="Childrens"
-            subtitle="Age below 18"
-            value={states.noOfChildren}
-            setValue={states.setNoOfChildren}
-          /> */}
           <div className={styles.buttonContainer}>
             <CustomButton onClick={closeMenu}>Done</CustomButton>
           </div>
@@ -76,32 +71,4 @@ function MemberInfo({ states }) {
   );
 }
 
-function Detail({ title, subtitle, value, setValue }) {
-  const decrement = () => {
-    if (value <= 0) return;
-    setValue((prevCount) => (prevCount = parseInt(prevCount) - 1));
-  };
-  const increment = () => {
-    setValue((prevCount) => (prevCount = parseInt(prevCount) + 1));
-  };
-  return (
-    <div className={styles.detail}>
-      <div className={styles.heading}>
-        <h4 className={styles.title}>{title}</h4>
-        {subtitle && <p>{subtitle}</p>}
-      </div>
-      <div className={styles.actions}>
-        <AiOutlineMinusCircle
-          className={`${styles.icon} ${styles.minus}`}
-          onClick={decrement}
-        />
-        <p>{value}</p>
-        <BsPlusCircle
-          className={`${styles.icon} ${styles.plus}`}
-          onClick={increment}
-        />
-      </div>
-    </div>
-  );
-}
 export default MemberInfo;

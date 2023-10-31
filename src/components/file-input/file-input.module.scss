@@ -10,6 +10,7 @@
     justify-content: space-between;
     padding: 1rem;
     border-radius: 10px;
+    height: 50px;
 
     .placeholder {
       color: #464d57;
@@ -24,6 +25,8 @@
       height: 100%;
       width: 100%;
       position: absolute;
+      top: 0;
+      left: 0;
       opacity: 0;
     }
   }
@@ -34,4 +37,11 @@
   label {
     font-weight: 600;
   }
+}
+.error {
+  width: fit-content;
+  text-align: left;
+  padding-left: 10px;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
 }

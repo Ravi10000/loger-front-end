@@ -109,6 +109,9 @@
     }
     .inputsContainer {
       padding: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       .inputContainer {
         min-width: 250px;
         max-width: 400px;
@@ -309,6 +312,7 @@
   min-width: 250px;
   position: relative;
   text-align: center;
+  text-transform: capitalize;
   &.flexible {
     min-width: auto;
   }

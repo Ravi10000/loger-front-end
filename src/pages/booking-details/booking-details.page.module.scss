@@ -126,7 +126,7 @@
     p {
       text-align: right;
       font-weight: 600;
-      &:nth-child(2) {
+      &:nth-child(4) {
         color: #00c964;
       }
     }
@@ -134,6 +134,16 @@
   .bottomMessage {
     padding: 0 20px 20px;
   }
+}
+.error {
+  padding: 50px 20px;
+  h2 {
+    width: 100%;
+    text-align: center;
+  }
+}
+.finalPrice {
+  color: var(--main-brand-color);
 }
 
 @media (min-width: 1024px) {

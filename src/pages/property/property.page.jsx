@@ -24,6 +24,8 @@ import Reviews from "#components/reviews/reviews";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProperty } from "#api/properties.req";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { useAuthWindow } from "#contexts/auth-window.context";
 
 const gridFooterOptions = [
   "Overview",
@@ -34,11 +36,12 @@ const gridFooterOptions = [
   "Reviews",
 ];
 
-function PropertyPage() {
+function PropertyPage({ currentUser }) {
+  const { openAuthWindow } = useAuthWindow();
   const { state } = useLocation();
   const pkg = state?.pkg || [];
-  console.log({ pkg });
   const [totalPrice, setTotalPrice] = useState(0);
+  const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const [pkgDetails, setPkgDetails] = useState(() => {
     const details = {};
     pkg?.rooms?.forEach((room) => {
@@ -53,10 +56,12 @@ function PropertyPage() {
 
     return details;
   });
+  console.log({ pkgDetails });
   const [searchParams, setSearchParams] = useSearchParams();
   const currentUrlParams = searchParams.toString();
+  console.log({ currentUrlParams });
   const { propertyId } = useParams();
-  console.log({ propertyId, currentUrlParams });
+  // console.log({ propertyId, currentUrlParams });
 
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
@@ -78,8 +83,6 @@ function PropertyPage() {
 
   const property = propertyQuery?.data?.property;
   const rooms = propertyQuery?.data?.rooms;
-  console.log({ rooms });
-  console.log({ property });
   const isError = propertyQuery.isError;
   const isLoading = propertyQuery.isLoading;
   const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
@@ -88,10 +91,13 @@ function PropertyPage() {
 
   useEffect(() => {
     let price = 0;
+    let priceBeforeDiscount = 0;
     Object.values(pkgDetails).forEach((room) => {
       price += room.count * room.discountedPrice;
+      priceBeforeDiscount += room.count * room.price;
     });
     setTotalPrice(price);
+    setPriceBeforeDiscount(priceBeforeDiscount);
   }, [pkgDetails]);
 
   return (
@@ -217,9 +223,35 @@ function PropertyPage() {
             {/* <HashLink
               to={`/property/${propertyId}?${currentUrlParams}/#reserve-room`}
             > */}
-            <Link to="/checkout">
-              <CustomButton fit>Book Now</CustomButton>
-            </Link>
+            {/* <Link
+              to="/checkout"
+              state={{
+                pkgDetails,
+                totalPrice,
+                priceBeforeDiscount,
+                property,
+              }}
+            > */}
+            <CustomButton
+              onClick={() => {
+                if (!currentUser) {
+                  openAuthWindow("signin");
+                  return;
+                }
+                return navigate(`/checkout?${currentUrlParams}`, {
+                  state: {
+                    pkgDetails,
+                    totalPrice,
+                    priceBeforeDiscount,
+                    property,
+                  },
+                });
+              }}
+              fit
+            >
+              Book Now
+            </CustomButton>
+            {/* </Link> */}
             {/* </HashLink> */}
           </div>
         </div>
@@ -420,7 +452,7 @@ function PropertyPage() {
               let count = 0;
               let totalCount = 0;
               pkg?.rooms?.forEach((pkgRoom) => {
-                console.log({ pkgRoom, room });
+                // console.log({ pkgRoom, room });
                 if (pkgRoom.name === room.roomName) count++;
                 if (!totalCount) totalCount = pkgRoom.count;
               });
@@ -446,5 +478,7 @@ function PropertyPage() {
     </div>
   );
 }
-
-export default PropertyPage;
+const mapState = ({ user: { currentUser } }) => ({
+  currentUser,
+});
+export default connect(mapState)(PropertyPage);

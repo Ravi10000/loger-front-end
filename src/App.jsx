@@ -77,7 +77,7 @@ function App({ setCurrentUser, clearIsFetching }) {
       <FlashGroup />
       <ReviewPopup />
       <AuthWindow />
-      {!isAuthRoute && <Header />}
+      {!isAuthRoute && !pathname.includes("/booking-details") && <Header />}
 
       <div className={styles.page}>
         <Suspense fallback={<LoadingPage />}>
@@ -96,7 +96,10 @@ function App({ setCurrentUser, clearIsFetching }) {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/terms" element={<TermsPage />} />
-            <Route path="/booking-details" element={<BookingDetailsPage />} />
+            <Route
+              path="/booking-details/:transactionId"
+              element={<BookingDetailsPage />}
+            />
             <Route path="/faqs" element={<FaqPage />} />
             <Route path="/work" element={<WorkPage />} />
             <Route path="/my-trips" element={<MyTripsPage />} />
@@ -111,7 +114,7 @@ function App({ setCurrentUser, clearIsFetching }) {
           </Routes>
         </Suspense>
       </div>
-      <Footer />
+      {!pathname.includes("/booking-details") && <Footer />}
     </div>
   );
 }

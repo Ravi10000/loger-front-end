@@ -2,15 +2,9 @@ import styles from "./custom-checkbox.module.scss";
 import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
 
-function CustomCheckbox({ label, leftSided }) {
-  const [checked, setChecked] = useState(false);
+function CustomCheckbox({ label, leftSided, style, checked, setChecked }) {
   return (
-    <div
-      className={styles.option}
-      onClick={() => {
-        setChecked((prevState) => !prevState);
-      }}
-    >
+    <div style={style} className={styles.option} onClick={setChecked}>
       {leftSided && (
         <div
           className={`${styles.checkbox} ${checked ? styles.checked : ""}`}

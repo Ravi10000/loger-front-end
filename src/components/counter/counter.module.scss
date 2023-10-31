@@ -1,0 +1,23 @@
+.detail {
+  width: 100%;
+  color: var(--text-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  text-align: start;
+  p {
+    font-size: 0.8rem;
+  }
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .icon {
+    height: 1.5rem;
+    width: fit-content;
+    &.plus {
+      color: var(--main-brand-color);
+    }
+  }
+}

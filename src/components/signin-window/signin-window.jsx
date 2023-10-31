@@ -51,6 +51,7 @@ function SigninWindow({ setCurrentUser, pushFlash }) {
       pushFlash({ message: data?.message, type: "error" });
     },
   });
+
   const popupRef = useRef(null);
   const { closeAuthWindow, openAuthWindow } = useAuthWindow();
   useEffect(() => {
