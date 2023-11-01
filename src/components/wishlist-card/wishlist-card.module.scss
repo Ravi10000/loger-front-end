@@ -1,5 +1,5 @@
 .wishlistCard {
-  border-radius: 15px;
+  border-radius: 5px;
   overflow: hidden;
   background-color: #f2f6fa;
   max-width: 400px;
@@ -67,7 +67,7 @@
       align-items: center;
       gap: 20px;
       img {
-        height: 20px;
+        height: 35px;
         width: fit-content;
       }
     }
@@ -90,6 +90,14 @@
   }
   .buttonContainer {
     padding: 20px;
+    display: flex;
+    justify-content: center;
   }
-
 }
+
+// .services {
+//   img {
+//     height: 20px;
+//     width: fit-content;
+//   }
+// }

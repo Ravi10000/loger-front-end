@@ -10,10 +10,12 @@ function CustomButton({
   rounded,
   fit,
   isLoading,
+  customStyles,
   ...otherProps
 }) {
   return (
     <button
+      style={customStyles}
       className={`${styles.customButton} ${outlined && styles.outlined} ${
         danger && styles.danger
       } ${fit && styles.fit} ${small && styles.small} ${

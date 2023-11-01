@@ -2,7 +2,7 @@ import styles from "./room-card.module.scss";
 import CustomButton from "#components/custom-button/custom-button";
 import { HiOutlineChevronRight } from "react-icons/hi";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PiWarningCircle } from "react-icons/pi";
 import CustomSelect from "#components/custom-select/custom-select";
@@ -31,8 +31,6 @@ function RoomCard({
   const [roomCount, setRoomCount] = useState(
     parseInt(pkgDetails?.[room.roomName]?.count || 0)
   );
-  console.log({ pkgDetails });
-  console.log({ bookingDetails });
 
   const photos = room.photos;
   const [currentImage, setCurrentImage] = useState(0);
@@ -50,6 +48,19 @@ function RoomCard({
       setCurrentImage(photos?.length - 1);
     }
   };
+  useEffect(() => {
+    if (setPkgDetails)
+      setPkgDetails((prevState) => ({
+        ...prevState,
+        [room.roomName]: {
+          ...prevState[room.roomName],
+          discountedPrice: room.discountedPrice,
+          price: room.price,
+          count: roomCount,
+        },
+      }));
+  }, [roomCount]);
+
   return (
     <div className={styles.roomCard}>
       <div className={styles.imageCarousel}>

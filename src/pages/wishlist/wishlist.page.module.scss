@@ -66,6 +66,24 @@
     padding: 20px 0;
   }
 }
+.emptyList {
+  margin-block: 20px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  opacity: 0.35;
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  align-items: center;
+  justify-content: center;
+  .icon {
+    height: 100px;
+    width: fit-content;
+  }
+}
+
 @media (min-width: 1024px) {
   .wishlistPage {
     .cardsContainer {

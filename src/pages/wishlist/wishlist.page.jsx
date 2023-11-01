@@ -1,11 +1,19 @@
 import styles from "./wishlist.page.module.scss";
 
 import Search from "#components/search/search";
-import { PiArrowLeftBold } from "react-icons/pi";
+import { PiArrowLeftBold, PiSmileyBlankLight } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import Balancer from "react-wrap-balancer";
 import { AiFillHeart } from "react-icons/ai";
 import WishlistCard from "#components/wishlist-card/wishlist-card";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addToWishlist,
+  fetchWishlist,
+  removeFromWishlist,
+} from "#api/wishlist.req";
+import LoadingPage from "#pages/loading/loading";
+import { FaRegFaceMehBlank } from "react-icons/fa6";
 
 const wish = {
   _id: 1,
@@ -22,7 +30,31 @@ const wish = {
 };
 
 function WishlistPage() {
+  const wishlistQuery = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: async () => {
+      const response = await fetchWishlist();
+      return response?.data;
+    },
+  });
+  const client = useQueryClient();
+  const wishlistMutation = useMutation({
+    mutationFn: async (propertyId) => {
+      const response = await removeFromWishlist(propertyId);
+      return response;
+    },
+    onSuccess: (response) => {
+      if (response?.data?.status === "success")
+        client.invalidateQueries("wishlist");
+    },
+  });
+
+  const { isError, isLoading } = wishlistQuery;
+  const properties = wishlistQuery?.data?.wishlist?.properties;
+  console.log({ properties });
+
   const navigate = useNavigate();
+  if (isLoading) return <LoadingPage />;
   return (
     <div className={styles.wishlistPage}>
       <div className={styles.head}>
@@ -48,14 +80,26 @@ function WishlistPage() {
             </div>
             <p className={styles.link}>View All</p>
           </div>
-          <div className={styles.cardsContainer}>
-            <WishlistCard wish={wish} />
-            <WishlistCard wish={wish} />
-            <WishlistCard wish={wish} />
-            <WishlistCard wish={wish} />
-            <WishlistCard wish={wish} />
-            <WishlistCard wish={wish} />
-          </div>
+          {isError ? (
+            <div className={styles.error}>
+              Error While Fetching Your Wishlist: &#40;
+            </div>
+          ) : properties?.length ? (
+            <div className={styles.cardsContainer}>
+              {properties?.map((property) => (
+                <WishlistCard
+                  property={property}
+                  key={property?._id}
+                  updateWishlist={wishlistMutation.mutate}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyList}>
+              <FaRegFaceMehBlank className={styles.icon} />
+              <p>Empty Wishlist</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

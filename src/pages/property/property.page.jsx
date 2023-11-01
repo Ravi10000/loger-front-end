@@ -21,11 +21,12 @@ import RoomCard from "#components/room-card/room-card";
 import { roomDetail } from "#data/room.data";
 import { HashLink } from "react-router-hash-link";
 import Reviews from "#components/reviews/reviews";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchProperty } from "#api/properties.req";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { useAuthWindow } from "#contexts/auth-window.context";
+import { addToWishlist, removeFromWishlist } from "#api/wishlist.req";
 
 const gridFooterOptions = [
   "Overview",
@@ -56,12 +57,9 @@ function PropertyPage({ currentUser }) {
 
     return details;
   });
-  console.log({ pkgDetails });
   const [searchParams, setSearchParams] = useSearchParams();
   const currentUrlParams = searchParams.toString();
-  console.log({ currentUrlParams });
   const { propertyId } = useParams();
-  // console.log({ propertyId, currentUrlParams });
 
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
@@ -76,25 +74,48 @@ function PropertyPage({ currentUser }) {
         console.log({ res });
         return res?.data || {};
       } catch (err) {
-        console.error({ err: err.response.data });
+        console.log("error while fetching property");
+        console.error({ err: err?.response?.data });
       }
     },
   });
 
-  const property = propertyQuery?.data?.property;
-  const rooms = propertyQuery?.data?.rooms;
-  const isError = propertyQuery.isError;
-  const isLoading = propertyQuery.isLoading;
+  const { isError, isLoading } = propertyQuery;
+
+  const { property, rooms, isInWishlist } = propertyQuery?.data || {};
+  const client = useQueryClient();
+  const wishlistMutation = useMutation({
+    mutationFn: async () => {
+      let response = {};
+      if (currentUser) {
+        if (!isInWishlist) response = await addToWishlist(propertyId);
+        else {
+          response = await removeFromWishlist(propertyId);
+        }
+      } else {
+        openAuthWindow("signin");
+      }
+      return response;
+    },
+    onSuccess: (response) => {
+      if (response?.data?.status === "success") {
+        propertyQuery.refetch();
+        client.invalidateQueries("wishlist");
+      }
+    },
+  });
+
   const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
   // const [foundMainPhoto, setFoundMainPhoto] = useState(false);
   let foundMainPhoto = false;
-
   useEffect(() => {
     let price = 0;
     let priceBeforeDiscount = 0;
     Object.values(pkgDetails).forEach((room) => {
-      price += room.count * room.discountedPrice;
-      priceBeforeDiscount += room.count * room.price;
+      if (room.count && room.discountedPrice && room.price) {
+        price += room.count * room.discountedPrice;
+        priceBeforeDiscount += room.count * room.price;
+      }
     });
     setTotalPrice(price);
     setPriceBeforeDiscount(priceBeforeDiscount);
@@ -125,8 +146,11 @@ function PropertyPage({ currentUser }) {
               className={styles.action}
               onClick={() => setIsSaved((prevState) => !prevState)}
             >
-              <div className={styles.iconContainer}>
-                {isSaved ? (
+              <div
+                className={styles.iconContainer}
+                onClick={wishlistMutation.mutate}
+              >
+                {isInWishlist ? (
                   <AiFillHeart className={`${styles.icon} ${styles.liked}`} />
                 ) : (
                   <AiOutlineHeart className={`${styles.icon}`} />
