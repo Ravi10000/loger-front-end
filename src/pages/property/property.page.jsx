@@ -498,7 +498,7 @@ function PropertyPage({ currentUser }) {
           </div>
         </div>
       </div>
-      <Reviews />
+      <Reviews property={property} />
     </div>
   );
 }

@@ -51,7 +51,8 @@ function WishlistPage() {
 
   const { isError, isLoading } = wishlistQuery;
   const properties = wishlistQuery?.data?.wishlist?.properties;
-  console.log({ properties });
+  const prices = wishlistQuery?.data?.prices;
+  console.log({ properties, prices });
 
   const navigate = useNavigate();
   if (isLoading) return <LoadingPage />;
@@ -86,8 +87,9 @@ function WishlistPage() {
             </div>
           ) : properties?.length ? (
             <div className={styles.cardsContainer}>
-              {properties?.map((property) => (
+              {properties?.map((property, idx) => (
                 <WishlistCard
+                  prices={prices?.[idx]}
                   property={property}
                   key={property?._id}
                   updateWishlist={wishlistMutation.mutate}

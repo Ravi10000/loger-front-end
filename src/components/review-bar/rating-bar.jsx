@@ -13,7 +13,7 @@ function RatingBar({ ratingDetails }) {
           className={`${styles.filled} ${styles.bar}`}
           style={{
             width: `${percentage}%`,
-            backgroundColor: ratingDetails?.filledColor || "#1A232F",
+            backgroundColor: ratingDetails?.filledColor || "#",
           }}
         ></div>
       </div>

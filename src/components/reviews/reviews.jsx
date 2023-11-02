@@ -2,14 +2,43 @@ import styles from "./reviews.module.scss";
 
 import RatingBar from "#components/review-bar/rating-bar";
 import UserReviewCard from "#components/user-review-card/user-review-card";
-import { RiStarFill } from "react-icons/ri";
+import { RiStarFill, RiStarLine, RiStarHalfFill } from "react-icons/ri";
 import Balancer from "react-wrap-balancer";
 import CustomButton from "#components/custom-button/custom-button";
 import { BsArrowRight } from "react-icons/bs";
 import { useState } from "react";
+import { totalReviews } from "#utils/calculate-review-msg";
+import Stars from "#components/stars/stars";
 
-function Reviews() {
+const barColors = {
+  5: {
+    filledColor: "#00C964",
+    emptyColor: "#E6FAF0",
+  },
+  4: {
+    filledColor: "#0868F8",
+    emptyColor: "#E7F0FF",
+  },
+  3: {
+    filledColor: "#FCBB06",
+    emptyColor: "#FFF9E7",
+  },
+  2: {
+    filledColor: "#F87B08",
+    emptyColor: "#FFF2E7",
+  },
+  1: {
+    filledColor: "#1A232F",
+    emptyColor: "#E9E9EB",
+  },
+};
+
+function Reviews({ property }) {
+  const totalRating = property?.ratings ? totalReviews(property?.ratings) : 0;
   const [currentUserReviewPage, setCurrentUserReviewPage] = useState(1);
+  // const filledStars = parseInt(property?.averageRating);
+  // const halfStar = property?.averageRating - filledStars > 0.4;
+  // const emptyStars = 5 - filledStars - (halfStar ? 1 : 0);
 
   const nextReviewPage = () => {
     if (currentUserReviewPage < 5) {
@@ -28,21 +57,51 @@ function Reviews() {
           <div className={styles.ratingsContainer}>
             <h3>Reviews</h3>
             <div className={styles.rating}>
-              <h2>4.0</h2>
+              <h2>{property?.averageRating}</h2>
               <div className={styles.ratingInfo}>
                 <p>
                   Out of <br />5 Star
                 </p>
-                <div className={styles.stars}>
-                  {[...Array(5)].map((_, i) => (
-                    <RiStarFill key={i} className={styles.star} />
-                  ))}
-                </div>
+                <Stars ratings={property?.averageRating} />
+                {/* <div className={styles.stars}>
+                  {property?.averageRating && (
+                    <>
+                      {[...Array(filledStars)].map((_, i) => (
+                        <RiStarFill
+                          key={`${i}-filled`}
+                          className={styles.star}
+                        />
+                      ))}
+                      {emptyStars && (
+                        <RiStarHalfFill
+                          key="half-filled"
+                          className={styles.star}
+                        />
+                      )}
+                      {[...Array(emptyStars)].map((_, i) => (
+                        <RiStarLine key={`${i}-line`} className={styles.star} />
+                      ))}
+                    </>
+                  )}
+                </div> */}
               </div>
             </div>
           </div>
           <div className={styles.ratingGraph}>
-            <RatingBar
+            {property?.ratings &&
+              Object?.keys(property?.ratings).map((rating) => (
+                <RatingBar
+                  key={`${rating}-stars`}
+                  ratingDetails={{
+                    count: property?.ratings[rating],
+                    totalCount: totalRating,
+                    name: `${rating} Stars`,
+                    filledColor: barColors[rating]?.filledColor,
+                    emptyColor: barColors[rating]?.emptyColor,
+                  }}
+                />
+              ))}
+            {/* <RatingBar
               key="5-stars"
               ratingDetails={{
                 count: 45,
@@ -89,7 +148,7 @@ function Reviews() {
                 totalCount: 100,
                 name: "1 Stars",
               }}
-            />
+            /> */}
           </div>
         </div>
         <div className={styles.right}>
@@ -138,10 +197,10 @@ function Reviews() {
           <CustomButton fit>View All</CustomButton>
         </div>
         <div className={styles.userReviews}>
-          <UserReviewCard key="1"/>
-          <UserReviewCard key="2"/>
-          <UserReviewCard key="3"/>
-          <UserReviewCard key="4"/>
+          <UserReviewCard key="1" />
+          <UserReviewCard key="2" />
+          <UserReviewCard key="3" />
+          <UserReviewCard key="4" />
         </div>
         <div className={styles.reviewNav}>
           <div
@@ -155,7 +214,7 @@ function Reviews() {
           <div className={styles.pages}>
             {[...Array(5)].map((_, i) => (
               <p
-              key={i}
+                key={i}
                 className={`${styles.page} ${
                   currentUserReviewPage === i + 1 ? styles.active : ""
                 }`}

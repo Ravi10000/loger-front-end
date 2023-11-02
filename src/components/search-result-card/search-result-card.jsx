@@ -9,6 +9,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import findUniqueObjects from "#utils/find-unique-objects";
 import { IoIosMore } from "react-icons/io";
 import { useFilter } from "#hooks/use-filter";
+import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
+import Stars from "#components/stars/stars";
 
 function SearchResultCard({ property, pkg }) {
   console.log({ property });
@@ -124,18 +126,23 @@ function SearchResultCard({ property, pkg }) {
         </div>
         <div className={styles.reviewNbooking}>
           <div className={styles.reviews}>
-            <h4>Good Reviews</h4>
+            <h4>{calculateReviewMsg(property?.averageRating)}</h4>
             <div className={styles.rating}>
-              <div className={styles.stars}>
-                {Array(property?.rating)
+              {/* <div className={styles.stars}>
+                {Array(parseInt(property?.averageRating))
                   .fill()
                   .map((_, i) => (
                     <RiStarFill key={i} className={styles.star} />
                   ))}
-              </div>
-              <p>{property?.rating}.0</p>
+              </div> */}
+              <p>{property?.averageRating}</p>
+              <Stars
+                ratings={property?.averageRating}
+                color="#0868f8"
+                size={20}
+              />
             </div>
-            <p>Reviews{`(${property?.reviews})`}</p>
+            <p>Reviews &#40;{totalReviews(property?.ratings)}&#41;</p>
           </div>
           <div className={styles.priceContainer}>
             <h4>Per Night</h4>

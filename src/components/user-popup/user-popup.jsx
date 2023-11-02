@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./user-popup.module.scss";
 import { HashLink } from "react-router-hash-link";
 import { useRef, useEffect } from "react";
-import { removeAuthToken } from "#api/index";
+import api, { removeAuthToken } from "#api/index";
 import { connect } from "react-redux";
 import { setCurrentUser } from "#redux/user/user.actions";
 import { pushFlash } from "#redux/flash/flash.actions";
@@ -62,6 +62,7 @@ function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
         onClick={async () => {
           removeAuthToken();
           await setCurrentUser(null);
+          api.defaults.headers.common["Authorization"] = null;
           // queryClient.invalidateQueries(["user"]);
           await pushFlash({ message: "Logout Successfull", type: "success" });
         }}

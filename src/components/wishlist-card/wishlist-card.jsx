@@ -5,8 +5,11 @@ import CustomButton from "#components/custom-button/custom-button";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMultipleFacilities } from "#api/facilities.req";
+import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
+import { RiStarFill } from "react-icons/ri";
+import Stars from "#components/stars/stars";
 
-function WishlistCard({ property, updateWishlist }) {
+function WishlistCard({ property, prices, updateWishlist }) {
   const servicesQuery = useQuery({
     queryKey: ["services"],
     enabled: !!property?.facilities,
@@ -77,24 +80,30 @@ function WishlistCard({ property, updateWishlist }) {
         </div>
       </div>
       <div className={styles.priceNReviews}>
-        <div className={styles.review}>
+        <div className={styles.reviews}>
+          <h4>{calculateReviewMsg(property?.averageRating)}</h4>
           <div className={styles.rating}>
-            {Array.from({ length: property?.rating }, (_, i) => (
-              <AiFillStar className={styles.star} key={i} />
-            ))}
-            {Array.from({ length: 5 - property?.rating }, (_, i) => (
-              <AiOutlineStar
-                className={styles.star}
-                key={property?.rating + i}
-              />
-            ))}
-            <p>{property?.rating}.0</p>
+            <p>{property?.averageRating}</p>
+            <Stars
+              ratings={property?.averageRating}
+              color="#0868f8"
+              size={20}
+            />
+            {/* <div className={styles.stars}>
+              {Array(parseInt(property?.averageRating))
+                .fill()
+                .map((_, i) => (
+                  <RiStarFill key={i} className={styles.star} />
+                ))}
+            </div> */}
           </div>
-          <p>Reviews ({property?.reviews})</p>
+          <p>Reviews &#40;{totalReviews(property?.ratings)}&#41;</p>
         </div>
         <div className={styles.price}>
           <p>Per Night</p>
-          <h3>₹ {property?.price}</h3>
+          <h3>
+            ₹ {prices[0]} - {prices[prices.length - 1]}
+          </h3>
         </div>
       </div>
       <div className={styles.buttonContainer}>
