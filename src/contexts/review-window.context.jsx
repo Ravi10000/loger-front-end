@@ -5,14 +5,13 @@ const ReviewWindow = createContext();
 export const useReviewWindow = () => useContext(ReviewWindow);
 
 export default function ReviewWindowProvider({ children }) {
-  const [isReviewWindowOpen, setIsReviewWindowOpen] = useState(false);
-  const openReviewWindow = () => setIsReviewWindowOpen(true);
-  const closeReviewWindow = () => setIsReviewWindowOpen(false);
+  const [propertyReviewing, setPropertyReviewing] = useState(false);
+  const closeReviewWindow = () => setPropertyReviewing(false);
   return (
     <ReviewWindow.Provider
       value={{
-        isReviewWindowOpen,
-        openReviewWindow,
+        propertyReviewing,
+        setPropertyReviewing,
         closeReviewWindow,
       }}
     >

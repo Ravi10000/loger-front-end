@@ -59,11 +59,11 @@ function WishlistCard({ property, prices, updateWishlist }) {
         </div>
         <div className={styles.servicesContainer}>
           <h3>Services</h3>
-          <p>Lorem Ipsum is simply dummy text of the printing and</p>
+          {/* <p>Lorem Ipsum is simply dummy text of the printing and</p> */}
           <div className={styles.services}>
             {services &&
               services
-                ?.filter((_, i) => i < 5)
+                // ?.filter((_, i) => i < 5)
                 ?.map((service) => (
                   <img
                     key={service?._id}
@@ -75,7 +75,7 @@ function WishlistCard({ property, prices, updateWishlist }) {
                     alt=""
                   />
                 ))}
-            {services?.length > 5 && <p>more...</p>}
+            {/* {services?.length > 5 && <p>more...</p>} */}
           </div>
         </div>
       </div>

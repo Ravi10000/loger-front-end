@@ -6,16 +6,32 @@ import { useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { RiStarFill } from "react-icons/ri";
+import { currencyFormator } from "#utils/currency-formator";
+import { totalReviews } from "#utils/calculate-review-msg";
+import Stars from "#components/stars/stars";
+import { useMutation } from "@tanstack/react-query";
+import { pushFlash } from "#redux/flash/flash.actions";
+import { connect } from "react-redux";
 
-function TripCard({ trip }) {
+function TripCard({ booking, setBookingToCancel }) {
+  const property = booking?.property;
   const [isSaved, setIsSaved] = useState(false);
-  const { openReviewWindow } = useReviewWindow();
+  const { setPropertyReviewing } = useReviewWindow();
+  function handleTripAction() {
+    if (booking?.status === "upcomming") {
+      setBookingToCancel(booking?._id);
+    }
+  }
   return (
     <div className={styles.tripCardContainer}>
       <div className={styles.tripCard}>
         <div
           className={styles.image}
-          style={{ backgroundImage: `url("${trip?.image}")` }}
+          style={{
+            backgroundImage: `url("${import.meta.env.VITE_SERVER_URL}/images/${
+              property?.photos?.[0]?.photoUrl
+            }")`,
+          }}
         >
           <div
             className={styles.iconContainer}
@@ -30,37 +46,45 @@ function TripCard({ trip }) {
         </div>
         <div className={styles.tripInfo}>
           <h3>
-            <Balancer>{trip?.name}</Balancer>
+            <Balancer>{property?.propertyName}</Balancer>
           </h3>
           <div className={styles.location}>
             <p>
-              {trip?.location} - <span>location</span>
+              {property?.city}, {property?.country} - <span>location</span>
             </p>
             <HiOutlineLocationMarker className={styles.icon} />
           </div>
           <div className={styles.description}>
             <h4>Description</h4>
             <p>
-              <Balancer>{trip?.description}</Balancer>
+              <Balancer>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry Read More...
+              </Balancer>
             </p>
           </div>
         </div>
         <div className={styles.bottomSection}>
           <div className={styles.priceContainer}>
-            <p>Per Night</p>
-            <p className={styles.priceText}>₹ {trip?.price}</p>
+            {/* <p>Per Night</p> */}
+            <p className={styles.priceText}>
+              {currencyFormator(booking?.bookingAmount)}
+            </p>
             <p>₹ 100 taxes and charges</p>
           </div>
-          <button className={`${styles.button} ${styles?.[trip?.status]}`}>
-            {trip?.status === "active"
+          <button
+            className={`${styles.button} ${styles?.[booking?.status]}`}
+            onClick={handleTripAction}
+          >
+            {booking?.status === "upcomming"
               ? "Cancel Your Trip"
-              : trip?.status === "cancelled"
+              : booking?.status === "cancelled"
               ? "Cancelled"
               : "Reserve Again"}
           </button>
         </div>
       </div>
-      {trip?.status === "active" && (
+      {booking?.status === "active" && (
         <div className={`${styles.extraInfo} ${styles.active}`}>
           <h4>
             <Balancer>Your Journey Will Start On</Balancer>
@@ -68,24 +92,25 @@ function TripCard({ trip }) {
           <div className={styles.dateNTime}>
             <div className={styles.date}>
               <img src="/images/icons/calendar.svg" alt="calender" />
-              <p>{trip?.startDate}</p>
+              <p>{booking?.startDate}</p>
             </div>
             <div className={styles.date}>
               <img src="/images/icons/clock.svg" alt="calender" />
-              <p>{trip?.startTime}</p>
+              <p>{booking?.startTime}</p>
             </div>
           </div>
           <p className={styles.link}>Privacy Policy</p>
         </div>
       )}
-      {trip?.status === "cancelled" && trip?.refundStatus === "success" ? (
+      {booking?.status === "cancelled" &&
+      booking?.refundStatus === "success" ? (
         <div className={styles.extraInfo}>
           <h3>Refund</h3>
           <p className={styles.successText}>Successfull</p>
           <p className={styles.link}>Privacy Policy</p>
         </div>
       ) : (
-        trip?.status === "cancelled" && (
+        booking?.status === "cancelled" && (
           <div className={styles.extraInfo}>
             <h4>
               <Balancer>
@@ -100,21 +125,22 @@ function TripCard({ trip }) {
           </div>
         )
       )}
-      {trip?.status === "completed" && (
+      {booking?.status === "completed" && (
         <div className={styles.extraInfo}>
           <div className={styles.rating}>
-            <div className={styles.stars}>
-              {Array(4)
-                .fill()
-                .map((_, i) => (
-                  <RiStarFill key={i} className={styles.star} />
-                ))}
-            </div>
-            <p>4.0</p>
+            <p>{property?.averageRating}</p>
+            <Stars
+              ratings={property?.averageRating}
+              color="var(--main-brand-color)"
+              size={20}
+            />
           </div>
 
-          <p>Reviews(150)</p>
-          <button className={styles.reviewBtn} onClick={openReviewWindow}>
+          <p>Reviews({totalReviews(property?.ratings)})</p>
+          <button
+            className={styles.reviewBtn}
+            onClick={() => setPropertyReviewing(property?._id)}
+          >
             Write Your Review
           </button>
         </div>
@@ -123,4 +149,4 @@ function TripCard({ trip }) {
   );
 }
 
-export default TripCard;
+export default connect(null, { pushFlash })(TripCard);

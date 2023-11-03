@@ -56,6 +56,9 @@
       align-items: center;
       gap: 20px;
     }
+    .description {
+      max-width: 450px;
+    }
   }
   .reviewNbooking {
     display: flex;
@@ -66,10 +69,12 @@
     text-align: center;
     &::before {
       content: "";
-      width: 200px;
+      width: 100%;
+      // width: 200px;
       height: 2px;
       // background: #e9e9eb;
-      background: #b2b8bd;
+      // background: #b2b8bd;
+      background: #dce3e8;
     }
     .amount {
       font-size: 2.5rem;
@@ -124,12 +129,13 @@
     .reviewNbooking {
       position: relative;
       &:before {
+        margin-left: 5px;
         position: absolute;
         left: 0;
-        height: 75%;
+        height: 100%;
         top: 50%;
         transform: translateY(-50%);
-        width: 1px;
+        width: 2px;
       }
     }
     .imageContainer {
@@ -142,6 +148,7 @@
       }
     }
     .infoContainer {
+      padding-left: 0;
       display: flex;
     }
   }

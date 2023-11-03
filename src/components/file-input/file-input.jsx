@@ -10,8 +10,6 @@ function FileInput({
   ...otherProps
 }) {
   const id = useId();
-  // file = file?.item(0)?.name;
-  // console.log({ file });
   return (
     <div className={styles.fileInput}>
       <label htmlFor={id}>{label}</label>

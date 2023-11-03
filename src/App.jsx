@@ -15,6 +15,7 @@ import AuthWindow from "#components/auth-window";
 import ReviewPopup from "#components/review-popup/review-popup";
 import FlashGroup from "#components/flash-group/flash-group";
 import ScrollToTop from "#components/scrollToTop";
+import useFetchUser from "#hooks/fetch-user";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -57,18 +58,18 @@ function App({ setCurrentUser, clearIsFetching }) {
   console.count("render... <App />");
   const { pathname } = useLocation();
   const isAuthRoute = pathname.includes("/auth");
-
-  const userQuery = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const { data } = await fetchUserDetails();
-      setCurrentUser(data.user);
-      return data?.user;
-    },
-  });
-  useEffect(() => {
-    if (userQuery.isError) clearIsFetching();
-  }, [userQuery]);
+  useFetchUser();
+  // const userQuery = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: async () => {
+  //     const { data } = await fetchUserDetails();
+  //     setCurrentUser(data.user);
+  //     return data?.user;
+  //   },
+  // });
+  // useEffect(() => {
+  //   if (userQuery.isError) clearIsFetching();
+  // }, [userQuery]);
 
   return (
     <div className={styles.App}>

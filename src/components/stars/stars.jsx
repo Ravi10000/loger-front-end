@@ -3,7 +3,7 @@ import styles from "./stars.module.scss";
 
 function Stars({ ratings, color, size = 25 }) {
   const filledStars = parseInt(ratings);
-  const halfStar = ratings - filledStars >= 0.4;
+  const halfStar = ratings - filledStars >= 0.38;
   const emptyStars = 5 - filledStars - (halfStar ? 1 : 0);
   return (
     <div className={styles.stars}>
@@ -16,7 +16,7 @@ function Stars({ ratings, color, size = 25 }) {
               className={styles.star}
             />
           ))}
-          {emptyStars && (
+          {halfStar && (
             <RiStarHalfFill
               style={{ height: size, ...(color && { color }) }}
               key="half-filled"

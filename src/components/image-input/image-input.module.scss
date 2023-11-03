@@ -1,0 +1,62 @@
+.fileInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: 50px;
+  aspect-ratio: 1 / 1;
+  // position: relative;
+  .inputContainer {
+    background: #e9e9eb;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // padding: 1rem;
+    border-radius: 10px;
+    height: 100%;
+    border: 1px solid #e9e9eb;
+
+    .placeholder {
+      color: #464d57;
+      font-family: var(--primary-font);
+      letter-spacing: 1px;
+      font-weight: 300;
+      font-size: 0.9rem;
+    }
+    input {
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+  }
+
+  label {
+    font-weight: 600;
+  }
+}
+.icon {
+  height: 20px;
+  width: fit-content;
+  color: var(--main-brand-color);
+}
+.removeIcon {
+  cursor: pointer;
+  position: absolute;
+  height: 20px;
+  width: fit-content;
+  color: var(--error-clr);
+  z-index: 1;
+  top: -5px;
+  right: -5px;
+}
+.error {
+  width: fit-content;
+  text-align: left;
+  padding-left: 10px;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}

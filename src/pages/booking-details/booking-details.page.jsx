@@ -26,7 +26,7 @@ function BookingDetailsPage() {
   });
   const transaction = bookingQuery?.data?.transaction;
   const booking = bookingQuery?.data?.booking;
-  const property = bookingQuery?.data?.booking?.propertyId;
+  const property = bookingQuery?.data?.booking?.property;
   const pkgDetails = booking?.pkgDetails && JSON.parse(booking?.pkgDetails);
   const paymentResponse =
     transaction?.response && JSON.parse(transaction?.response);
