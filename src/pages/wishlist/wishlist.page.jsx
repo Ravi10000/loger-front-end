@@ -7,11 +7,7 @@ import Balancer from "react-wrap-balancer";
 import { AiFillHeart } from "react-icons/ai";
 import WishlistCard from "#components/wishlist-card/wishlist-card";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  addToWishlist,
-  fetchWishlist,
-  removeFromWishlist,
-} from "#api/wishlist.req";
+import { fetchWishlist, removeFromWishlist } from "#api/wishlist.req";
 import LoadingPage from "#pages/loading/loading";
 import { FaRegFaceMehBlank } from "react-icons/fa6";
 
@@ -51,8 +47,6 @@ function WishlistPage() {
 
   const { isError, isLoading } = wishlistQuery;
   const properties = wishlistQuery?.data?.wishlist?.properties;
-  const prices = wishlistQuery?.data?.prices;
-  console.log({ properties, prices });
 
   const navigate = useNavigate();
   if (isLoading) return <LoadingPage />;
@@ -87,9 +81,8 @@ function WishlistPage() {
             </div>
           ) : properties?.length ? (
             <div className={styles.cardsContainer}>
-              {properties?.map((property, idx) => (
+              {properties?.map((property) => (
                 <WishlistCard
-                  prices={prices?.[idx]}
                   property={property}
                   key={property?._id}
                   updateWishlist={wishlistMutation.mutate}

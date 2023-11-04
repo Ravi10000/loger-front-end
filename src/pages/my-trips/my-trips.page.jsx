@@ -1,41 +1,42 @@
 import styles from "./my-trips.page.module.scss";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PiArrowLeftBold } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Balancer from "react-wrap-balancer";
 import TripCard from "#components/trip-card/trip-card";
 import { useQuery } from "@tanstack/react-query";
 import { getBookings } from "#api/bookings.req";
 import CancelBookingPopup from "#components/cancel-booking-popup/cancel-booking-popup";
 
-const tabs = [
-  {
+const tabs = {
+  upcomming: {
     title: "Upcoming Trips",
     subtitle:
       "Upcoming Ipsum is simply dummy text of the printing and Lorem Ipsum is simply dummy Lorem Ipsum is simply the printing and Lorem Ipsum is simply dummy",
     tab: "Upcoming",
     status: "upcomming",
   },
-  {
+  cancelled: {
     title: "Cancelled Trips",
     subtitle:
       "Cancelled Ipsum is simply dummy text of the printing and Lorem Ipsum is simply dummy Lorem Ipsum is simply the printing and Lorem Ipsum is simply dummy",
     tab: "Cancelled",
     status: "cancelled",
   },
-  {
+  completed: {
     title: "Completed Trips",
     subtitle:
       "Completed Ipsum is simply dummy text of the printing and Lorem Ipsum is simply dummy Lorem Ipsum is simply the printing and Lorem Ipsum is simply dummy",
     tab: "Completed",
     status: "completed",
   },
-];
+};
 
 function MyTripsPage() {
+  const { status } = useParams();
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState(tabs[0]);
+  const selectedTab = tabs[status];
   const bookingsQuery = useQuery({
     queryKey: ["bookings", selectedTab?.status],
     queryFn: async () => {
@@ -66,15 +67,15 @@ function MyTripsPage() {
         <div className={styles.tabsContainer}>
           <h1>My Trips</h1>
           <div className={styles.tabSwitcher}>
-            {tabs?.map((tab) => (
+            {Object.keys(tabs)?.map((tab) => (
               <button
+                key={tab}
                 className={`${styles.tab} ${
-                  tab?.tab === selectedTab?.tab ? styles.selected : ""
+                  tabs?.[tab].tab === selectedTab?.tab ? styles.selected : ""
                 }`}
-                key={tab?.tab}
-                onClick={() => setSelectedTab(tab)}
+                onClick={() => navigate(`/my-trips/${tab}`)}
               >
-                {tab?.tab}
+                {tabs?.[tab].tab}
               </button>
             ))}
           </div>

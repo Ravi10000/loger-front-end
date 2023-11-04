@@ -37,7 +37,7 @@ const schema = z
       .string()
       .nonempty({ message: "Password required" })
       .min(8, { message: "Password should be atleast 8 characters" })
-      .max(16, { message: "Password should be atmost 16 characters" })
+      .max(32, { message: "Password should be atmost 32 characters" })
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
         {

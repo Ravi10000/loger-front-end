@@ -9,7 +9,7 @@ import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
 import { RiStarFill } from "react-icons/ri";
 import Stars from "#components/stars/stars";
 
-function WishlistCard({ property, prices, updateWishlist }) {
+function WishlistCard({ property, updateWishlist }) {
   const servicesQuery = useQuery({
     queryKey: ["services"],
     enabled: !!property?.facilities,
@@ -101,9 +101,12 @@ function WishlistCard({ property, prices, updateWishlist }) {
         </div>
         <div className={styles.price}>
           <p>Per Night</p>
-          <h3>
-            ₹ {prices[0]} - {prices[prices.length - 1]}
-          </h3>
+          {property?.prices && (
+            <h3>
+              ₹ {property?.prices?.[0]} -{" "}
+              {property?.prices?.[property?.prices?.length - 1]}
+            </h3>
+          )}
         </div>
       </div>
       <div className={styles.buttonContainer}>

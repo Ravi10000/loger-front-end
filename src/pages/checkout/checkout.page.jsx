@@ -31,11 +31,11 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/jpg",
   "image/png",
   "image/webp",
-  "image/svg+xml",
+  // "image/svg+xml",
 ];
 
 const checkoutSchema = z.object({
-  firstName: z.string().nonempty({ message: "First Name is Required" }),
+  firstName: z.string().nonempty({ message: "First Name is Req  uired" }),
   lastName: z.string(),
   // phone: z.string().nonempty({ message: "Phone is Required" }),
   email: z.string().email({ message: "Invalid Email" }),
@@ -44,7 +44,7 @@ const checkoutSchema = z.object({
     .refine((file) => file?.[0], "ID Proof Required.")
     .refine(
       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp, .svg formats are supported."
+      "Only .jpg, .jpeg, .png and .webp formats are supported."
     )
     .refine((file) => file?.[0]?.size <= 50_00_000, `Max image size is 5MB.`),
 });
@@ -76,7 +76,6 @@ function CheckoutPage({ currentUser }) {
     },
     resolver: zodResolver(checkoutSchema),
   });
-  console.log({ errors });
 
   const file = watch("file");
 
@@ -92,9 +91,6 @@ function CheckoutPage({ currentUser }) {
 
   let transactionAmount = 0;
   let transactionAmuontBeforeDiscount = 0;
-
-  if (!property || !totalPrice || !priceBeforeDiscount || !pkgDetails)
-    navigate(-1);
 
   if (checkInDate === checkOutDate) {
     transactionAmount = totalPrice;
@@ -119,6 +115,11 @@ function CheckoutPage({ currentUser }) {
       return guestsResponse?.data;
     },
   });
+
+  useEffect(() => {
+    if (!property || !totalPrice || !priceBeforeDiscount || !pkgDetails)
+      navigate(-1);
+  }, []);
   const transactionMutation = useMutation({
     mutationFn: async (formData) => {
       const requestData = {

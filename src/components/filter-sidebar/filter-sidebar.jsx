@@ -42,7 +42,7 @@ export function FilterGroup({ filterOptions }) {
   });
 
   const facilities = facilitiesQuery?.data?.facilities;
-  console.log({ facilities });
+  // console.log({ facilities });
   const [price, setPrice] = useFilter(null, "price");
   const [selectedFacilities, setSelectedFacilities] = useFilter(
     [],

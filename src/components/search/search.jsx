@@ -41,18 +41,8 @@ function Search() {
     enabled: !!deferredLocation && deferredLocation.length > 2 && isSearching,
     queryFn: async () => {
       const { data } = await getValidSearchOptions(deferredLocation);
-      console.log({ data });
-      // let validOptions = [];
+      // console.log({ data });
       return data;
-
-      // data.properties?.forEach((property) => {
-      //   let keys = Object.keys(property);
-      //   keys.forEach((key) => {
-      //     if (key !== "_id") validOptions.push(property[key]);
-      //   });
-      // });
-      // console.log({ validOptions });
-      // return validOptions;
     },
   });
   useEffect(() => {
@@ -60,6 +50,16 @@ function Search() {
       validOptionsQuery.refetch();
     }
   }, [deferredLocation]);
+
+  useEffect(() => {
+    searchParams.set("checkIn", checkIn);
+    setSearchParams(searchParams);
+  }, [checkIn]);
+
+  useEffect(() => {
+    searchParams.set("checkOut", checkOut);
+    setSearchParams(searchParams);
+  }, [checkOut]);
 
   function handleSearch() {
     navigate(
@@ -80,7 +80,7 @@ function Search() {
   }
 
   return (
-    <div className={styles.searchContainer}>
+    <div className={styles.searchContainer} id="search">
       <div className={styles.search}>
         <div className={`${styles.inputContainer} ${styles.hotelSelector}`}>
           <label htmlFor={`${id}-hotelSelector`}>

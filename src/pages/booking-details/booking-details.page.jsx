@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import LoadingPage from "#pages/loading/loading";
 import dayjs from "dayjs";
 import { currencyFormator } from "#utils/currency-formator";
+import Stars from "#components/stars/stars";
 
 function BookingDetailsPage() {
   const totalStars = 5;
@@ -150,16 +151,17 @@ function BookingDetailsPage() {
               <p>{property?.state}</p>
             </div>
             <div className={styles.ratingsContainer}>
-              <div className={styles.stars}>
+              {/* <div className={styles.stars}>
                 {[...Array(rating)].map((_, i) => (
                   <AiFillStar className={styles.star} key={i} />
                 ))}
                 {[...Array(totalStars - rating)].map((_, i) => (
                   <AiOutlineStar className={styles.star} key={i + rating} />
                 ))}
-              </div>
+              </div> */}
+              <Stars ratings={property?.averageRating} size={20} />
               <p>
-                {rating} / {totalStars}
+                {property?.averageRating} / {totalStars}
               </p>
             </div>
           </div>

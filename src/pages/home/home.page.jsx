@@ -37,6 +37,7 @@ function HomePage() {
       return response.data?.properties;
     },
   });
+  // console.log({ properties: propertiesQuery?.data });
   return (
     <div className={styles.homePage}>
       <HeroSection />
@@ -75,10 +76,20 @@ function HomePage() {
           ) : propertiesQuery?.isError ? (
             "error loading properties"
           ) : (
-            <PropertyCarousel
-              items={propertiesQuery?.data || []}
-              Component={PropertyCard}
-            />
+            // <PropertyCarousel
+            //   items={propertiesQuery?.data || []}
+            //   Component={PropertyCard}
+            // />
+            <PropertyCarousel length={propertiesQuery?.data?.length || 0}>
+              {propertiesQuery?.data &&
+                propertiesQuery?.data?.map((property) => (
+                  <div key={property?._id}>
+                    <div style={{ padding: "10px" }}>
+                      <PropertyCard property={property} />
+                    </div>
+                  </div>
+                ))}
+            </PropertyCarousel>
           )}
         </div>
       </section>
@@ -106,14 +117,34 @@ function HomePage() {
       <h2 className={styles.title}>Heavy Discount Properties</h2>
       <section className={styles.section}>
         <div className={styles.carouselContainer}>
-          <PropertyCarousel items={properties} Component={PropertyCard} />
+          {/* <PropertyCarousel items={properties} Component={PropertyCard} /> */}
+          <PropertyCarousel length={propertiesQuery?.data?.length || 0}>
+            {propertiesQuery?.data &&
+              propertiesQuery?.data?.map((property) => (
+                <div key={property?._id}>
+                  <div style={{ padding: "10px" }}>
+                    <PropertyCard item={property} />
+                  </div>
+                </div>
+              ))}
+          </PropertyCarousel>
         </div>
       </section>
       <DownloadSection />
       <h2 className={styles.title}>Around You</h2>
       <section className={styles.section}>
         <div className={styles.carouselContainer}>
-          <PropertyCarousel items={locations} Component={LocationCard} />
+          {/* <PropertyCarousel items={locations} Component={LocationCard} /> */}
+          <PropertyCarousel length={propertiesQuery?.data?.length || 0}>
+            {propertiesQuery?.data &&
+              propertiesQuery?.data?.map((property) => (
+                <div key={property?._id}>
+                  <div style={{ padding: "10px" }}>
+                    <PropertyCard item={property} />
+                  </div>
+                </div>
+              ))}
+          </PropertyCarousel>
         </div>
       </section>
       <h2 className={styles.title}>Our Testimonials</h2>

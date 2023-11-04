@@ -29,7 +29,10 @@ function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
           </p>
         </div>
       </div>
-      <div className={styles.option} onClick={() => navigate("/my-trips")}>
+      <div
+        className={styles.option}
+        onClick={() => navigate("/my-trips/upcomming")}
+      >
         <img src="/images/icons/calender-2.svg" alt="bookings" />
         <div className={styles.innerText}>
           <p>

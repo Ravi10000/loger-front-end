@@ -103,7 +103,11 @@ function App({ setCurrentUser, clearIsFetching }) {
             />
             <Route path="/faqs" element={<FaqPage />} />
             <Route path="/work" element={<WorkPage />} />
-            <Route path="/my-trips" element={<MyTripsPage />} />
+            <Route path="/my-trips/:status" element={<MyTripsPage />} />
+            <Route
+              path="/my-trips"
+              element={<Navigate to="/my-trips/upcomming" />}
+            />
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/refferal" element={<RefferalPage />} />

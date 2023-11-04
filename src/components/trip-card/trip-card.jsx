@@ -12,6 +12,7 @@ import Stars from "#components/stars/stars";
 import { useMutation } from "@tanstack/react-query";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
+import dayjs from "dayjs";
 
 function TripCard({ booking, setBookingToCancel }) {
   const property = booking?.property;
@@ -55,13 +56,23 @@ function TripCard({ booking, setBookingToCancel }) {
             <HiOutlineLocationMarker className={styles.icon} />
           </div>
           <div className={styles.description}>
-            <h4>Description</h4>
-            <p>
+            <h4>Details</h4>
+            <div className={styles.datesContainer}>
+              <div className={styles.date}>
+                <h5>Check In Date</h5>{" "}
+                <p>{dayjs(booking.checkInDate).format("DD/MM/YYYY")}</p>
+              </div>
+              <div className={styles.date}>
+                <h5>Check Out Date</h5>{" "}
+                <p>{dayjs(booking.checkOutDate).format("DD/MM/YYYY")}</p>
+              </div>
+            </div>
+            {/* <p>
               <Balancer>
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. Lorem Ipsum has been the industry Read More...
               </Balancer>
-            </p>
+            </p> */}
           </div>
         </div>
         <div className={styles.bottomSection}>

@@ -60,6 +60,11 @@ function RoomCard({
         },
       }));
   }, [roomCount]);
+  const checkInDate = dayjs(bookingDetails?.checkInDate).format(
+    "dddd, DD/MM/YYYY"
+  );
+  const daysToGo =
+    dayjs(bookingDetails?.checkInDate).diff(dayjs(new Date()), "day") + 1;
 
   return (
     <div className={styles.roomCard}>
@@ -164,42 +169,12 @@ function RoomCard({
               <p>{room?.daysLeft}</p>
             </div>
             <div className={styles.roomCount}>
-              {/* <p>Rooms Selected:</p> */}
-              {/* <CustomSelect
-                selected={roomCount}
-                onCountChange={(count) => {
-                  setPkgDetails((prevState) => {
-                    console.log("changeTo: ", {
-                      ...prevState,
-                      [room.roomName]: {
-                        price: room.price,
-                        count,
-                      },
-                    });
-                    return {
-                      ...prevState,
-                      [room.roomName]: {
-                        discountedPrice: room.discountedPrice,
-                        price: room.price,
-                        count,
-                      },
-                    };
-                  });
-                }}
-                // setPkgDetails={setPkgDetails}
-                list={Array(totalCount)
-                  .fill()
-                  .map((_, i) => i + 1)}
-              /> */}
               <Counter
                 value={roomCount}
                 title="No Of Rooms"
                 setValue={setRoomCount}
               />
             </div>
-            {/* <CustomButton onClick={() => navigate("/checkout")}>
-              Reserve a Room
-            </CustomButton> */}
           </>
         ) : (
           <>
@@ -208,22 +183,11 @@ function RoomCard({
             <div className={`${styles.bookingDetails}`}>
               <div className={styles.info}>
                 <p>check in</p>
-                <h3>
-                  {dayjs(bookingDetails?.checkInDate).format(
-                    "dddd, DD/MM/YYYY"
-                  )}
-                </h3>
+                <h3>{checkInDate}</h3>
                 <p>Time - 12:00 - 00:00</p>
                 <div className={styles.iconInfo}>
                   <PiWarningCircle className={styles.icon} />
-                  <p>
-                    Just{" "}
-                    {dayjs(bookingDetails?.checkInDate).diff(
-                      dayjs(new Date()),
-                      "day"
-                    ) + 1}{" "}
-                    Days To Go!
-                  </p>
+                  <p>Just {daysToGo} Days To Go!</p>
                 </div>
               </div>
               <div className={styles.info}>
@@ -247,10 +211,6 @@ function RoomCard({
             <div className={styles.bookingDetails}>
               <h3>You Selected</h3>
               {/* <p className={styles.link}>Change Your Selection</p> */}
-              {() => {
-                // const roomNames = Object.keys(pkgDetails.rooms);
-                return <></>;
-              }}
             </div>
             <p>Superior King Room</p>
             <div className={styles.topBorder}></div>

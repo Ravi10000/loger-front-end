@@ -60,3 +60,25 @@
   font-size: 0.9rem;
   letter-spacing: 2px;
 }
+.fileInput.profile {
+  height: 100px;
+  width: 100px;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  .inputContainer {
+    border-radius: 50%;
+  }
+  .removeIcon {
+    display: none;
+  }
+  .icon {
+    pointer-events: none;
+    position: absolute;
+    color: #fff;
+    left: 20px;
+    bottom: 20px;
+    height: 25px;
+    width: fit-content;
+  }
+}

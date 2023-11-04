@@ -19,21 +19,15 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/jpg",
   "image/png",
   "image/webp",
-  "image/svg+xml",
+  // "image/svg+xml",
 ];
 
 function ReviewPopup({ currentUser, pushFlash }) {
-  console.log({ currentUser });
   const { propertyReviewing, closeReviewWindow } = useReviewWindow();
   const [rating, setRating] = useState(0);
   const [images, setImages] = useState([]);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const reviewMutation = useMutation({
     mutationFn: async (data) => {
@@ -47,7 +41,6 @@ function ReviewPopup({ currentUser, pushFlash }) {
         images.forEach((image) => {
           formData.append("images", image);
         });
-
       const response = await addReview(formData);
       return response?.data;
     },
@@ -85,7 +78,7 @@ function ReviewPopup({ currentUser, pushFlash }) {
       pushFlash({
         type: "error",
         message:
-          "invalid file type, only images of format png | jpg | jpeg and svg and webp are allowd",
+          "invalid file type, only images of format png | jpg | jpeg  and webp are allowd",
       });
       return;
     }
@@ -126,6 +119,7 @@ function ReviewPopup({ currentUser, pushFlash }) {
                   const ratingValue = i + 1;
                   return ratingValue <= rating ? (
                     <AiFillStar
+                      key={i}
                       className={`${styles.icon} ${styles.filled}`}
                       onClick={() => setRating(ratingValue)}
                     />

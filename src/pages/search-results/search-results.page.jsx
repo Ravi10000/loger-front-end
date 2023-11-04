@@ -28,7 +28,7 @@ function SearchResultsPage() {
   const noOfRooms = parseInt(searchParams.get("noOfRooms"));
   const noOfAdults = parseInt(searchParams.get("noOfAdults"));
   const propertyId = searchParams.get("propertyId");
-  console.log({ propertyId });
+  // console.log({ propertyId });
   // const [price, setPrice] = useFilter(null, "price");
   // const [facilities, setFacilities] = useFilter([], "facilities");
   // const [propertyTypes, setPropertyTypes] = useFilter([], "propertyTypes");
@@ -41,14 +41,14 @@ function SearchResultsPage() {
   const propertyTypes = searchParams.get("propertyTypes")
     ? JSON.parse(searchParams.get("propertyTypes"))
     : null;
-  console.log({ price, facilities, propertyTypes });
+  // console.log({ price, facilities, propertyTypes });
 
   const propertiesQuery = useQuery({
     queryKey: ["products", "search"],
     queryFn: async () => {
       let res = {};
       if (!price && !facilities?.length && !propertyTypes?.length) {
-        res = await searchProperties({
+        res = await filterProperties({
           queryText: location,
           checkIn,
           checkOut,
@@ -127,31 +127,15 @@ function SearchResultsPage() {
           </div>
         </div>
         <div className={styles.right}>
-          {/* {Array(10)
-            .fill()
-            .map((_, i) => (
-              <SearchResultCard key={i} property={searchResult} />
-            ))} */}
-          {/* {propertiesQuery?.data?.map((property) => (
-            <SearchResultCard key={property._id} property={property} />
-          ))} */}
-
-          {/* <div className={styles.loaderContainer}>
-            <span className={styles.loader}></span>
-          </div> */}
-
           {propertiesQuery?.isLoading ? (
             <LoadingPage />
-          ) : // <div className={styles.loaderContainer}>
-          //   <span className={styles.loader}></span>
-          // </div>
-          propertiesQuery?.isError ? (
+          ) : propertiesQuery?.isError ? (
             <div className={styles.loaderContainer}>
               <p>Erros occured while fetching properties, please try again.</p>
             </div>
           ) : (
             propertiesQuery?.data?.map((property, idx) => {
-              return (
+              return property?.packages ? (
                 <Fragment key={idx}>
                   {property?.packages?.map((pkg, idx) => {
                     return (
@@ -159,12 +143,12 @@ function SearchResultsPage() {
                         key={idx}
                         property={property}
                         pkg={pkg}
-                        roomsCount={noOfRooms}
-                        adultsCount={noOfAdults}
                       />
                     );
                   })}
                 </Fragment>
+              ) : (
+                <SearchResultCard property={property} key={property?._id} />
               );
             })
           )}

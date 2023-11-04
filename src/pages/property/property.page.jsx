@@ -27,6 +27,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { useAuthWindow } from "#contexts/auth-window.context";
 import { addToWishlist, removeFromWishlist } from "#api/wishlist.req";
+import { currencyFormator } from "#utils/currency-formator";
+import { pushFlash } from "#redux/flash/flash.actions";
 
 const gridFooterOptions = [
   "Overview",
@@ -37,10 +39,11 @@ const gridFooterOptions = [
   "Reviews",
 ];
 
-function PropertyPage({ currentUser }) {
+function PropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
   const { state } = useLocation();
   const pkg = state?.pkg || [];
+  const prices = state?.prices;
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const [pkgDetails, setPkgDetails] = useState(() => {
@@ -58,6 +61,10 @@ function PropertyPage({ currentUser }) {
     return details;
   });
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const checkIn = searchParams.get("checkIn");
+  const checkOut = searchParams.get("checkOut");
+
   const currentUrlParams = searchParams.toString();
   const { propertyId } = useParams();
 
@@ -256,25 +263,39 @@ function PropertyPage({ currentUser }) {
                 property,
               }}
             > */}
-            <CustomButton
-              onClick={() => {
-                if (!currentUser) {
-                  openAuthWindow("signin");
-                  return;
-                }
-                return navigate(`/checkout?${currentUrlParams}`, {
-                  state: {
-                    pkgDetails,
-                    totalPrice,
-                    priceBeforeDiscount,
-                    property,
-                  },
-                });
-              }}
-              fit
-            >
-              Book Now
-            </CustomButton>
+            {!checkIn || !checkOut ? (
+              <HashLink
+                to={`/property/${propertyId}#search`}
+                onClick={() => {
+                  pushFlash({
+                    type: "warning",
+                    message: "Please select check-in and check-out dates",
+                  });
+                }}
+              >
+                <CustomButton fit>Book Now</CustomButton>
+              </HashLink>
+            ) : (
+              <CustomButton
+                onClick={() => {
+                  if (!currentUser) {
+                    openAuthWindow("signin");
+                    return;
+                  }
+                  return navigate(`/checkout?${currentUrlParams}`, {
+                    state: {
+                      pkgDetails,
+                      totalPrice,
+                      priceBeforeDiscount,
+                      property,
+                    },
+                  });
+                }}
+                fit
+              >
+                Book Now
+              </CustomButton>
+            )}
             {/* </Link> */}
             {/* </HashLink> */}
           </div>
@@ -296,7 +317,13 @@ function PropertyPage({ currentUser }) {
           <div className={styles.priceContainer}>
             <div className={styles.price}>
               <p>Per Night</p>
-              <h3>₹ {totalPrice}</h3>
+              <h3>
+                {totalPrice
+                  ? currencyFormator(totalPrice)
+                  : prices
+                  ? currencyFormator(prices?.[0])
+                  : ""}
+              </h3>
             </div>
             <p>₹ 100 taxes and charges</p>
           </div>
@@ -505,4 +532,4 @@ function PropertyPage({ currentUser }) {
 const mapState = ({ user: { currentUser } }) => ({
   currentUser,
 });
-export default connect(mapState)(PropertyPage);
+export default connect(mapState, { pushFlash })(PropertyPage);

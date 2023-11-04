@@ -63,27 +63,6 @@ function Reviews({ property }) {
                   Out of <br />5 Star
                 </p>
                 <Stars ratings={property?.averageRating} />
-                {/* <div className={styles.stars}>
-                  {property?.averageRating && (
-                    <>
-                      {[...Array(filledStars)].map((_, i) => (
-                        <RiStarFill
-                          key={`${i}-filled`}
-                          className={styles.star}
-                        />
-                      ))}
-                      {emptyStars && (
-                        <RiStarHalfFill
-                          key="half-filled"
-                          className={styles.star}
-                        />
-                      )}
-                      {[...Array(emptyStars)].map((_, i) => (
-                        <RiStarLine key={`${i}-line`} className={styles.star} />
-                      ))}
-                    </>
-                  )}
-                </div> */}
               </div>
             </div>
           </div>

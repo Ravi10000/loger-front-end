@@ -1,6 +1,7 @@
 .tripCardContainer {
   background: #f2f6fa;
   border-radius: 15px;
+  max-width: 400px;
   .tripCard {
     display: flex;
     flex-direction: column;
@@ -151,11 +152,31 @@
   }
 }
 
+.datesContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 15px;
+}
+
+.date {
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  padding-block: 10px;
+  background-color: rgb(200, 232, 246);
+  h5 {
+    color: var(--main-brand-color);
+  }
+}
+
 @media (min-width: 1024px) {
   .tripCardContainer {
     display: flex;
     align-items: center;
     background: transparent;
+    max-width: none;
     .tripCard {
       flex-direction: row;
       min-width: 800px;

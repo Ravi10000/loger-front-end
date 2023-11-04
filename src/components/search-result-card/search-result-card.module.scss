@@ -2,7 +2,25 @@
   border-radius: 15px;
   overflow: hidden;
   background: #f2f6fa;
-
+  position: relative;
+  .propertyType {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    font-weight: 800;
+    color: #2a9d8f;
+    background-color: #e9edc9;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    &.apartment {
+      color: #023047;
+      background-color: #bde0fe;
+    }
+  }
   .imageContainer {
     width: 100%;
     position: relative;

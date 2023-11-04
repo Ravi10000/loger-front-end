@@ -11,9 +11,12 @@ import { IoIosMore } from "react-icons/io";
 import { useFilter } from "#hooks/use-filter";
 import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
+import { currencyFormator } from "#utils/currency-formator";
 
-function SearchResultCard({ property, pkg }) {
+function SearchResultCard({ property, apartmentDetails, pkg }) {
   console.log({ property });
+
+  const isHotel = property?.propertyType === "hotel";
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,15 +28,18 @@ function SearchResultCard({ property, pkg }) {
 
   // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
 
-  const rooms = useMemo(
-    () => findUniqueObjects(pkg?.rooms, "name"),
-    [pkg?.rooms]
-  );
+  const rooms = pkg
+    ? useMemo(() => findUniqueObjects(pkg?.rooms, "name"), [pkg?.rooms])
+    : null;
 
   return (
     <div className={styles.searchResultCard}>
+      {isHotel ? (
+        <span className={`${styles.propertyType} ${styles.hotel}`}>H</span>
+      ) : (
+        <span className={`${styles.propertyType} ${styles.apartment}`}>A</span>
+      )}
       <div className={styles.imageContainer}>
-        {/* <img src="/images/property (2).png" alt="property" /> */}
         <img
           src={`${import.meta.env.VITE_SERVER_URL}/images/${
             property?.photos?.[0]?.photoUrl // TODO: change this to show main photo
@@ -72,31 +78,33 @@ function SearchResultCard({ property, pkg }) {
               industry. Lorem Ipsum has been the industry Read More...
             </p>
           </div>
-          <div className={styles.rooms}>
-            {/* <h4>
-              <span>
-                <span>
-                  <RiUser4Fill /> Capacity :
-                </span>
-                {adultsCount}
-              </span>
-            </h4> */}
-            <h4>
-              {roomsCount > 1 ? `${roomsCount} Rooms` : `${roomsCount} Room`}
-            </h4>
-            <ul>
-              {rooms?.map((room) => (
-                <li key={room.name} className={styles.room}>
-                  {room.roomCount} &times; {room.name} &nbsp;
-                  {Array(room.capacity)
-                    .fill()
-                    .map((_, i) => (
-                      <RiUser4Fill key={i} />
-                    ))}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {isHotel && pkg ? (
+            <div className={styles.rooms}>
+              <h4>
+                {roomsCount > 1 ? `${roomsCount} Rooms` : `${roomsCount} Room`}
+              </h4>
+              <ul>
+                {rooms?.map((room) => (
+                  <li key={room.name} className={styles.room}>
+                    {room.roomCount} &times; {room.name} &nbsp;
+                    {Array(room.capacity)
+                      .fill()
+                      .map((_, i) => (
+                        <RiUser4Fill key={i} />
+                      ))}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            !isHotel &&
+            apartmentDetails && (
+              <div className={styles.apartmentDetails}>
+                <h4>Apartment Details</h4>
+                <p>Ocupancty: {apartmentDetails.occupancy}</p>
+              </div>
+            )
+          )}
           <h4>{property?.roomType}</h4>
           <div className={styles.services}>
             <h4>Services</h4>
@@ -126,15 +134,12 @@ function SearchResultCard({ property, pkg }) {
         </div>
         <div className={styles.reviewNbooking}>
           <div className={styles.reviews}>
-            <h4>{calculateReviewMsg(property?.averageRating)}</h4>
+            <h4>
+              {property?.averageRating
+                ? calculateReviewMsg(property?.averageRating)
+                : "N/A"}
+            </h4>
             <div className={styles.rating}>
-              {/* <div className={styles.stars}>
-                {Array(parseInt(property?.averageRating))
-                  .fill()
-                  .map((_, i) => (
-                    <RiStarFill key={i} className={styles.star} />
-                  ))}
-              </div> */}
               <p>{property?.averageRating}</p>
               <Stars
                 ratings={property?.averageRating}
@@ -142,11 +147,18 @@ function SearchResultCard({ property, pkg }) {
                 size={20}
               />
             </div>
-            <p>Reviews &#40;{totalReviews(property?.ratings)}&#41;</p>
+            <p>
+              Reviews &#40;
+              {property?.ratings && totalReviews(property?.ratings)}&#41;
+            </p>
           </div>
           <div className={styles.priceContainer}>
             <h4>Per Night</h4>
-            <p className={styles.amount}>₹ {pkg?.price}</p>
+            <p className={styles.amount}>
+              {isHotel
+                ? currencyFormator(pkg ? pkg.price : property?.prices?.[0])
+                : apartmentDetails && currencyFormator(apartmentDetails?.price)}
+            </p>
             <p>₹ 100 taxes and charges</p>
           </div>
           <div className={styles.btnContainer}>

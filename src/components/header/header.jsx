@@ -57,8 +57,23 @@ function Header({ currentUser }) {
               }}
               className={styles.accountButton}
             >
-              <div className={styles.initials}>
-                <p>{currentUser?.fName?.[0].toUpperCase()}</p>
+              <div
+                className={styles.initials}
+                style={{
+                  ...(currentUser?.profilePic && {
+                    backgroundImage: `url("${
+                      import.meta.env.VITE_SERVER_URL
+                    }/images/${currentUser?.profilePic}")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundColor: "transparent",
+                  }),
+                }}
+              >
+                {!currentUser?.profilePic && (
+                  <p>{currentUser?.fName?.[0].toUpperCase()}</p>
+                )}
               </div>
               <IoIosArrowDown
                 className={`${styles.icon} ${isPopupOpen ? styles.flip : ""}`}
