@@ -12,7 +12,6 @@ import App from "./App.jsx";
 import AuthWindowProvider from "#contexts/auth-window.context.jsx";
 import ReviewWindowProvider from "#contexts/review-window.context.jsx";
 import store from "#redux/store";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const queryClient = new QueryClient({
   // defaultOptions: {
@@ -37,13 +36,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <AuthWindowProvider>
               <ReviewWindowProvider>
                 <App />
               </ReviewWindowProvider>
             </AuthWindowProvider>
-          </GoogleOAuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </Provider>

@@ -13,7 +13,7 @@ import { setCurrentUser } from "#redux/user/user.actions";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
 import { setAuthToken } from "#api/index";
-import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
+// import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
 
 const schema = z.object({
   email: z.string().email({ message: "invalid email" }),
@@ -81,7 +81,7 @@ function SigninWindow({ setCurrentUser, pushFlash }) {
           {/* <div className={styles.iconContainer}>
             <img src="/images/icons/google.png" alt="google" />
           </div> */}
-          <GoogleAuthButton />
+          {/* <GoogleAuthButton /> */}
         </div>
         <div className={styles.seperator}>
           <p>or</p>
