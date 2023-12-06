@@ -8,19 +8,40 @@ import { fetchMultipleFacilities } from "#api/facilities.req";
 import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
 import { RiStarFill } from "react-icons/ri";
 import Stars from "#components/stars/stars";
+import { fetchProperty } from "#api/properties.req";
 
-function WishlistCard({ property, updateWishlist }) {
-  const servicesQuery = useQuery({
-    queryKey: ["services"],
-    enabled: !!property?.facilities,
+function WishlistCard({ propertyId, updateWishlist }) {
+  // const servicesQuery = useQuery({
+  //   queryKey: ["services"],
+  //   enabled: !!propertyId?.facilities,
+  //   queryFn: async () => {
+  //     const response = await fetchMultipleFacilities(propertyId?.facilities);
+  //     console.log({ response });
+  //     return response?.data;
+  //   },
+  // });
+  // const { isError, isLoading } = servicesQuery;
+  // const services = servicesQuery?.data?.facilities;
+
+  const propertyQuery = useQuery({
+    queryKey: ["property", propertyId],
+    enabled: !!propertyId,
     queryFn: async () => {
-      const response = await fetchMultipleFacilities(property?.facilities);
-      console.log({ response });
-      return response?.data;
+      try {
+        const res = await fetchProperty(propertyId);
+        console.log({ res });
+        return res?.data || {};
+      } catch (err) {
+        console.log("error while fetching property");
+        console.error({ err: err?.response?.data });
+      }
     },
   });
-  const { isError, isLoading } = servicesQuery;
-  const services = servicesQuery?.data?.facilities;
+
+  const { isError: propertyError, isLoading: propertyLoading } = propertyQuery;
+  const property = propertyQuery?.data?.property;
+
+  console.log({ property });
 
   return (
     <div className={styles.wishlistCard}>
@@ -34,7 +55,7 @@ function WishlistCard({ property, updateWishlist }) {
       >
         <div
           className={styles.iconContainer}
-          onClick={() => updateWishlist(property?._id)}
+          onClick={() => updateWishlist(propertyId?._id)}
         >
           <IoClose className={styles.close} />
         </div>
@@ -61,7 +82,7 @@ function WishlistCard({ property, updateWishlist }) {
           <h3>Services</h3>
           {/* <p>Lorem Ipsum is simply dummy text of the printing and</p> */}
           <div className={styles.services}>
-            {services &&
+            {/* {services &&
               services
                 // ?.filter((_, i) => i < 5)
                 ?.map((service) => (
@@ -74,14 +95,17 @@ function WishlistCard({ property, updateWishlist }) {
                     }
                     alt=""
                   />
-                ))}
+                ))} */}
             {/* {services?.length > 5 && <p>more...</p>} */}
           </div>
         </div>
       </div>
       <div className={styles.priceNReviews}>
         <div className={styles.reviews}>
-          <h4>{calculateReviewMsg(property?.averageRating)}</h4>
+          <h4>
+            {property?.averageRating &&
+              calculateReviewMsg(property?.averageRating)}
+          </h4>
           <div className={styles.rating}>
             <p>{property?.averageRating}</p>
             <Stars
@@ -97,7 +121,10 @@ function WishlistCard({ property, updateWishlist }) {
                 ))}
             </div> */}
           </div>
-          <p>Reviews &#40;{totalReviews(property?.ratings)}&#41;</p>
+          <p>
+            Reviews &#40;{property?.ratings && totalReviews(property?.ratings)}
+            &#41;
+          </p>
         </div>
         <div className={styles.price}>
           <p>Per Night</p>

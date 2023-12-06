@@ -16,6 +16,7 @@ import ReviewPopup from "#components/review-popup/review-popup";
 import FlashGroup from "#components/flash-group/flash-group";
 import ScrollToTop from "#components/scrollToTop";
 import useFetchUser from "#hooks/fetch-user";
+import WithShouldMount from "#components/withShouldMount";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -54,11 +55,11 @@ const BookingDetailsPage = lazy(() =>
   import("#pages/booking-details/booking-details.page")
 );
 
-function App({ setCurrentUser, clearIsFetching }) {
+function App() {
   console.count("render... <App />");
-  const { pathname } = useLocation();
-  const isAuthRoute = pathname.includes("/auth");
-  useFetchUser();
+  // const { pathname } = useLocation();
+  // const isAuthRoute = pathname.includes("/auth");
+    useFetchUser(); 
   // const userQuery = useQuery({
   //   queryKey: ["user"],
   //   queryFn: async () => {
@@ -74,23 +75,25 @@ function App({ setCurrentUser, clearIsFetching }) {
   return (
     <div className={styles.App}>
       <ScrollToTop />
-
       <FlashGroup />
       <ReviewPopup />
       <AuthWindow />
-      {!isAuthRoute && !pathname.includes("/booking-details") && <Header />}
+      {/* {!isAuthRoute && !pathname.includes("/booking-details") && <Header />} */}
+      <WithShouldMount excludePathList={["/auth", "/booking-details"]}>
+        <Header />
+      </WithShouldMount>
 
       <div className={styles.page}>
         <Suspense fallback={<LoadingPage />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route
+            {/* <Route path="/auth/login" element={<LoginPage />} /> */}
+            {/* <Route
               path="/auth/forgot-password"
               element={<ForgotPasswordPage />}
-            />
-            <Route path="/auth/register" element={<RegisterPage />} />
-            <Route path="/auth/verify-email" element={<VerifyEmailPage />} />
+            /> */}
+            {/* <Route path="/auth/register" element={<RegisterPage />} /> */}
+            {/* <Route path="/auth/verify-email" element={<VerifyEmailPage />} /> */}
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/property/:propertyId" element={<PropertyPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
@@ -119,13 +122,16 @@ function App({ setCurrentUser, clearIsFetching }) {
           </Routes>
         </Suspense>
       </div>
-      {!pathname.includes("/booking-details") && <Footer />}
+      {/* {!pathname.includes("/booking-details") && <Footer />} */}
+      <WithShouldMount excludePathList={["/booking-details"]}>
+        <Footer />
+      </WithShouldMount>
     </div>
   );
 }
 
-const mapState = (state) => ({
-  currentUser: state.user.currentUser,
-  isFetchingUser: state.user.isFetching,
-});
-export default connect(mapState, { setCurrentUser, clearIsFetching })(App);
+// const mapState = (state) => ({
+//   currentUser: state.user.currentUser,
+//   isFetchingUser: state.user.isFetching,
+// });
+export default App;

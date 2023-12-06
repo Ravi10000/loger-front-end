@@ -66,11 +66,7 @@ function PropertyCard({ property }) {
           <p> {currencyFormator(property?.prices?.[0] || 0)}</p>
           <CustomButton
             fit
-            onClick={() =>
-              navigate(`/property/${property?._id}`, {
-                state: { prices: property?.prices },
-              })
-            }
+            onClick={() => navigate(`/property/${property?._id}`)}
           >
             View Details
           </CustomButton>

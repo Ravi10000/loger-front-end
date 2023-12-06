@@ -49,7 +49,7 @@ function RoomCard({
     }
   };
   useEffect(() => {
-    if (setPkgDetails)
+    if (setPkgDetails && roomCount)
       setPkgDetails((prevState) => ({
         ...prevState,
         [room.roomName]: {

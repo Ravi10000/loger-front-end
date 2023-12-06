@@ -9,8 +9,11 @@ import { MdOutlineLocationOn } from "react-icons/md";
 import { LuHotel } from "react-icons/lu";
 import { VscCircleLargeFilled } from "react-icons/vsc";
 import { FaTreeCity } from "react-icons/fa6";
+import dayjs from "dayjs";
+import { pushFlash } from "#redux/flash/flash.actions";
+import { connect } from "react-redux";
 
-function Search() {
+function Search({ pushFlash }) {
   const [searchParams, setSearchParams] = useSearchParams();
   // const checkIn = searchParams.get("checkIn");
   // const checkOut = searchParams.get("checkOut");
@@ -41,7 +44,6 @@ function Search() {
     enabled: !!deferredLocation && deferredLocation.length > 2 && isSearching,
     queryFn: async () => {
       const { data } = await getValidSearchOptions(deferredLocation);
-      // console.log({ data });
       return data;
     },
   });
@@ -52,30 +54,53 @@ function Search() {
   }, [deferredLocation]);
 
   useEffect(() => {
-    searchParams.set("checkIn", checkIn);
-    setSearchParams(searchParams);
+    if (checkIn) {
+      searchParams.set("checkIn", checkIn);
+      setSearchParams(searchParams);
+    }
   }, [checkIn]);
 
   useEffect(() => {
-    searchParams.set("checkOut", checkOut);
-    setSearchParams(searchParams);
+    // if (!checkIn) {
+    //   pushFlash({
+    //     type: "info",
+    //     message: "Please select check in date first",
+    //   });
+    //   return;
+    // }
+    // if (checkOut && checkIn && dayjs(checkOut).isBefore(dayjs(checkIn))) {
+    //   pushFlash({
+    //     type: "info",
+    //     message: "Check out date cannot be before check in date",
+    //   });
+    //   return;
+    // }
+    if (checkOut) {
+      searchParams.set("checkOut", checkOut);
+      setSearchParams(searchParams);
+    }
   }, [checkOut]);
 
   function handleSearch() {
+    if (!noOfAdults) setNoOfAdults(1);
+    if (!noOfRooms) setNoOfRooms(1);
+    let newCheckOut = checkOut;
+    let newCheckIn = checkIn;
+
+    if (!checkIn) {
+      newCheckIn = dayjs().format("YYYY-MM-DD");
+      setCheckIn(newCheckIn);
+    }
+    if (!checkOut) {
+      newCheckOut = dayjs(dayjs(newCheckIn).add(1, "day")).format("YYYY-MM-DD");
+      setCheckOut(newCheckOut);
+    }
     navigate(
-      `/search-results?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${noOfRooms}&noOfAdults=${noOfAdults}${
+      `/search-results?checkIn=${newCheckIn}&checkOut=${newCheckOut}&location=${location}&noOfRooms=${
+        noOfRooms || 1
+      }&noOfAdults=${noOfAdults || 1}${
         selectedProperty ? `&propertyId=${selectedProperty?._id}` : ""
       }`
-      // {
-      //   state: {
-      //     checkIn,
-      //     checkOut,
-      //     location,
-      //     noOfRooms,
-      //     noOfAdults,
-      //     noOfChildren,
-      //   },
-      // }
     );
   }
 
@@ -213,4 +238,4 @@ function SearchOptionsList({ query, setQueryText, setSelectedProperty }) {
   );
 }
 
-export default Search;
+export default connect(null, { pushFlash })(Search);

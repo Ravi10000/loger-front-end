@@ -83,7 +83,7 @@ function WishlistPage() {
             <div className={styles.cardsContainer}>
               {properties?.map((property) => (
                 <WishlistCard
-                  property={property}
+                  propertyId={property}
                   key={property?._id}
                   updateWishlist={wishlistMutation.mutate}
                 />

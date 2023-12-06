@@ -2,7 +2,7 @@ import { fetchUserDetails } from "#api/auth.req";
 import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 function useFetchUser() {
   const dispatch = useDispatch();
@@ -21,4 +21,3 @@ function useFetchUser() {
 }
 
 export default useFetchUser;
-// export default connect(null, { setCurrentUser, clearIsFetching })(useFetchUser);

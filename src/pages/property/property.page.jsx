@@ -42,8 +42,9 @@ const gridFooterOptions = [
 function PropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
   const { state } = useLocation();
+  console.count("rendering property page");
   const pkg = state?.pkg || [];
-  const prices = state?.prices;
+  console.log({ pkg });
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const [pkgDetails, setPkgDetails] = useState(() => {
@@ -60,17 +61,17 @@ function PropertyPage({ currentUser, pushFlash }) {
 
     return details;
   });
-  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [searchParams] = useSearchParams();
 
   const checkIn = searchParams.get("checkIn");
   const checkOut = searchParams.get("checkOut");
-
+  const noOfAdults = searchParams.get("noOfAdults");
   const currentUrlParams = searchParams.toString();
   const { propertyId } = useParams();
 
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
-  const [isSaved, setIsSaved] = useState(false);
 
   const propertyQuery = useQuery({
     queryKey: ["property", propertyId],
@@ -90,7 +91,16 @@ function PropertyPage({ currentUser, pushFlash }) {
   const { isError, isLoading } = propertyQuery;
 
   const { property, rooms, isInWishlist } = propertyQuery?.data || {};
+  useEffect(() => {
+    property?.apartment?.prices?.forEach?.((pkg) => {
+      if (pkg?.occupancy == noOfAdults) {
+        setTotalPrice(pkg?.discountedPrice);
+        setPriceBeforeDiscount(pkg?.price);
+      }
+    });
+  }, [propertyQuery, noOfAdults]);
   const client = useQueryClient();
+
   const wishlistMutation = useMutation({
     mutationFn: async () => {
       let response = {};
@@ -113,8 +123,11 @@ function PropertyPage({ currentUser, pushFlash }) {
   });
 
   const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
+
   // const [foundMainPhoto, setFoundMainPhoto] = useState(false);
   let foundMainPhoto = false;
+  // return <></>;
+
   useEffect(() => {
     let price = 0;
     let priceBeforeDiscount = 0;
@@ -149,10 +162,7 @@ function PropertyPage({ currentUser, pushFlash }) {
               </div>
               <p>Share</p>
             </div>
-            <div
-              className={styles.action}
-              onClick={() => setIsSaved((prevState) => !prevState)}
-            >
+            <div className={styles.action}>
               <div
                 className={styles.iconContainer}
                 onClick={wishlistMutation.mutate}
@@ -251,18 +261,6 @@ function PropertyPage({ currentUser, pushFlash }) {
           </div>
           <div className={styles.right}>
             <p>7 days left</p>
-            {/* <HashLink
-              to={`/property/${propertyId}?${currentUrlParams}/#reserve-room`}
-            > */}
-            {/* <Link
-              to="/checkout"
-              state={{
-                pkgDetails,
-                totalPrice,
-                priceBeforeDiscount,
-                property,
-              }}
-            > */}
             {!checkIn || !checkOut ? (
               <HashLink
                 to={`/property/${propertyId}#search`}
@@ -296,8 +294,6 @@ function PropertyPage({ currentUser, pushFlash }) {
                 Book Now
               </CustomButton>
             )}
-            {/* </Link> */}
-            {/* </HashLink> */}
           </div>
         </div>
       </div>
@@ -317,13 +313,7 @@ function PropertyPage({ currentUser, pushFlash }) {
           <div className={styles.priceContainer}>
             <div className={styles.price}>
               <p>Per Night</p>
-              <h3>
-                {totalPrice
-                  ? currencyFormator(totalPrice)
-                  : prices
-                  ? currencyFormator(prices?.[0])
-                  : ""}
-              </h3>
+              <h3>{totalPrice ? currencyFormator(totalPrice) : ""}</h3>
             </div>
             <p>₹ 100 taxes and charges</p>
           </div>

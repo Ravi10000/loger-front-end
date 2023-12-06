@@ -10,6 +10,7 @@ import LoadingPage from "#pages/loading/loading";
 import dayjs from "dayjs";
 import { currencyFormator } from "#utils/currency-formator";
 import Stars from "#components/stars/stars";
+import { fetchProperty } from "#api/properties.req";
 
 function BookingDetailsPage() {
   const totalStars = 5;
@@ -25,9 +26,27 @@ function BookingDetailsPage() {
       return bookingResposne?.data;
     },
   });
+
+  const propertyQuery = useQuery({
+    queryKey: ["property", bookingQuery?.data?.booking?.propertyId],
+    enabled: !!bookingQuery?.data?.booking?.propertyId,
+    queryFn: async () => {
+      try {
+        const res = await fetchProperty(
+          bookingQuery?.data?.booking?.propertyId
+        );
+        console.log({ res });
+        return res?.data || {};
+      } catch (err) {
+        console.log("error while fetching property");
+        console.error({ err: err?.response?.data });
+      }
+    },
+  });
+
   const transaction = bookingQuery?.data?.transaction;
   const booking = bookingQuery?.data?.booking;
-  const property = bookingQuery?.data?.booking?.property;
+  const property = propertyQuery?.data?.property;
   const pkgDetails = booking?.pkgDetails && JSON.parse(booking?.pkgDetails);
   const paymentResponse =
     transaction?.response && JSON.parse(transaction?.response);

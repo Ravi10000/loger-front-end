@@ -26,7 +26,7 @@ function CustomDatePicker({ label, date, setDate }) {
           alt="date picker"
         />
 
-        {date || <p>{label}</p>}
+        {date ? dayjs(date).format("DD-MMM-YYYY") : <p>{label}</p>}
       </button>
       <DatePicker
         shouldCloseCalendar={() => {

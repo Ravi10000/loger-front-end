@@ -101,11 +101,13 @@ function CheckoutPage({ currentUser }) {
     transactionAmuontBeforeDiscount = priceBeforeDiscount * stayLength;
   }
   const newPkgDetails = {};
-  newPkgDetails.rooms = { ...pkgDetails };
-  newPkgDetails.noOfAdults = noOfAdults;
-  newPkgDetails.noOfRooms = noOfRooms;
-  newPkgDetails.amount = transactionAmuontBeforeDiscount;
-  newPkgDetails.discountedAmount = transactionAmount;
+  if (pkgDetails) {
+    newPkgDetails.rooms = { ...pkgDetails };
+    newPkgDetails.noOfAdults = noOfAdults;
+    newPkgDetails.noOfRooms = noOfRooms;
+    newPkgDetails.amount = transactionAmuontBeforeDiscount;
+    newPkgDetails.discountedAmount = transactionAmount;
+  }
 
   const guestQuery = useQuery({
     queryKey: ["user", "guests"],
@@ -117,8 +119,7 @@ function CheckoutPage({ currentUser }) {
   });
 
   useEffect(() => {
-    if (!property || !totalPrice || !priceBeforeDiscount || !pkgDetails)
-      navigate(-1);
+    if (!property || !totalPrice || !priceBeforeDiscount) navigate(-1);
   }, []);
   const transactionMutation = useMutation({
     mutationFn: async (formData) => {
@@ -136,7 +137,13 @@ function CheckoutPage({ currentUser }) {
         checkInDate,
         checkOutDate,
         guestList: selectedGuests,
-        pkgDetails: newPkgDetails,
+        pkgDetails: newPkgDetails?.rooms
+          ? newPkgDetails
+          : {
+              price: priceBeforeDiscount,
+              discountedAmount: totalPrice,
+              occupancy: noOfAdults,
+            },
       };
       const response = await initiateTransaction(requestData);
       console.log({ response });
@@ -556,7 +563,7 @@ function CheckoutPage({ currentUser }) {
 }
 
 export function MultiSelect({
-  label,
+  label,  
   items,
   isVisible,
   setVisibility,
@@ -577,7 +584,7 @@ export function MultiSelect({
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [ref.current]);
-  return (
+  return (  
     <div
       className={`${styles.multiSelect} ${flexible ? styles.flexible : ""}`}
       ref={ref}
@@ -614,7 +621,7 @@ export function MultiSelect({
           <CustomButton onClick={() => setVisibility(false)}>Save</CustomButton>
         </div>
       )}
-    </div>
+    </div>  
   );
 }
 const mapState = ({ user: { currentUser } }) => ({

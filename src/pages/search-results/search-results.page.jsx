@@ -72,6 +72,8 @@ function SearchResultsPage() {
     },
   });
 
+  
+
   useEffect(() => {
     propertiesQuery.refetch();
   }, [searchParams]);
@@ -134,13 +136,13 @@ function SearchResultsPage() {
               <p>Erros occured while fetching properties, please try again.</p>
             </div>
           ) : (
-            propertiesQuery?.data?.map((property, idx) => {
+            propertiesQuery?.data?.map((property) => {
               return property?.packages ? (
-                <Fragment key={idx}>
+                <Fragment key={property?._id}>
                   {property?.packages?.map((pkg, idx) => {
                     return (
                       <SearchResultCard
-                        key={idx}
+                        key={property?._id + idx}
                         property={property}
                         pkg={pkg}
                       />
@@ -148,7 +150,11 @@ function SearchResultsPage() {
                   })}
                 </Fragment>
               ) : (
-                <SearchResultCard property={property} key={property?._id} />
+                <SearchResultCard
+                  occupancy={noOfAdults}
+                  property={property}
+                  key={property?._id}
+                />
               );
             })
           )}

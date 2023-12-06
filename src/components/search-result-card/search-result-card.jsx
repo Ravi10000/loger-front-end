@@ -12,12 +12,33 @@ import { useFilter } from "#hooks/use-filter";
 import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
 import { currencyFormator } from "#utils/currency-formator";
+import { addToWishlist, removeFromWishlist } from "#api/wishlist.req";
+import { useMutation } from "@tanstack/react-query";
+import { useAuthWindow } from "#contexts/auth-window.context";
+import { pushFlash } from "#redux/flash/flash.actions";
+import { connect } from "react-redux";
 
-function SearchResultCard({ property, apartmentDetails, pkg }) {
+function SearchResultCard({
+  property,
+  apartmentDetails,
+  pkg,
+  occupancy,
+  pushFlash,
+  currentUser,
+}) {
   console.log({ property });
+  const { openAuthWindow } = useAuthWindow();
 
   const isHotel = property?.propertyType === "hotel";
-  const [liked, setLiked] = useState(false);
+  console.log({ isHotel });
+  const matchedApartmentPkg = property?.apartment?.prices?.find(
+    (pkg) => pkg?.occupancy == occupancy
+  );
+  const propertyPrice = isHotel
+    ? pkg?.price
+    : matchedApartmentPkg?.discountedPrice;
+
+  const [liked, setLiked] = useState(property?.isInWishlist);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const checkIn = searchParams.get("checkIn");
@@ -26,7 +47,25 @@ function SearchResultCard({ property, apartmentDetails, pkg }) {
   const roomsCount = parseInt(searchParams.get("noOfRooms"));
   const adultsCount = parseInt(searchParams.get("noOfAdults"));
 
-  // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
+  const wishlistMutation = useMutation({
+    mutationFn: async () => {
+      let response = {};
+      if (currentUser) {
+        if (!liked) response = await addToWishlist(property._id);
+        else response = await removeFromWishlist(property._id);
+      } else openAuthWindow("signin");
+      return response;
+    },
+    onSuccess: (response) => {
+      if (response?.data?.status === "success") {
+        pushFlash({
+          type: "success",
+          message: liked ? "removed from wishlist" : "added to wishlist",
+        });
+        setLiked((prevState) => !prevState);
+      }
+    },
+  });
 
   const rooms = pkg
     ? useMemo(() => findUniqueObjects(pkg?.rooms, "name"), [pkg?.rooms])
@@ -50,7 +89,8 @@ function SearchResultCard({ property, apartmentDetails, pkg }) {
           className={styles.likeIconContainer}
           onClick={(e) => {
             e.stopPropagation();
-            setLiked((prevState) => !prevState);
+            wishlistMutation.mutate();
+            // setLiked((prevState) => !prevState);
           }}
         >
           {liked ? (
@@ -97,11 +137,16 @@ function SearchResultCard({ property, apartmentDetails, pkg }) {
               </ul>
             </div>
           ) : (
-            !isHotel &&
-            apartmentDetails && (
-              <div className={styles.apartmentDetails}>
-                <h4>Apartment Details</h4>
-                <p>Ocupancty: {apartmentDetails.occupancy}</p>
+            occupancy && (
+              <div>
+                <p>
+                  Occupacy : {occupancy}{" "}
+                  {Array(occupancy)
+                    .fill()
+                    .map((_, i) => (
+                      <RiUser4Fill key={i} />
+                    ))}
+                </p>
               </div>
             )
           )}
@@ -154,11 +199,7 @@ function SearchResultCard({ property, apartmentDetails, pkg }) {
           </div>
           <div className={styles.priceContainer}>
             <h4>Per Night</h4>
-            <p className={styles.amount}>
-              {isHotel
-                ? currencyFormator(pkg ? pkg.price : property?.prices?.[0])
-                : apartmentDetails && currencyFormator(apartmentDetails?.price)}
-            </p>
+            <p className={styles.amount}>{currencyFormator(propertyPrice)}</p>
             <p>₹ 100 taxes and charges</p>
           </div>
           <div className={styles.btnContainer}>
@@ -179,4 +220,7 @@ function SearchResultCard({ property, apartmentDetails, pkg }) {
   );
 }
 
-export default SearchResultCard;
+const mapState = (state) => ({
+  currentUser: state.user.currentUser,
+});
+export default connect(mapState, { pushFlash })(SearchResultCard);

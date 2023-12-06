@@ -26,6 +26,7 @@ function Header({ currentUser }) {
   ];
   const isSpecialRoutes = specialRoutes.includes(pathname);
   const popupRef = useRef(null);
+
   useEffect(() => {
     function handleClickOutside(e) {
       if (popupRef.current && !popupRef.current.contains(e.target))
