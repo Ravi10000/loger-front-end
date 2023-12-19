@@ -29,6 +29,7 @@ import { useAuthWindow } from "#contexts/auth-window.context";
 import { addToWishlist, removeFromWishlist } from "#api/wishlist.req";
 import { currencyFormator } from "#utils/currency-formator";
 import { pushFlash } from "#redux/flash/flash.actions";
+import CustomCarousel from "#components/custom-carousel/custom-carousel";
 
 const gridFooterOptions = [
   "Overview",
@@ -42,6 +43,9 @@ const gridFooterOptions = [
 function PropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
   const { state } = useLocation();
+  const [isCarouselOpen, setIsCarouselOpen] = useState(false);
+  console.log({ isCarouselOpen });
+
   console.count("rendering property page");
   const pkg = state?.pkg || [];
   console.log({ pkg });
@@ -143,6 +147,14 @@ function PropertyPage({ currentUser, pushFlash }) {
 
   return (
     <div className={styles.propertyPage}>
+      {isCarouselOpen && (
+        <CustomCarousel
+          images={property?.photos?.map((photo) => photo?.photoUrl)}
+          close={() => {
+            setIsCarouselOpen(false);
+          }}
+        />
+      )}
       <div className={styles.headContainer}>
         <div className={styles.head}>
           <h2>Choose Date to View Prices</h2>
@@ -177,7 +189,10 @@ function PropertyPage({ currentUser, pushFlash }) {
             </div>
           </div>
         </div>
-        <div className={styles.imageGrid}>
+        <div
+          className={styles.imageGrid}
+          onClick={() => setIsCarouselOpen(true)}
+        >
           {!isLoading && !isError && (
             <>
               <div

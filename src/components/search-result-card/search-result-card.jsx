@@ -157,12 +157,13 @@ function ConnectedSearchResultCard({
             occupancy && (
               <div>
                 <p>
-                  Occupacy : {occupancy}{" "}
-                  {Array(occupancy)
+                  Occupacy : {adultsCount}{" "}
+                  {Array(Math.min(4, adultsCount))
                     .fill()
                     .map((_, i) => (
                       <RiUser4Fill key={i} />
                     ))}
+                  {adultsCount > 4 && <span> + {adultsCount - 4}</span>}
                 </p>
               </div>
             )

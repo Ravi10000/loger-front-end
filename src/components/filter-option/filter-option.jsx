@@ -3,7 +3,7 @@ import { BiCheck, BiRupee } from "react-icons/bi";
 import PropTypes from "prop-types";
 FilterOption.propTypes = {
   title: PropTypes.string,
-  count: PropTypes.number,
+  // count: PropTypes.number,
   isPrice: PropTypes.bool,
   list: PropTypes.bool,
   checked: PropTypes.bool,
@@ -17,7 +17,7 @@ FilterOption.propTypes = {
 
 function FilterOption({
   title = "",
-  count = 0,
+  // count = 0,
   isPrice = false,
   list = false,
   checked,
@@ -51,7 +51,7 @@ function FilterOption({
           {isPrice && <BiRupee className={styles.rupee} />}
           <p>{title}</p>
         </div>
-        <p>{`(${count})`}</p>
+        {/* <p>{`(${count})`}</p> */}
       </div>
     </div>
   );

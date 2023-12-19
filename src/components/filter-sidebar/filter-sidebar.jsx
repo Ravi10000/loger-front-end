@@ -97,7 +97,7 @@ FilterSidebar.FilterGroup = function FilterGroup() {
               <FilterOption
                 key={option?._id}
                 title={option?.name}
-                count={404}
+                // count={404}
                 value={option?._id}
                 checked={selectedFacilities?.includes(option?._id)}
                 setValue={setSelectedFacilities}

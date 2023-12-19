@@ -46,6 +46,7 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   key={city}
                   onClick={() => {
                     setQueryText(city);
+                    setPropertyId("");
                   }}
                 >
                   <FaTreeCity className={styles.icon} />
@@ -60,6 +61,7 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   key={address}
                   onClick={() => {
                     setQueryText(address);
+                    setPropertyId("");
                   }}
                 >
                   <MdOutlineLocationOn className={styles.icon} />
@@ -75,6 +77,7 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   key={country}
                   onClick={() => {
                     setQueryText(country);
+                    setPropertyId("");
                   }}
                 >
                   <VscCircleLargeFilled className={styles.icon} />
