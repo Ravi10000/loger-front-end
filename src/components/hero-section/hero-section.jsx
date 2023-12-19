@@ -1,6 +1,11 @@
 import styles from "./hero.module.scss";
 import Search from "#components/search/search";
 import { Balancer } from "react-wrap-balancer";
+import PropTypes from "prop-types";
+
+HeroSection.propTypes = {
+  small: PropTypes.bool,
+};
 
 function HeroSection({ small }) {
   return (

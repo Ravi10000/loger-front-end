@@ -1,6 +1,15 @@
-import { AiOutlineMinusCircle } from "react-icons/ai";
 import styles from "./counter.module.scss";
+
+import PropTypes from "prop-types";
+import { AiOutlineMinusCircle } from "react-icons/ai";
 import { BsPlusCircle } from "react-icons/bs";
+
+Counter.propTypes = {
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
+  value: PropTypes.number,
+  setValue: PropTypes.func,
+};
 
 function Counter({ title, subtitle, value, setValue }) {
   const decrement = () => {

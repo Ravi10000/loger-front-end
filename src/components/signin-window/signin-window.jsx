@@ -14,13 +14,19 @@ import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
 import { setAuthToken } from "#api/index";
 // import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
+import PropTypes from "prop-types";
 
 const schema = z.object({
   email: z.string().email({ message: "invalid email" }),
   password: z.string().min(1, { message: "password required" }),
 });
 
-function SigninWindow({ setCurrentUser, pushFlash }) {
+ConnectedSigninWindow.propTypes = {
+  setCurrentUser: PropTypes.func,
+  pushFlash: PropTypes.func,
+};
+
+function ConnectedSigninWindow({ setCurrentUser, pushFlash }) {
   const {
     register,
     handleSubmit,
@@ -63,7 +69,7 @@ function SigninWindow({ setCurrentUser, pushFlash }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [popupRef]);
+  }, [popupRef, closeAuthWindow]);
   return (
     <WithBackdrop>
       <div ref={popupRef} className={styles.signinWindow}>
@@ -123,4 +129,9 @@ function SigninWindow({ setCurrentUser, pushFlash }) {
   );
 }
 
-export default connect(null, { setCurrentUser, pushFlash })(SigninWindow);
+const SigninWindow = connect(null, { setCurrentUser, pushFlash })(
+  ConnectedSigninWindow
+);
+
+// exporting it this way so that fast refresh works properly
+export default SigninWindow;

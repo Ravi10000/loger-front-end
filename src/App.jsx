@@ -1,6 +1,12 @@
 import styles from "./App.module.scss";
 import { Suspense, lazy, useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 
 import { connect } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -57,20 +63,7 @@ const BookingDetailsPage = lazy(() =>
 
 function App() {
   console.count("render... <App />");
-  // const { pathname } = useLocation();
-  // const isAuthRoute = pathname.includes("/auth");
-    useFetchUser(); 
-  // const userQuery = useQuery({
-  //   queryKey: ["user"],
-  //   queryFn: async () => {
-  //     const { data } = await fetchUserDetails();
-  //     setCurrentUser(data.user);
-  //     return data?.user;
-  //   },
-  // });
-  // useEffect(() => {
-  //   if (userQuery.isError) clearIsFetching();
-  // }, [userQuery]);
+  useFetchUser();
 
   return (
     <div className={styles.App}>

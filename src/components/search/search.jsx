@@ -1,105 +1,75 @@
 import styles from "./search.module.scss";
-import { useDeferredValue, useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import MemberInfo from "#components/member-info/member-info";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import CustomDatePicker from "#components/custom-date-picker/custom-date-picker";
 import { useQuery } from "@tanstack/react-query";
 import { getValidSearchOptions } from "#api/properties.req";
-import { MdOutlineLocationOn } from "react-icons/md";
-import { LuHotel } from "react-icons/lu";
-import { VscCircleLargeFilled } from "react-icons/vsc";
-import { FaTreeCity } from "react-icons/fa6";
 import dayjs from "dayjs";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
+import SearchOptionsList from "#components/search-options-list/search-options-list";
+// import useSearchInputs from "#hooks/search-inputs.search-params";
+import { useDebounce } from "@uidotdev/usehooks";
+import PropTypes from "prop-types";
+import useSearchItem from "#hooks/search-item";
 
-function Search({ pushFlash }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  // const checkIn = searchParams.get("checkIn");
-  // const checkOut = searchParams.get("checkOut");
-  // const location = searchParams.get("location");
-  // const noOfRooms = parseInt(searchParams.get("noOfRooms"));
-  // const noOfAdults = parseInt(searchParams.get("noOfAdults"));
-  // const noOfChildren = parseInt(searchParams.get("noOfChildren"));
+ConnectedSearch.propTypes = {
+  pushFlash: PropTypes.func,
+};
 
-  const id = useId();
+function ConnectedSearch({ pushFlash }) {
   const navigate = useNavigate();
+  const id = useId();
   const [isSearching, setIsSearching] = useState(false);
+  const [searchParams] = useSearchParams();
+
   const [checkIn, setCheckIn] = useState(searchParams.get("checkIn") || "");
   const [checkOut, setCheckOut] = useState(searchParams.get("checkOut") || "");
   const [location, setLocation] = useState(searchParams.get("location") || "");
-  // const [showOptions, setShowOptions] = useState(false);
   const [noOfRooms, setNoOfRooms] = useState(
-    parseInt(searchParams.get("noOfRooms")) || 0
+    searchParams.get("noOfRooms") || 0
   );
   const [noOfAdults, setNoOfAdults] = useState(
-    parseInt(searchParams.get("noOfAdults")) || 0
+    searchParams.get("noOfAdults") || 0
   );
-  // const [noOfChildren, setNoOfChildren] = useState(state?.noOfChildren || 0);
-  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [propertyId, setPropertyId] = useState(
+    searchParams.get("propertyId") || ""
+  );
 
-  const deferredLocation = useDeferredValue(location);
+  const debouncedLocation = useDebounce(location, 300);
   const validOptionsQuery = useQuery({
-    queryKey: ["valid search options", deferredLocation],
-    enabled: !!deferredLocation && deferredLocation.length > 2 && isSearching,
+    queryKey: ["valid search options", debouncedLocation],
+    enabled: !!debouncedLocation && debouncedLocation.length > 2 && isSearching,
     queryFn: async () => {
-      const { data } = await getValidSearchOptions(deferredLocation);
+      const { data } = await getValidSearchOptions(debouncedLocation);
       return data;
     },
   });
-  useEffect(() => {
-    if (deferredLocation && deferredLocation.length > 2) {
-      validOptionsQuery.refetch();
-    }
-  }, [deferredLocation]);
-
-  useEffect(() => {
-    if (checkIn) {
-      searchParams.set("checkIn", checkIn);
-      setSearchParams(searchParams);
-    }
-  }, [checkIn]);
-
-  useEffect(() => {
-    // if (!checkIn) {
-    //   pushFlash({
-    //     type: "info",
-    //     message: "Please select check in date first",
-    //   });
-    //   return;
-    // }
-    // if (checkOut && checkIn && dayjs(checkOut).isBefore(dayjs(checkIn))) {
-    //   pushFlash({
-    //     type: "info",
-    //     message: "Check out date cannot be before check in date",
-    //   });
-    //   return;
-    // }
-    if (checkOut) {
-      searchParams.set("checkOut", checkOut);
-      setSearchParams(searchParams);
-    }
-  }, [checkOut]);
 
   function handleSearch() {
-    if (!noOfAdults) setNoOfAdults(1);
-    if (!noOfRooms) setNoOfRooms(1);
-    let newCheckOut = checkOut;
-    let newCheckIn = checkIn;
-
-    if (!checkIn) {
-      newCheckIn = dayjs().format("YYYY-MM-DD");
-      setCheckIn(newCheckIn);
-    }
-    if (!checkOut) {
-      newCheckOut = dayjs(dayjs(newCheckIn).add(1, "day")).format("YYYY-MM-DD");
-      setCheckOut(newCheckOut);
-    }
+    if (!location)
+      return pushFlash({
+        type: "warning",
+        message: "Please enter a location",
+      });
+    let newCheckIn = checkIn || dayjs().format("YYYY-MM-DD");
+    let newCheckOut =
+      checkOut || dayjs(dayjs(newCheckIn).add(1, "day")).format("YYYY-MM-DD");
+    console.log("before navigate to search results");
+    console.log({
+      newCheckIn,
+      newCheckOut,
+      propertyId,
+      location,
+      noOfRooms,
+      noOfAdults,
+    });
     navigate(
       `/search-results?checkIn=${newCheckIn}&checkOut=${newCheckOut}&location=${location}&noOfRooms=${
         noOfRooms || 1
       }&noOfAdults=${noOfAdults || 1}${
-        selectedProperty ? `&propertyId=${selectedProperty?._id}` : ""
+        propertyId ? `&propertyId=${propertyId}` : ""
       }`
     );
   }
@@ -123,9 +93,8 @@ function Search({ pushFlash }) {
           {isSearching && (
             <SearchOptionsList
               query={validOptionsQuery}
-              setSelectedProperty={setSelectedProperty}
+              setPropertyId={setPropertyId}
               setQueryText={setLocation}
-              // close={() => setShowOptions(false)}
             />
           )}
         </div>
@@ -146,11 +115,9 @@ function Search({ pushFlash }) {
           </div>
         </div>
         <MemberInfo
-          states={{
+          {...{
             noOfRooms,
             setNoOfRooms,
-            // noOfChildren,
-            // setNoOfChildren,
             noOfAdults,
             setNoOfAdults,
           }}
@@ -163,79 +130,5 @@ function Search({ pushFlash }) {
   );
 }
 
-function SearchOptionsList({ query, setQueryText, setSelectedProperty }) {
-  // console.log(query?.data);
-  return (
-    <>
-      {!query?.isLoading && (
-        <ul className={styles.searchOptions}>
-          {query.isError ? (
-            <li>error fetching search options</li>
-          ) : !query?.data ? (
-            <li>No properties or location found</li>
-          ) : (
-            <>
-              {query?.data?.cities?.map((city) => (
-                <li
-                  key={city}
-                  onClick={() => {
-                    setQueryText(city);
-                  }}
-                >
-                  <FaTreeCity className={styles.icon} />
-                  <span>{city}</span>
-                </li>
-              ))}
-              {query?.data?.cities?.length > 0 && (
-                <div className={styles.seperator}></div>
-              )}
-              {query?.data?.properties?.map((property) => (
-                <li
-                  key={property?._id}
-                  onClick={() => {
-                    setQueryText(property?.name);
-                    setSelectedProperty(property);
-                  }}
-                >
-                  <LuHotel className={styles.icon} />
-                  <span> {property?.name}</span>
-                </li>
-              ))}
-              {query?.data?.properties?.length > 0 && (
-                <div className={styles.seperator}></div>
-              )}
-              {query?.data?.addresses?.map((address) => (
-                <li
-                  key={address}
-                  onClick={() => {
-                    setQueryText(address);
-                  }}
-                >
-                  <MdOutlineLocationOn className={styles.icon} />
-                  <span>{address}</span>
-                </li>
-              ))}
-              {query?.data?.addresses?.length > 0 && (
-                <div className={styles.seperator}></div>
-              )}
-
-              {query?.data?.countries?.map((country) => (
-                <li
-                  key={country}
-                  onClick={() => {
-                    setQueryText(country);
-                  }}
-                >
-                  <VscCircleLargeFilled className={styles.icon} />
-                  <span>{country}</span>
-                </li>
-              ))}
-            </>
-          )}
-        </ul>
-      )}
-    </>
-  );
-}
-
-export default connect(null, { pushFlash })(Search);
+const Search = connect(null, { pushFlash })(ConnectedSearch);
+export default Search;

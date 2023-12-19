@@ -75,12 +75,16 @@
       gap: 20px;
     }
     .description {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
       max-width: 450px;
     }
   }
   .reviewNbooking {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 30px;
     align-items: center;
     padding: 20px;

@@ -2,8 +2,7 @@ import api from "./index";
 
 export const fetchAllProperties = () => api.get("/properties");
 
-export const searchProperties = ({
-  queryText,
+export const getOneProperty = ({
   checkIn,
   checkOut,
   noOfRooms,
@@ -11,9 +10,7 @@ export const searchProperties = ({
   propertyId,
 }) =>
   api.get(
-    `/properties/search${
-      propertyId ? "/" + propertyId : ""
-    }?queryText=${queryText}${checkIn ? `&checkIn=${checkIn}` : ""}${
+    `/properties/search/${propertyId}?${checkIn ? `&checkIn=${checkIn}` : ""}${
       checkOut ? `&checkOut=${checkOut}` : ""
     }${noOfRooms ? `&noOfRooms=${noOfRooms}` : ""}${
       noOfAdults ? `&noOfAdults=${noOfAdults}` : ""

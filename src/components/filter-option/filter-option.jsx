@@ -1,6 +1,19 @@
 import styles from "./filter-option.module.scss";
-import { useState } from "react";
 import { BiCheck, BiRupee } from "react-icons/bi";
+import PropTypes from "prop-types";
+FilterOption.propTypes = {
+  title: PropTypes.string,
+  count: PropTypes.number,
+  isPrice: PropTypes.bool,
+  list: PropTypes.bool,
+  checked: PropTypes.bool,
+  setValue: PropTypes.func,
+  value: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+    PropTypes.string,
+  ]),
+};
 
 function FilterOption({
   title = "",
@@ -11,7 +24,6 @@ function FilterOption({
   setValue,
   value,
 }) {
-  // const [checked, setChecked] = useState(false);
   return (
     <div
       className={styles.option}
@@ -34,7 +46,6 @@ function FilterOption({
       >
         <BiCheck className={`${styles.icon}`} />
       </div>
-      {/* <input type="checkbox" style={{ accentColor: "black" }} /> */}
       <div className={styles.details}>
         <div className={styles.optionText}>
           {isPrice && <BiRupee className={styles.rupee} />}

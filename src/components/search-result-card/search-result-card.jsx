@@ -3,12 +3,11 @@ import { useMemo, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Balancer } from "react-wrap-balancer";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { RiStarFill, RiUser4Fill } from "react-icons/ri";
+import { RiUser4Fill } from "react-icons/ri";
 import CustomButton from "#components/custom-button/custom-button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import findUniqueObjects from "#utils/find-unique-objects";
 import { IoIosMore } from "react-icons/io";
-import { useFilter } from "#hooks/use-filter";
 import { calculateReviewMsg, totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
 import { currencyFormator } from "#utils/currency-formator";
@@ -17,35 +16,46 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthWindow } from "#contexts/auth-window.context";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import ApartmentDescription from "#components/apartment-description";
 
-function SearchResultCard({
+ConnectedSearchResultCard.propTypes = {
+  property: PropTypes.object,
+  apartmentDetails: PropTypes.object,
+  pkg: PropTypes.object,
+  occupancy: PropTypes.number,
+  pushFlash: PropTypes.func,
+  currentUser: PropTypes.object,
+};
+
+function ConnectedSearchResultCard({
   property,
-  apartmentDetails,
   pkg,
   occupancy,
   pushFlash,
   currentUser,
 }) {
-  console.log({ property });
-  const { openAuthWindow } = useAuthWindow();
-
-  const isHotel = property?.propertyType === "hotel";
-  console.log({ isHotel });
-  const matchedApartmentPkg = property?.apartment?.prices?.find(
-    (pkg) => pkg?.occupancy == occupancy
-  );
-  const propertyPrice = isHotel
-    ? pkg?.price
-    : matchedApartmentPkg?.discountedPrice;
-
-  const [liked, setLiked] = useState(property?.isInWishlist);
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const checkIn = searchParams.get("checkIn");
   const checkOut = searchParams.get("checkOut");
   const location = searchParams.get("location");
   const roomsCount = parseInt(searchParams.get("noOfRooms"));
   const adultsCount = parseInt(searchParams.get("noOfAdults"));
+
+  console.log({ property });
+  const { openAuthWindow } = useAuthWindow();
+
+  const isHotel = property?.propertyType === "hotel";
+  console.log({ isHotel });
+  const matchedApartmentPkg =
+    property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
+    null;
+  const propertyPrice = isHotel
+    ? pkg?.price
+    : matchedApartmentPkg?.discountedPrice ?? null;
+
+  const [liked, setLiked] = useState(property?.isInWishlist);
+  const navigate = useNavigate();
 
   const wishlistMutation = useMutation({
     mutationFn: async () => {
@@ -67,9 +77,9 @@ function SearchResultCard({
     },
   });
 
-  const rooms = pkg
-    ? useMemo(() => findUniqueObjects(pkg?.rooms, "name"), [pkg?.rooms])
-    : null;
+  const rooms = useMemo(() => {
+    return pkg?.rooms ? findUniqueObjects(pkg?.rooms, "name") : null;
+  }, [pkg?.rooms]);
 
   return (
     <div className={styles.searchResultCard}>
@@ -112,11 +122,18 @@ function SearchResultCard({
             <HiOutlineLocationMarker className={styles.locationIcon} />
           </div>
           <div className={styles.description}>
-            <h4>Description</h4>
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry Read More...
-            </p>
+            {isHotel ? (
+              <>
+                <h4>Description</h4>
+                <p>
+                  Lorem Ipsum is simply dummy text of the printing and
+                  typesetting industry. Lorem Ipsum has been the industry Read
+                  More...
+                </p>
+              </>
+            ) : (
+              <ApartmentDescription apartment={property.apartment} />
+            )}
           </div>
           {isHotel && pkg ? (
             <div className={styles.rooms}>
@@ -197,13 +214,16 @@ function SearchResultCard({
               {property?.ratings && totalReviews(property?.ratings)}&#41;
             </p>
           </div>
-          <div className={styles.priceContainer}>
-            <h4>Per Night</h4>
-            <p className={styles.amount}>{currencyFormator(propertyPrice)}</p>
-            <p>₹ 100 taxes and charges</p>
-          </div>
+          {propertyPrice && (
+            <div className={styles.priceContainer}>
+              <h4>Per Night</h4>
+              <p className={styles.amount}>{currencyFormator(propertyPrice)}</p>
+              <p>₹ 100 taxes and charges</p>
+            </div>
+          )}
           <div className={styles.btnContainer}>
             <CustomButton
+              customStyles={!propertyPrice ? { opacity: ".5" } : {}}
               onClick={() =>
                 navigate(
                   `/property/${property?._id}?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}`,
@@ -211,7 +231,7 @@ function SearchResultCard({
                 )
               }
             >
-              Check Availabilities
+              {!propertyPrice ? "Unavailable" : "Check Availabilities"}
             </CustomButton>
           </div>
         </div>
@@ -223,4 +243,8 @@ function SearchResultCard({
 const mapState = (state) => ({
   currentUser: state.user.currentUser,
 });
-export default connect(mapState, { pushFlash })(SearchResultCard);
+const SearchResultsCard = connect(mapState, { pushFlash })(
+  ConnectedSearchResultCard
+);
+
+export default SearchResultsCard;

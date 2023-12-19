@@ -1,15 +1,21 @@
 import styles from "./member-info.module.scss";
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { BsPlusCircle } from "react-icons/bs";
-import { AiOutlineMinusCircle } from "react-icons/ai";
 import CustomButton from "#components/custom-button/custom-button";
-import { MdOutlineBedroomChild } from "react-icons/md";
 import { RiUser4Line } from "react-icons/ri";
 import { PiDoor } from "react-icons/pi";
 import Counter from "#components/counter/counter";
 
-function MemberInfo({ states }) {
+import PropTypes from "prop-types";
+
+MemberInfo.propTypes = {
+  noOfRooms: PropTypes.number,
+  setNoOfRooms: PropTypes.func,
+  noOfAdults: PropTypes.number,
+  setNoOfAdults: PropTypes.func,
+};
+
+function MemberInfo({ noOfRooms, setNoOfRooms, noOfAdults, setNoOfAdults }) {
   const [showMenu, setShowMenu] = useState(false);
   const closeMenu = () => setShowMenu(false);
   const menuRef = useRef(null);
@@ -31,16 +37,16 @@ function MemberInfo({ states }) {
       >
         <img src="/images/icons/users.svg" alt="members" />
         <p>
-          {!states.noOfRooms && !states.noOfAdults ? (
+          {!noOfRooms && !noOfAdults ? (
             "Members"
           ) : (
             <>
               <span style={{ display: "inline-flex", alignItems: "center" }}>
-                <PiDoor /> &nbsp; &times; {states.noOfRooms}{" "}
+                <PiDoor /> &nbsp; &times; {noOfRooms}{" "}
               </span>{" "}
               |{" "}
               <span style={{ display: "inline-flex", alignItems: "center" }}>
-                <RiUser4Line /> &nbsp; &times; {states.noOfAdults}
+                <RiUser4Line /> &nbsp; &times; {noOfAdults}
               </span>
             </>
           )}
@@ -51,16 +57,12 @@ function MemberInfo({ states }) {
       </div>
       {showMenu && (
         <div className={styles.menu}>
-          <Counter
-            title="Rooms"
-            value={states.noOfRooms}
-            setValue={states.setNoOfRooms}
-          />
+          <Counter title="Rooms" value={noOfRooms} setValue={setNoOfRooms} />
           <Counter
             title="Adults"
             subtitle="Age above or equal to 18"
-            value={states.noOfAdults}
-            setValue={states.setNoOfAdults}
+            value={noOfAdults}
+            setValue={setNoOfAdults}
           />
           <div className={styles.buttonContainer}>
             <CustomButton onClick={closeMenu}>Done</CustomButton>

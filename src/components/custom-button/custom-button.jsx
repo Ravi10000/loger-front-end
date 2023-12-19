@@ -1,5 +1,18 @@
 import styles from "./custom-button.module.scss";
 import { BiLoaderAlt } from "react-icons/bi";
+import PropTypes from "prop-types";
+
+CustomButton.propTypes = {
+  children: PropTypes.node,
+  outlined: PropTypes.bool,
+  small: PropTypes.bool,
+  danger: PropTypes.bool,
+  cancel: PropTypes.bool,
+  rounded: PropTypes.bool,
+  fit: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  customStyles: PropTypes.object,
+};
 
 function CustomButton({
   children,

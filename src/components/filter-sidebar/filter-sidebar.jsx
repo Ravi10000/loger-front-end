@@ -1,13 +1,19 @@
 import styles from "./filter-sidebar.module.scss";
 import FilterOption from "#components/filter-option/filter-option";
 import WithBackdrop from "#components/with-backdrop/with-backdrop";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MdClose } from "react-icons/md";
 import { fetchAllFacilities } from "#api/facilities.req";
 import { useQuery } from "@tanstack/react-query";
 import { useFilter } from "#hooks/use-filter";
+import { filterOptions } from "#data/filter-options.data";
+import PropTypes from "prop-types";
 
-function FilterSidebar({ filterOptions, close }) {
+FilterSidebar.propTypes = {
+  close: PropTypes.func,
+};
+
+function FilterSidebar({ close }) {
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -18,38 +24,36 @@ function FilterSidebar({ filterOptions, close }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [popupRef]);
+  }, [popupRef, close]);
+
   return (
     <WithBackdrop left>
       <div className={styles.filterSidebar} ref={popupRef}>
         <div className={styles.close}>
           <MdClose className={styles.closeIcon} onClick={close} />
         </div>
-        <FilterGroup filterOptions={filterOptions} />
+        <FilterSidebar.FilterGroup />
       </div>
     </WithBackdrop>
   );
 }
 
-export function FilterGroup({ filterOptions }) {
+FilterSidebar.FilterGroup = function FilterGroup() {
   const facilitiesQuery = useQuery({
     queryKey: ["facilities"],
     queryFn: async () => {
       const { data } = await fetchAllFacilities();
-      // console.log({ facilitiesData: data });
       return data;
     },
   });
 
   const facilities = facilitiesQuery?.data?.facilities;
-  // console.log({ facilities });
-  const [price, setPrice] = useFilter(null, "price");
+  const [price, setPrice] = useFilter("price", null);
   const [selectedFacilities, setSelectedFacilities] = useFilter(
-    [],
-    "facilities"
+    "facilities",
+    []
   );
-  const [propertyTypes, setPropertyTypes] = useFilter([], "propertyTypes");
-
+  const [propertyTypes, setPropertyTypes] = useFilter("propertyTypes", []);
   return (
     <div className={styles.container}>
       <h3>Filters By:</h3>
@@ -103,23 +107,7 @@ export function FilterGroup({ filterOptions }) {
           </div>
         </div>
       )}
-
-      {/* {filterOptions.map((filterOption) => (
-        <div className={styles.filterGroup} key={filterOption?.id}>
-          <h3>{filterOption?.title}</h3>
-          <div className={styles.options}>
-            {filterOption?.options?.map((option) => (
-              <FilterOption
-                key={option?.filterText}
-                title={option?.filterText}
-                count={option?.matchedCount}
-                isPrice={filterOption?.isPriceFilter}
-              />
-            ))}
-          </div>
-        </div>
-      ))} */}
     </div>
   );
-}
+};
 export default FilterSidebar;

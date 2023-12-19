@@ -3,80 +3,81 @@ import HeroSection from "#components/hero-section/hero-section";
 import { RiArrowRightSLine } from "react-icons/ri";
 import { RxCaretSort } from "react-icons/rx";
 import { Balancer } from "react-wrap-balancer";
-import FilterSidebar, {
-  FilterGroup,
-} from "#components/filter-sidebar/filter-sidebar";
-import { filterOptions } from "#data/filter-options.data";
-import { Fragment, useEffect, useState } from "react";
+import FilterSidebar from "#components/filter-sidebar/filter-sidebar";
+import { Fragment, useState } from "react";
 import { BsFilter } from "react-icons/bs";
-import SearchResultCard from "#components/search-result-card/search-result-card";
-import { useSearchParams } from "react-router-dom";
+import ConnectedSearchResultCard from "#components/search-result-card/search-result-card";
 import { useQuery } from "@tanstack/react-query";
-import { filterProperties, searchProperties } from "#api/properties.req";
+import { filterProperties, getOneProperty } from "#api/properties.req";
 import LoadingPage from "#pages/loading/loading";
+import PropTypes from "prop-types";
 import { useFilter } from "#hooks/use-filter";
+// import useSearchItem from "#hooks/search-item";
+import { useSearchParams } from "react-router-dom";
 
 function SearchResultsPage() {
-  // const {
-  //   state: { checkIn, checkOut, location, noOfRooms, noOfAdults, noOfChildren },
-  // } = useLocation();
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const checkIn = searchParams.get("checkIn");
   const checkOut = searchParams.get("checkOut");
   const location = searchParams.get("location");
-  const noOfRooms = parseInt(searchParams.get("noOfRooms"));
-  const noOfAdults = parseInt(searchParams.get("noOfAdults"));
+  const noOfRooms = searchParams.get("noOfRooms");
+  const noOfAdults = searchParams.get("noOfAdults");
   const propertyId = searchParams.get("propertyId");
-  // console.log({ propertyId });
-  // const [price, setPrice] = useFilter(null, "price");
-  // const [facilities, setFacilities] = useFilter([], "facilities");
-  // const [propertyTypes, setPropertyTypes] = useFilter([], "propertyTypes");
-  const price = searchParams.get("price")
-    ? JSON.parse(searchParams.get("price"))
-    : null;
-  const facilities = searchParams.get("facilities")
-    ? JSON.parse(searchParams.get("facilities"))
-    : null;
-  const propertyTypes = searchParams.get("propertyTypes")
-    ? JSON.parse(searchParams.get("propertyTypes"))
-    : null;
-  // console.log({ price, facilities, propertyTypes });
+
+  const [price] = useFilter("price", null);
+  const [facilities] = useFilter("facilities", []);
+  const [propertyTypes] = useFilter("propertyTypes", []);
 
   const propertiesQuery = useQuery({
-    queryKey: ["products", "search"],
+    queryKey: [
+      "products",
+      "search",
+      {
+        mandatoryFields: {
+          queryText: location,
+          checkIn,
+          checkOut,
+          noOfRooms,
+          noOfAdults,
+        },
+        optionalFields: {
+          propertyId,
+          price,
+          facilities,
+          propertyTypes,
+        },
+      },
+    ],
+    enabled:
+      !!location && !!checkIn && !!checkOut && !!noOfAdults && !!noOfRooms,
     queryFn: async () => {
-      let res = {};
-      if (!price && !facilities?.length && !propertyTypes?.length) {
-        res = await filterProperties({
+      let propertyRes;
+      if (propertyId) {
+        propertyRes = await getOneProperty({
+          propertyId,
+          checkIn,
+          checkOut,
+          noOfRooms,
+          noOfAdults,
+        });
+      } else {
+        propertyRes = await filterProperties({
           queryText: location,
           checkIn,
           checkOut,
           noOfRooms,
           noOfAdults,
           ...(propertyId && { propertyId }),
+          ...(price && { price }),
+          ...(facilities?.length && { facilities }),
+          ...(propertyTypes?.length && { propertyTypes }),
         });
       }
-      res = await filterProperties({
-        queryText: location,
-        checkIn,
-        checkOut,
-        noOfRooms,
-        noOfAdults,
-        ...(price && { price }),
-        ...(facilities?.length && { facilities }),
-        ...(propertyTypes?.length && { propertyTypes }),
-      });
-      console.log({ properties: res?.data?.properties });
-      return res?.data?.properties;
+      console.log({ propertyRes });
+      return propertyRes?.data?.properties;
     },
   });
-
-  
-
-  useEffect(() => {
-    propertiesQuery.refetch();
-  }, [searchParams]);
+  console.log({ properties: propertiesQuery?.data?.properties });
 
   const [showSidebar, setShowSidebar] = useState(false);
   return (
@@ -85,12 +86,9 @@ function SearchResultsPage() {
       <div className={styles.searchPath}>
         <div className={styles.searchPathTerm}>
           <p>Home</p>
-          {/* <RiArrowRightSLine className={styles.arrow} />
-          <p>India</p> */}
           <RiArrowRightSLine className={styles.arrow} />
           <p className="__capitalize">{location}</p>
         </div>
-        {/* <p>Hotels List - Style</p> */}
       </div>
       <div className={styles.sortingContainer}>
         <div className={styles.container}>
@@ -118,14 +116,9 @@ function SearchResultsPage() {
             <p>Filter</p>
           </div>
           <img className={styles.map} src="/images/map.png" alt="map" />
-          {showSidebar && (
-            <FilterSidebar
-              filterOptions={filterOptions}
-              close={() => setShowSidebar(false)}
-            />
-          )}
+          {showSidebar && <FilterSidebar close={() => setShowSidebar(false)} />}
           <div className={styles.filterGroupContainer}>
-            <FilterGroup filterOptions={filterOptions} />
+            <FilterSidebar.FilterGroup />
           </div>
         </div>
         <div className={styles.right}>
@@ -141,7 +134,7 @@ function SearchResultsPage() {
                 <Fragment key={property?._id}>
                   {property?.packages?.map((pkg, idx) => {
                     return (
-                      <SearchResultCard
+                      <ConnectedSearchResultCard
                         key={property?._id + idx}
                         property={property}
                         pkg={pkg}
@@ -150,7 +143,7 @@ function SearchResultsPage() {
                   })}
                 </Fragment>
               ) : (
-                <SearchResultCard
+                <ConnectedSearchResultCard
                   occupancy={noOfAdults}
                   property={property}
                   key={property?._id}
@@ -166,6 +159,9 @@ function SearchResultsPage() {
 
 export default SearchResultsPage;
 
+SortingBox.propTypes = {
+  title: PropTypes.string,
+};
 function SortingBox({ title }) {
   return (
     <div className={styles.sortingBox}>
