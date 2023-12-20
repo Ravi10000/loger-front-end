@@ -18,7 +18,6 @@ import { FaLocationDot } from "react-icons/fa6";
 import CustomButton from "#components/custom-button/custom-button";
 import Search from "#components/search/search";
 import RoomCard from "#components/room-card/room-card";
-import { HashLink } from "react-router-hash-link";
 import Reviews from "#components/reviews/reviews";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchProperty } from "#api/properties.req";
@@ -47,6 +46,57 @@ ConnectedPropertyPage.propTypes = {
   currentUser: PropTypes.object,
   pushFlash: PropTypes.func,
 };
+
+function getAmenitiesNFamilityFacilities(property) {
+  if (!property?._id) return {};
+  const content =
+    property?.propertyType === "apartment"
+      ? property?.apartment
+      : property?.hotel;
+
+  const amenities = [];
+  amenities.push(
+    property?.breakfastServed ? "Breakfast Served" : "Breakfast Unavailable"
+  );
+
+  if (property?.breakfastServed)
+    amenities.push(
+      property?.breakfastIncluded
+        ? "Breakfast Included"
+        : `Breakfast Charges ${property?.breakfastPrice} Per Person`
+    );
+  amenities.push(
+    property?.parkingAvailable ? "Parking Available" : "Parking Unavailable"
+  );
+
+  if (property?.parkingAvailable) {
+    amenities.push(
+      property?.parkingReservation
+        ? "Parking Reservation Required"
+        : `No Parking Reservation Required`
+    );
+  }
+
+  amenities.push(
+    content?.smokingAllowed ? "Smoking Allowed" : "Smoking Not Allowed"
+  );
+  amenities.push(content?.petsAllowed ? "Pets Allowed" : "Pets Not Allowed");
+  amenities.push(
+    content?.partiesEventsAllowed
+      ? "Parties & Events Allowed"
+      : "Parties & Events Not Allowed"
+  );
+
+  const familyOptions = [];
+  familyOptions.push(
+    content?.childrenAllowed ? "Children Allowed" : "Children Not Allowed"
+  );
+  familyOptions.push(
+    content?.cribOffered ? "Crib Offered" : "Crib Not Offered"
+  );
+
+  return { amenities, familyOptions };
+}
 
 function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
@@ -99,51 +149,13 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { isError, isLoading } = propertyQuery;
 
   const { property, rooms, isInWishlist } = propertyQuery?.data || {};
-  const amenities = [];
-  amenities.push(
-    property?.breakfastServed ? "Breakfast Served" : "Breakfast Unavailable"
-  );
-
-  if (property?.breakfastServed)
-    amenities.push(
-      property?.breakfastIncluded
-        ? "Breakfast Included"
-        : `Breakfast Charges ${property?.breakfastPrice} Per Person`
-    );
-  amenities.push(
-    property?.parkingAvailable ? "Parking Available" : "Parking Unavailable"
-  );
-
-  if (property?.parkingAvailable) {
-    amenities.push(
-      property?.parkingReservation
-        ? "Parking Reservation Required"
-        : `No Parking Reservation Required`
-    );
-  }
-
   const content =
     property?.propertyType === "apartment"
       ? property?.apartment
       : property?.hotel;
 
-  amenities.push(
-    content?.smokingAllowed ? "Smoking Allowed" : "Smoking Not Allowed"
-  );
-  amenities.push(content?.petsAllowed ? "Pets Allowed" : "Pets Not Allowed");
-  amenities.push(
-    content?.partiesEventsAllowed
-      ? "Parties & Events Allowed"
-      : "Parties & Events Not Allowed"
-  );
-
-  const familyOptions = [];
-  familyOptions.push(
-    content?.childrenAllowed ? "Children Allowed" : "Children Not Allowed"
-  );
-  familyOptions.push(
-    content?.cribOffered ? "Crib Offered" : "Crib Not Offered"
-  );
+  const { amenities, familyOptions } =
+    getAmenitiesNFamilityFacilities(property);
 
   useEffect(() => {
     if (property?.propertyType === "apartment")

@@ -24,7 +24,7 @@ ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
   apartmentDetails: PropTypes.object,
   pkg: PropTypes.object,
-  occupancy: PropTypes.number,
+  occupancy: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   pushFlash: PropTypes.func,
   currentUser: PropTypes.object,
 };
@@ -47,6 +47,7 @@ function ConnectedSearchResultCard({
   const { openAuthWindow } = useAuthWindow();
 
   const isHotel = property?.propertyType === "hotel";
+  const content = isHotel ? property?.hotel : property?.apartment;
   const matchedApartmentPkg =
     property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
     null;
@@ -115,7 +116,7 @@ function ConnectedSearchResultCard({
       </div>
       <div className={styles.infoContainer}>
         <div className={styles.propertyInfo}>
-          <h3>
+          <h3 style={{ fontSize: "24px" }}>
             <Balancer>{property?.propertyName}</Balancer>
           </h3>
           <div className={styles.locationContainer}>
@@ -127,7 +128,7 @@ function ConnectedSearchResultCard({
           <div className={styles.description}>
             {isHotel ? (
               <>
-                <h4>Description</h4>
+                <h4 style={{ fontSize: "18px" }}>Description</h4>
                 <p>
                   Lorem Ipsum is simply dummy text of the printing and
                   typesetting industry. Lorem Ipsum has been the industry Read
@@ -135,7 +136,12 @@ function ConnectedSearchResultCard({
                 </p>
               </>
             ) : (
-              <ApartmentDescription apartment={property.apartment} />
+              <p>
+                {content?.aboutProperty
+                  ? content?.aboutProperty?.substring?.(0, 150) + "..."
+                  : "..."}
+              </p>
+              // <ApartmentDescription apartment={property.apartment} />
             )}
           </div>
           {isHotel && pkg ? (
@@ -235,7 +241,6 @@ function ConnectedSearchResultCard({
                   }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
                     pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
                   }`
-                  // { state: { pkg } }
                 );
               }}
             >

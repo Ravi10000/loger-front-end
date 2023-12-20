@@ -63,7 +63,9 @@ function Reviews({ property }) {
     queryKey: ["reviews", property?._id, currentUserReviewPage],
     enabled: !!property?._id,
     queryFn: async () => {
-      const res = await api.get(`/review/${property?._id}`);
+      const res = await api.get(
+        `/review/${property?._id}?page=${currentUserReviewPage}&limit=4&status=active`
+      );
       console.log({ res });
       return res?.data?.reviews;
     },
@@ -75,6 +77,13 @@ function Reviews({ property }) {
     <div className={styles.container}>
       {isLoading ? (
         <LoadingPage.Loader />
+      ) : error ? (
+        <div>
+          <TbMoodEmpty style={{ fontSize: "200px", color: "lightgray" }} />
+          <h2 style={{ fontWeight: 900, color: "lightgray" }}>
+            Error While Fetching Reviews!
+          </h2>
+        </div>
       ) : !reviews?.length ? (
         <>
           <TbMoodEmpty style={{ fontSize: "200px", color: "lightgray" }} />
@@ -83,8 +92,13 @@ function Reviews({ property }) {
           </h2>
         </>
       ) : (
-        <>
-          {" "}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <div className={styles.reviewContainer}>
             <div className={styles.left}>
               <div className={styles.ratingsContainer}>
@@ -198,7 +212,7 @@ function Reviews({ property }) {
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

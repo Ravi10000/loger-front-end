@@ -15,12 +15,13 @@
   gap: 20px;
   padding: 20px;
 
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.65);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(17px);
   -webkit-backdrop-filter: blur(17px);
   border-radius: 10px;
   border: 1px solid rgba(48, 48, 48, 0.084);
+  animation: scaleIn 0.2s ease-in-out;
 }
 
 .closeBtn {
@@ -56,7 +57,7 @@
   box-shadow: var(--main-brand-color) 0px 0px 0px 1px;
   cursor: pointer;
   &:hover {
-    background: #2c80fe;
+    background: #0868f8;
     .icon {
       color: #fff;
     }
@@ -80,4 +81,13 @@
 
 .image {
   max-height: 500px;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

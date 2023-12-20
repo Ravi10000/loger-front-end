@@ -7,19 +7,18 @@ ApartmentDescription.propTypes = {
 function ApartmentDescription({ apartment }) {
   return (
     <>
-      <h2>Description</h2>
-      <div>
-        {/* <h4>About Host</h4> */}
+      <h4>Description</h4>
+      {/* <div>
         <h5>Host: {apartment?.hostName}</h5>
-        <p>{apartment?.aboutHost}</p>
+        <p>{apartment?.aboutHost?.substring?.(0, 75) ?? "" + "..."}</p>
       </div>
       <div>
         <h5>About Neighborhood</h5>
-        <p>{apartment?.aboutNeighborhood}</p>
-      </div>
+        <p>{apartment?.aboutNeighborhood?.substring?.(0, 75) ?? "" + "..."}</p>
+      </div> */}
       <div>
-        <h5>About Property</h5>
-        <p>{apartment?.aboutProperty}</p>
+        {/* <h5>About Property</h5> */}
+        <p>{apartment?.aboutProperty?.substring?.(0, 150) + "..."}</p>
       </div>
     </>
   );
