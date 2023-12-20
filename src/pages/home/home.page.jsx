@@ -6,10 +6,10 @@ import { useState } from "react";
 import PropertyCarousel from "#components/property-carousel/property-carousel";
 import PromotionCard from "#components/promotion-card/promotion-card";
 import DownloadSection from "#components/download-section/download-section";
-import { properties } from "#data/properties.info";
+// import { properties } from "#data/properties.info";
 import PropertyCard from "#components/property-card/property-card";
 import LocationCard from "#components/location-card/location-card";
-import { locations } from "#data/locations";
+// import { locations } from "#data/locations";
 import FeedbackCard from "#components/feedback-card/feedback-card";
 import { feedbacks } from "#data/feedbacks";
 import FeedbackCarousel from "#components/feedback-carousel/feedback-carousel";
@@ -151,7 +151,7 @@ function HomePage() {
       <section className={styles.carouselContainer}>
         <FeedbackCarousel items={feedbacks} Component={FeedbackCard} />
       </section>
-      <h2 className={styles.title}>Explore by Property Type</h2>
+      {/* <h2 className={styles.title}>Explore by Property Type</h2>
       <section className={styles.section}>
         <div className={styles.carouselContainer}>
           <PropertyCarousel
@@ -160,7 +160,7 @@ function HomePage() {
             Component={LocationCard}
           />
         </div>
-      </section>
+      </section> */}
       <h2 className={styles.title}>Trending Destinations</h2>
       <section className={styles.section}>
         <ImageGrid />

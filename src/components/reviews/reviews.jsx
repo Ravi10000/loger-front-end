@@ -2,14 +2,17 @@ import styles from "./reviews.module.scss";
 
 import RatingBar from "#components/review-bar/rating-bar";
 import UserReviewCard from "#components/user-review-card/user-review-card";
-import { RiStarFill, RiStarLine, RiStarHalfFill } from "react-icons/ri";
 import Balancer from "react-wrap-balancer";
 import CustomButton from "#components/custom-button/custom-button";
 import { BsArrowRight } from "react-icons/bs";
 import { useState } from "react";
 import { totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
-
+import PropTypes from "prop-types";
+import { useQuery } from "@tanstack/react-query";
+import api from "#api/index";
+import LoadingPage from "#pages/loading/loading";
+import { TbMoodEmpty } from "react-icons/tb";
 const barColors = {
   5: {
     filledColor: "#00C964",
@@ -33,12 +36,13 @@ const barColors = {
   },
 };
 
+Reviews.propTypes = {
+  property: PropTypes.object,
+};
+
 function Reviews({ property }) {
   const totalRating = property?.ratings ? totalReviews(property?.ratings) : 0;
   const [currentUserReviewPage, setCurrentUserReviewPage] = useState(1);
-  // const filledStars = parseInt(property?.averageRating);
-  // const halfStar = property?.averageRating - filledStars > 0.4;
-  // const emptyStars = 5 - filledStars - (halfStar ? 1 : 0);
 
   const nextReviewPage = () => {
     if (currentUserReviewPage < 5) {
@@ -50,103 +54,83 @@ function Reviews({ property }) {
       setCurrentUserReviewPage((prevState) => prevState - 1);
     }
   };
+
+  const {
+    data: reviews,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["reviews", property?._id, currentUserReviewPage],
+    enabled: !!property?._id,
+    queryFn: async () => {
+      const res = await api.get(`/review/${property?._id}`);
+      console.log({ res });
+      return res?.data?.reviews;
+    },
+  });
+
+  console.log({ reviews });
+
   return (
     <div className={styles.container}>
-      <div className={styles.reviewContainer}>
-        <div className={styles.left}>
-          <div className={styles.ratingsContainer}>
-            <h3>Reviews</h3>
-            <div className={styles.rating}>
-              <h2>{property?.averageRating}</h2>
-              <div className={styles.ratingInfo}>
-                <p>
-                  Out of <br />5 Star
-                </p>
-                <Stars ratings={property?.averageRating} />
+      {isLoading ? (
+        <LoadingPage.Loader />
+      ) : !reviews?.length ? (
+        <>
+          <TbMoodEmpty style={{ fontSize: "200px", color: "lightgray" }} />
+          <h2 style={{ fontWeight: 900, color: "lightgray" }}>
+            No Reviews Found!
+          </h2>
+        </>
+      ) : (
+        <>
+          {" "}
+          <div className={styles.reviewContainer}>
+            <div className={styles.left}>
+              <div className={styles.ratingsContainer}>
+                <h3>Reviews</h3>
+                <div className={styles.rating}>
+                  <h2>{property?.averageRating}</h2>
+                  <div className={styles.ratingInfo}>
+                    <p>
+                      Out of <br />5 Star
+                    </p>
+                    <Stars ratings={property?.averageRating} />
+                  </div>
+                </div>
+              </div>
+              <div className={styles.ratingGraph}>
+                {property?.ratings &&
+                  Object?.keys(property?.ratings).map((rating) => (
+                    <RatingBar
+                      key={`${rating}-stars`}
+                      ratingDetails={{
+                        count: property?.ratings[rating],
+                        totalCount: totalRating,
+                        name: `${rating} Stars`,
+                        filledColor: barColors[rating]?.filledColor,
+                        emptyColor: barColors[rating]?.emptyColor,
+                      }}
+                    />
+                  ))}
               </div>
             </div>
-          </div>
-          <div className={styles.ratingGraph}>
-            {property?.ratings &&
-              Object?.keys(property?.ratings).map((rating) => (
-                <RatingBar
-                  key={`${rating}-stars`}
-                  ratingDetails={{
-                    count: property?.ratings[rating],
-                    totalCount: totalRating,
-                    name: `${rating} Stars`,
-                    filledColor: barColors[rating]?.filledColor,
-                    emptyColor: barColors[rating]?.emptyColor,
-                  }}
-                />
-              ))}
-            {/* <RatingBar
-              key="5-stars"
-              ratingDetails={{
-                count: 45,
-                totalCount: 100,
-                name: "5 Stars",
-                filledColor: "#00C964",
-                emptyColor: "#E6FAF0",
-              }}
-            />
-            <RatingBar
-              key="4-stars"
-              ratingDetails={{
-                count: 25,
-                totalCount: 100,
-                name: "4 Stars",
-                filledColor: "#0868F8",
-                emptyColor: "#E7F0FF",
-              }}
-            />
-            <RatingBar
-              key="3-stars"
-              ratingDetails={{
-                count: 15,
-                totalCount: 100,
-                name: "3 Stars",
-                filledColor: "#FCBB06",
-                emptyColor: "#FFF9E7",
-              }}
-            />
-            <RatingBar
-              key="2-stars"
-              ratingDetails={{
-                count: 10,
-                totalCount: 100,
-                name: "2 Stars",
-                filledColor: "#F87B08",
-                emptyColor: "#FFF2E7",
-              }}
-            />
-            <RatingBar
-              key="1-stars"
-              ratingDetails={{
-                count: "05",
-                totalCount: 100,
-                name: "1 Stars",
-              }}
-            /> */}
-          </div>
-        </div>
-        <div className={styles.right}>
-          <h3>For Our Reviews</h3>
-          <p>
-            <Balancer>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </Balancer>
-          </p>
-          <div className={styles.sectionReviewsContainer}>
+            <div className={styles.right}>
+              <h3 style={{ fontWeight: 900 }}>Reviews</h3>
+              <p>
+                <Balancer>
+                  Discover the essence of hospitality through our Review
+                  Section. Explore a collection of firsthand experiences shared
+                  by our valued guests. From cozy retreats to urban escapes,
+                  read insightful reviews that capture the spirit of each
+                  accommodation. Immerse yourself in tales of comfort,
+                  exceptional service, and memorable adventures, guiding you to
+                  make informed decisions for your next getaway. Your journey
+                  begins with the stories told by those who&apos;ve embraced the
+                  warmth of our accommodations.
+                </Balancer>
+              </p>
+              {/* <div className={styles.sectionReviewsContainer}>
             <div className={styles.sectionReview}>
               <h4>7.9/10</h4>
               <p>Cleanliness</p>
@@ -167,51 +151,55 @@ function Reviews({ property }) {
               <h4>4.3/10</h4>
               <p>Eco-friendliness</p>
             </div>
+          </div> */}
+            </div>
           </div>
-        </div>
-      </div>
-      <div className={styles.userReviewsContainer}>
-        <div className={styles.head}>
-          <h2>See What Guests Loved the Most:</h2>
-          <CustomButton fit>View All</CustomButton>
-        </div>
-        <div className={styles.userReviews}>
-          <UserReviewCard key="1" />
-          <UserReviewCard key="2" />
-          <UserReviewCard key="3" />
-          <UserReviewCard key="4" />
-        </div>
-        <div className={styles.reviewNav}>
-          <div
-            className={`${styles.arrowContainer} ${
-              currentUserReviewPage <= 1 ? styles.disabled : ""
-            }`}
-            onClick={prevReviewPage}
-          >
-            <BsArrowRight className={styles.arrow} />
-          </div>
-          <div className={styles.pages}>
-            {[...Array(5)].map((_, i) => (
-              <p
-                key={i}
-                className={`${styles.page} ${
-                  currentUserReviewPage === i + 1 ? styles.active : ""
+          <div className={styles.userReviewsContainer}>
+            <div className={styles.head}>
+              <h2 style={{ fontWeight: 900 }}>
+                See What Guests Loved the Most:
+              </h2>
+              <CustomButton fit>View All</CustomButton>
+            </div>
+            <div className={styles.userReviews}>
+              <UserReviewCard key="1" />
+              <UserReviewCard key="2" />
+              <UserReviewCard key="3" />
+              <UserReviewCard key="4" />
+            </div>
+            <div className={styles.reviewNav}>
+              <div
+                className={`${styles.arrowContainer} ${
+                  currentUserReviewPage <= 1 ? styles.disabled : ""
                 }`}
+                onClick={prevReviewPage}
               >
-                {i + 1}
-              </p>
-            ))}
+                <BsArrowRight className={styles.arrow} />
+              </div>
+              <div className={styles.pages}>
+                {[...Array(5)].map((_, i) => (
+                  <p
+                    key={i}
+                    className={`${styles.page} ${
+                      currentUserReviewPage === i + 1 ? styles.active : ""
+                    }`}
+                  >
+                    {i + 1}
+                  </p>
+                ))}
+              </div>
+              <div
+                className={`${styles.arrowContainer} ${
+                  currentUserReviewPage >= 5 ? styles.disabled : ""
+                }`}
+                onClick={nextReviewPage}
+              >
+                <BsArrowRight className={styles.arrow} />
+              </div>
+            </div>
           </div>
-          <div
-            className={`${styles.arrowContainer} ${
-              currentUserReviewPage >= 5 ? styles.disabled : ""
-            }`}
-            onClick={nextReviewPage}
-          >
-            <BsArrowRight className={styles.arrow} />
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }

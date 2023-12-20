@@ -18,6 +18,7 @@ import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import ApartmentDescription from "#components/apartment-description";
+import { decrypt, encrypt } from "#utils/secure-url.utils";
 
 ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
@@ -46,10 +47,10 @@ function ConnectedSearchResultCard({
   const { openAuthWindow } = useAuthWindow();
 
   const isHotel = property?.propertyType === "hotel";
-  console.log({ isHotel });
   const matchedApartmentPkg =
     property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
     null;
+
   const propertyPrice = isHotel
     ? pkg?.price
     : matchedApartmentPkg?.discountedPrice ?? null;
@@ -81,17 +82,19 @@ function ConnectedSearchResultCard({
     return pkg?.rooms ? findUniqueObjects(pkg?.rooms, "name") : null;
   }, [pkg?.rooms]);
 
+  const mainPhoto =
+    property?.photos?.find((photo) => photo?.isMain) ?? property?.photos?.[0];
   return (
     <div className={styles.searchResultCard}>
-      {isHotel ? (
+      {/* {isHotel ? (
         <span className={`${styles.propertyType} ${styles.hotel}`}>H</span>
       ) : (
         <span className={`${styles.propertyType} ${styles.apartment}`}>A</span>
-      )}
+      )} */}
       <div className={styles.imageContainer}>
         <img
           src={`${import.meta.env.VITE_SERVER_URL}/images/${
-            property?.photos?.[0]?.photoUrl // TODO: change this to show main photo
+            mainPhoto?.photoUrl
           }`}
           alt="property"
         />
@@ -225,12 +228,16 @@ function ConnectedSearchResultCard({
           <div className={styles.btnContainer}>
             <CustomButton
               customStyles={!propertyPrice ? { opacity: ".5" } : {}}
-              onClick={() =>
+              onClick={() => {
                 navigate(
-                  `/property/${property?._id}?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}`,
-                  { state: { pkg } }
-                )
-              }
+                  `/property/${
+                    property?._id
+                  }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
+                    pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
+                  }`
+                  // { state: { pkg } }
+                );
+              }}
             >
               {!propertyPrice ? "Unavailable" : "Check Availabilities"}
             </CustomButton>

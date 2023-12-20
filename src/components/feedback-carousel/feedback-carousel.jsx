@@ -1,12 +1,18 @@
-import styles from "./feedback-carousel.module.scss";
+// import styles from "./feedback-carousel.module.scss";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import PropTypes from "prop-types";
+
+FeedbackCarousel.propTypes = {
+  items: PropTypes.array,
+  Component: PropTypes.func,
+};
 
 function FeedbackCarousel({ items, Component }) {
   const settings = {
     dots: true,
-    customPaging: function (i) {
+    customPaging: function () {
       return <></>;
     },
     dotsClass: "slick-dots slick-thumb",

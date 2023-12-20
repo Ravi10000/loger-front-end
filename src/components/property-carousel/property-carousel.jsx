@@ -1,17 +1,25 @@
-import styles from "./property-carousel.module.scss";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { properties } from "#data/properties.info";
-import PropertyCard from "#components/property-card/property-card";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
+import styles from "./property-carousel.module.scss";
+// import { properties } from "#data/properties.info";
+// import PropertyCard from "#components/property-card/property-card";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import PropTypes from "prop-types";
+
+PropertyCarousel.propTypes = {
+  // items: PropTypes.array,
+  // Component: PropTypes.func,
+  length: PropTypes.number,
+  children: PropTypes.node,
+};
 function PropertyCarousel({
-  items,
-  Component,
   length,
   children,
-  propertyType,
+  // items,
+  // Component,
+  // propertyType,
 }) {
   const settings = {
     dots: false,
@@ -64,6 +72,10 @@ function PropertyCarousel({
   );
 }
 
+NextArrow.propTypes = {
+  onClick: PropTypes.func,
+};
+
 export function NextArrow({ onClick }) {
   return (
     <div onClick={onClick} className={`${styles.arrow} ${styles.next}`}>
@@ -71,6 +83,10 @@ export function NextArrow({ onClick }) {
     </div>
   );
 }
+
+PrevArrow.propTypes = {
+  onClick: PropTypes.func,
+};
 export function PrevArrow({ onClick }) {
   return (
     <div onClick={onClick} className={`${styles.arrow} ${styles.prev}`}>

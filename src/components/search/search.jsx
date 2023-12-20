@@ -116,9 +116,9 @@ function ConnectedSearch({ pushFlash }) {
         </div>
         <MemberInfo
           {...{
-            noOfRooms,
+            noOfRooms: parseInt(noOfRooms) || 0,
             setNoOfRooms,
-            noOfAdults,
+            noOfAdults: parseInt(noOfAdults) || 0,
             setNoOfAdults,
           }}
         />

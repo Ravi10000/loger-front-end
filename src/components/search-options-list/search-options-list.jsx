@@ -4,6 +4,8 @@ import { FaTreeCity } from "react-icons/fa6";
 import { LuHotel } from "react-icons/lu";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { VscCircleLargeFilled } from "react-icons/vsc";
+import Balancer from "react-wrap-balancer";
+
 SearchOptionsList.propTypes = {
   query: PropTypes.object,
   setQueryText: PropTypes.func,
@@ -35,7 +37,9 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   }}
                 >
                   <LuHotel className={styles.icon} />
-                  <span> {property?.name}</span>
+                  <span>
+                    <Balancer>{property?.name}</Balancer>
+                  </span>
                 </li>
               ))}
               {!!query?.data?.properties?.length && (
@@ -50,7 +54,9 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   }}
                 >
                   <FaTreeCity className={styles.icon} />
-                  <span>{city}</span>
+                  <span>
+                    <Balancer>{city}</Balancer>
+                  </span>
                 </li>
               ))}
               {!!query?.data?.cities?.length && (
@@ -65,7 +71,9 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   }}
                 >
                   <MdOutlineLocationOn className={styles.icon} />
-                  <span>{address}</span>
+                  <span>
+                    <Balancer>{address}</Balancer>
+                  </span>
                 </li>
               ))}
               {!!query?.data?.addresses?.length && (
@@ -81,7 +89,9 @@ function SearchOptionsList({ query, setQueryText, setPropertyId }) {
                   }}
                 >
                   <VscCircleLargeFilled className={styles.icon} />
-                  <span>{country}</span>
+                  <span>
+                    <Balancer>{country}</Balancer>
+                  </span>
                 </li>
               ))}
             </>

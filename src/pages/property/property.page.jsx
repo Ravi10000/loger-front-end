@@ -2,10 +2,10 @@ import styles from "./property.page.module.scss";
 
 import { Fragment, useEffect, useState } from "react";
 import {
-  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
+  useLocation,
 } from "react-router-dom";
 import { Balancer } from "react-wrap-balancer";
 
@@ -18,37 +18,50 @@ import { FaLocationDot } from "react-icons/fa6";
 import CustomButton from "#components/custom-button/custom-button";
 import Search from "#components/search/search";
 import RoomCard from "#components/room-card/room-card";
-import { roomDetail } from "#data/room.data";
 import { HashLink } from "react-router-hash-link";
 import Reviews from "#components/reviews/reviews";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchProperty } from "#api/properties.req";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { useAuthWindow } from "#contexts/auth-window.context";
 import { addToWishlist, removeFromWishlist } from "#api/wishlist.req";
 import { currencyFormator } from "#utils/currency-formator";
 import { pushFlash } from "#redux/flash/flash.actions";
 import CustomCarousel from "#components/custom-carousel/custom-carousel";
-
+import PropTypes from "prop-types";
+import { decrypt } from "#utils/secure-url.utils";
+import { Link as ScrollLink } from "react-scroll";
 const gridFooterOptions = [
-  "Overview",
-  "Room Services",
-  "Location",
-  "Amenities",
-  "Policies",
-  "Reviews",
+  {
+    name: "Overview",
+    target: "overview",
+  },
+  { name: "Description", target: "description" },
+  { name: "Facilities & Amenities", target: "facilities" },
+  { name: "Location", target: "location" },
+  // { name: "Policies", target: "policies" },
+  { name: "Reviews", target: "reviews" },
 ];
 
-function PropertyPage({ currentUser, pushFlash }) {
-  const { openAuthWindow } = useAuthWindow();
-  const { state } = useLocation();
-  const [isCarouselOpen, setIsCarouselOpen] = useState(false);
-  console.log({ isCarouselOpen });
+ConnectedPropertyPage.propTypes = {
+  currentUser: PropTypes.object,
+  pushFlash: PropTypes.func,
+};
 
-  console.count("rendering property page");
-  const pkg = state?.pkg || [];
-  console.log({ pkg });
+function ConnectedPropertyPage({ currentUser, pushFlash }) {
+  const { openAuthWindow } = useAuthWindow();
+  const [isCarouselOpen, setIsCarouselOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  // const checkIn = searchParams.get("checkIn");
+  // const checkOut = searchParams.get("checkOut");
+  const noOfAdults = searchParams.get("noOfAdults");
+  const { pathname } = useLocation();
+  let pkg = searchParams.get("pkg");
+  pkg = pkg?.length && decrypt(pkg);
+
+  const currentUrlParams = searchParams.toString();
+  const { propertyId } = useParams();
+
   const [totalPrice, setTotalPrice] = useState(0);
   const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const [pkgDetails, setPkgDetails] = useState(() => {
@@ -62,17 +75,8 @@ function PropertyPage({ currentUser, pushFlash }) {
           price: parseFloat(room.price),
         };
     });
-
     return details;
   });
-
-  const [searchParams] = useSearchParams();
-
-  const checkIn = searchParams.get("checkIn");
-  const checkOut = searchParams.get("checkOut");
-  const noOfAdults = searchParams.get("noOfAdults");
-  const currentUrlParams = searchParams.toString();
-  const { propertyId } = useParams();
 
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState(gridFooterOptions[0]);
@@ -95,14 +99,61 @@ function PropertyPage({ currentUser, pushFlash }) {
   const { isError, isLoading } = propertyQuery;
 
   const { property, rooms, isInWishlist } = propertyQuery?.data || {};
+  const amenities = [];
+  amenities.push(
+    property?.breakfastServed ? "Breakfast Served" : "Breakfast Unavailable"
+  );
+
+  if (property?.breakfastServed)
+    amenities.push(
+      property?.breakfastIncluded
+        ? "Breakfast Included"
+        : `Breakfast Charges ${property?.breakfastPrice} Per Person`
+    );
+  amenities.push(
+    property?.parkingAvailable ? "Parking Available" : "Parking Unavailable"
+  );
+
+  if (property?.parkingAvailable) {
+    amenities.push(
+      property?.parkingReservation
+        ? "Parking Reservation Required"
+        : `No Parking Reservation Required`
+    );
+  }
+
+  const content =
+    property?.propertyType === "apartment"
+      ? property?.apartment
+      : property?.hotel;
+
+  amenities.push(
+    content?.smokingAllowed ? "Smoking Allowed" : "Smoking Not Allowed"
+  );
+  amenities.push(content?.petsAllowed ? "Pets Allowed" : "Pets Not Allowed");
+  amenities.push(
+    content?.partiesEventsAllowed
+      ? "Parties & Events Allowed"
+      : "Parties & Events Not Allowed"
+  );
+
+  const familyOptions = [];
+  familyOptions.push(
+    content?.childrenAllowed ? "Children Allowed" : "Children Not Allowed"
+  );
+  familyOptions.push(
+    content?.cribOffered ? "Crib Offered" : "Crib Not Offered"
+  );
+
   useEffect(() => {
-    property?.apartment?.prices?.forEach?.((pkg) => {
-      if (pkg?.occupancy == noOfAdults) {
-        setTotalPrice(pkg?.discountedPrice);
-        setPriceBeforeDiscount(pkg?.price);
-      }
-    });
-  }, [propertyQuery, noOfAdults]);
+    if (property?.propertyType === "apartment")
+      content?.prices?.forEach?.((pkg) => {
+        if (pkg?.occupancy == noOfAdults) {
+          setTotalPrice(pkg?.discountedPrice);
+          setPriceBeforeDiscount(pkg?.price);
+        }
+      });
+  }, [noOfAdults, content, property]);
   const client = useQueryClient();
 
   const wishlistMutation = useMutation({
@@ -122,15 +173,13 @@ function PropertyPage({ currentUser, pushFlash }) {
       if (response?.data?.status === "success") {
         propertyQuery.refetch();
         client.invalidateQueries("wishlist");
+        pushFlash({ type: "success", message: "Wishlist updated" });
       }
     },
   });
 
   const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
-
-  // const [foundMainPhoto, setFoundMainPhoto] = useState(false);
   let foundMainPhoto = false;
-  // return <></>;
 
   useEffect(() => {
     let price = 0;
@@ -161,7 +210,7 @@ function PropertyPage({ currentUser, pushFlash }) {
           <Search />
         </div>
       </div>
-      <div className={styles.imageGridContainer}>
+      <div className={styles.imageGridContainer} id="overview">
         <div className={styles.actions}>
           <div className={styles.iconLink} onClick={() => navigate(-1)}>
             <PiArrowLeftBold className={`${styles.backIcon} ${styles.icon}`} />
@@ -191,16 +240,19 @@ function PropertyPage({ currentUser, pushFlash }) {
         </div>
         <div
           className={styles.imageGrid}
-          onClick={() => setIsCarouselOpen(true)}
+          onClick={() => {
+            if (property?.photos?.length) setIsCarouselOpen(true);
+          }}
         >
           {!isLoading && !isError && (
             <>
               <div
                 key={mainPhoto?._id}
                 style={{
-                  background: `url("${import.meta.env.VITE_SERVER_URL}/images/${
-                    mainPhoto?.photoUrl
-                  }")`,
+                  backgroundColor: "lightgray",
+                  backgroundImage: `url("${
+                    import.meta.env.VITE_SERVER_URL
+                  }/images/${mainPhoto?.photoUrl}")`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
@@ -221,7 +273,8 @@ function PropertyPage({ currentUser, pushFlash }) {
                   <div
                     key={photo?._id}
                     style={{
-                      background: `url("${
+                      backgroundColor: "lightgray",
+                      backgroundImage: `url("${
                         import.meta.env.VITE_SERVER_URL
                       }/images/${photo?.photoUrl}")`,
                       backgroundSize: "cover",
@@ -262,67 +315,64 @@ function PropertyPage({ currentUser, pushFlash }) {
         </div>
         <div className={styles.gridFooter}>
           <div className={styles.navigation}>
-            {gridFooterOptions?.map((option, idx) => (
-              <p
-                onClick={() => setSelectedOption(option)}
+            {gridFooterOptions?.map((option) => (
+              <ScrollLink
+                smooth={true}
+                duration={100}
+                to={`${option.target}`}
+                onClick={() => {
+                  console.log({
+                    targetLinkg: `${pathname}?${currentUrlParams}#${option.target}`,
+                  });
+                  setSelectedOption(option);
+                }}
                 className={`${styles.option} ${
-                  selectedOption === option ? styles.selected : ""
+                  selectedOption.target === option.target ? styles.selected : ""
                 } `}
-                key={idx}
+                key={option.target}
               >
-                {option}
-              </p>
+                {option.name}
+              </ScrollLink>
             ))}
           </div>
           <div className={styles.right}>
-            <p>7 days left</p>
-            {!checkIn || !checkOut ? (
-              <HashLink
-                to={`/property/${propertyId}#search`}
-                onClick={() => {
-                  pushFlash({
-                    type: "warning",
-                    message: "Please select check-in and check-out dates",
-                  });
-                }}
-              >
-                <CustomButton fit>Book Now</CustomButton>
-              </HashLink>
-            ) : (
-              <CustomButton
-                onClick={() => {
-                  if (!currentUser) {
-                    openAuthWindow("signin");
-                    return;
-                  }
-                  return navigate(`/checkout?${currentUrlParams}`, {
-                    state: {
-                      pkgDetails,
-                      totalPrice,
-                      priceBeforeDiscount,
-                      property,
-                    },
-                  });
-                }}
-                fit
-              >
-                Book Now
-              </CustomButton>
-            )}
+            <CustomButton
+              customStyles={
+                totalPrice ? {} : { opacity: ".5", cursor: "not-allowed" }
+              }
+              onClick={() => {
+                if (!totalPrice) return;
+                if (!currentUser) {
+                  openAuthWindow("signin");
+                  return;
+                }
+                return navigate(`/checkout?${currentUrlParams}`, {
+                  state: {
+                    pkgDetails,
+                    totalPrice,
+                    priceBeforeDiscount,
+                    property,
+                  },
+                });
+              }}
+              fit
+            >
+              {totalPrice ? "Book Now" : "Unavailable"}
+            </CustomButton>
           </div>
         </div>
       </div>
-      <div className={styles.propertyInfo}>
+      <div className={styles.propertyInfo} id="description">
         <div className={styles.details}>
           <div className={styles.title}>
-            <h2>
+            <h2 style={{ fontSize: "40px" }}>
               <Balancer>{property?.propertyName}</Balancer>
             </h2>
-            <p>
-              <Balancer>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.
-              </Balancer>
+            <p style={{ marginTop: "5px" }}>
+              <Balancer>{property?.address}</Balancer>
+            </p>
+            <p style={{ marginTop: "5px" }}>
+              <Balancer>{content?.aboutProperty}</Balancer>
             </p>
           </div>
           <div className={styles.priceContainer}>
@@ -334,31 +384,21 @@ function PropertyPage({ currentUser, pushFlash }) {
           </div>
         </div>
         <div className={styles.description}>
-          <h3>Description</h3>
-          <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset <span>Read More...</span>
-          </p>
+          <h3 style={{ fontSize: "30px" }}>Description</h3>
+          {(!!content?.aboutHost || !!content?.hostName) && (
+            <h4 style={{ marginTop: "10px" }}>About Host</h4>
+          )}
+          {!!content?.hostName && <h5>{content?.hostName}</h5>}
+          {!!content?.aboutHost && <p>{content?.aboutHost}</p>}
         </div>
-        <div className={styles.roomServicesContainer}>
+        <div className={styles.roomServicesContainer} id="facilities">
           <div>
-            <h3>Room Servicess</h3>
-            <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.
-            </p>
+            <h3>
+              {property?.propertyType === "apartment" ? "Apartment" : "Room"}{" "}
+              Services
+            </h3>
           </div>
-          <p className={styles.servicesDescription}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took
-          </p>
-          <div className={styles.services}>
+          <div className={styles.services} id="room-services">
             <div className={styles.highlights}>
               {property?.facilities?.map((facility) => (
                 <div className={styles.service} key={facility?._id}>
@@ -372,72 +412,26 @@ function PropertyPage({ currentUser, pushFlash }) {
                 </div>
               ))}
             </div>
-            {/* <div className={styles.highlights}>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/bed.svg" alt="" />
-                <p>Luxury Bed</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/ice.svg" alt="" />
-                <p>Air Conditioner</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/pool.svg" alt="" />
-                <p>Swimming Pool</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/food.svg" alt="" />
-                <p>Breakfast/Lunch/Dinner</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/cab.svg" alt="" />
-                <p>Car/Taxi</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/towel.svg" alt="" />
-                <p>Laundry</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/24.svg" alt="" />
-                <p>24/7 Help & Support</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/wifi.svg" alt="" />
-                <p>Free WiFi</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/drink.svg" alt="" />
-                <p>Bar & Restaurant</p>
-              </div>
-              <div className={styles.service}>
-                <img src="/images/highlight-icons/parking.svg" alt="" />
-                <p>Free Parking</p>
-              </div>
-            </div> */}
             <div className={styles.list}>
               <h4>Main Amenities</h4>
               <ul>
-                <li>Daily Housekeeping</li>
-                <li>Restaurant & Bar/Lounge</li>
-                <li>Outdoor Pool</li>
-                <li>Breakfast Available</li>
-                <li>Fitness Center</li>
-                <li>Coffee Shop/Café</li>
-                <li>24-hour Business Center</li>
+                {amenities?.map((option) => (
+                  <li key={option}>{option}</li>
+                ))}
               </ul>
             </div>
             <div className={styles.list}>
               <h4>For Families</h4>
               <ul>
-                <li>Children Stay Free</li>
-                <li>Free cribs/infant beds</li>
-                <li>Refrigerator</li>
+                {familyOptions?.map((option) => (
+                  <li key={option}>{option}</li>
+                ))}
               </ul>
             </div>
           </div>
         </div>
       </div>
-      <div className={styles.container}>
+      <div className={styles.container} id="location">
         <div className={styles.locationContainer}>
           <div className={styles.mapContainer}>
             <div className={styles.iconLink}>
@@ -464,72 +458,49 @@ function PropertyPage({ currentUser, pushFlash }) {
               <div className={styles.aboutLocation}>
                 <h3>About This Area</h3>
                 <ul className={styles.list}>
-                  <li className={styles.bold}>What's Nearby</li>
-                  <li>Hospital - 10 Min Drive</li>
-                  <li>Ganga Arti - 15 Min Walking</li>
-                  <li>Rishikesh - 1.2km</li>
-                  <li>Laxman Jhula - 10 Min Walking</li>
-                  <li>Ram Jhula - 10 Min Walking</li>
-                  <li>Mansa Temple - 20 Min Drive</li>
-                  <li>Triveni Ghat - 15 Min Drive</li>
-                  <li>Jumping Heights - 19 Min Walking</li>
-                  <li>Super Market - 7 Min Walking</li>
-                </ul>
-              </div>
-              <div className={styles.aboutLocation}>
-                <h3>Getting Around</h3>
-                <ul className={styles.list}>
-                  <li className={styles.bold}>Routes Nearby</li>
-                  <li>Taxi Stand - 10 Min Walking</li>
-                  <li>Bus Stand - 10 Min Walking</li>
-                  <li>National Highway - 10 Min Walking</li>
-                  <li>Local Routes - 10 Min Walking</li>
-                  <li>Air Port - 1.2km Drive</li>
-                  <li>Railway Station - 10 Min Walking</li>
+                  <li>{content?.aboutNeighborhood}</li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className={styles.coloredContainer}>
-        <div className={styles.availableRoomsContainer}>
-          <div className={styles.head}>
-            <h2>Availability</h2>
-            <p className={styles.link}>View All</p>
-          </div>
-          <div className={styles.availableRoomsGroup} id="reserve-room">
-            {/* {Array(4)
-              .fill()
-              .map((_, i) => (
-                <RoomCard key={i} room={roomDetail} />
-              ))} */}
-            {rooms?.map((room) => {
-              let count = 0;
-              let totalCount = 0;
-              pkg?.rooms?.forEach((pkgRoom) => {
-                // console.log({ pkgRoom, room });
-                if (pkgRoom.name === room.roomName) count++;
-                if (!totalCount) totalCount = pkgRoom.count;
-              });
-              return (
-                <RoomCard
-                  pkgDetails={pkgDetails}
-                  setPkgDetails={setPkgDetails}
-                  key={room._id}
-                  room={room}
-                  count={count}
-                  totalCount={totalCount}
-                  property={{
-                    breakfastIncluded: property?.breakfastIncluded || false,
-                    parkingAvailable: property?.parkingAvailable || false,
-                  }}
-                />
-              );
-            })}
+      {!!rooms?.length && (
+        <div className={styles.coloredContainer}>
+          <div className={styles.availableRoomsContainer}>
+            <div className={styles.head}>
+              <h2>Availability</h2>
+              <p className={styles.link}>View All</p>
+            </div>
+            <div className={styles.availableRoomsGroup} id="reserve-room">
+              {rooms?.map((room) => {
+                let count = 0;
+                let totalCount = 0;
+                pkg?.rooms?.forEach((pkgRoom) => {
+                  // console.log({ pkgRoom, room });
+                  if (pkgRoom.name === room.roomName) count++;
+                  if (!totalCount) totalCount = pkgRoom.count;
+                });
+                return (
+                  <RoomCard
+                    pkgDetails={pkgDetails}
+                    setPkgDetails={setPkgDetails}
+                    key={room._id}
+                    room={room}
+                    count={count}
+                    totalCount={totalCount}
+                    property={{
+                      breakfastIncluded: property?.breakfastIncluded || false,
+                      parkingAvailable: property?.parkingAvailable || false,
+                    }}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+      <div id="reviews"></div>
       <Reviews property={property} />
     </div>
   );
@@ -537,4 +508,5 @@ function PropertyPage({ currentUser, pushFlash }) {
 const mapState = ({ user: { currentUser } }) => ({
   currentUser,
 });
-export default connect(mapState, { pushFlash })(PropertyPage);
+const PropertyPage = connect(mapState, { pushFlash })(ConnectedPropertyPage);
+export default PropertyPage;

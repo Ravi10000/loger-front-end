@@ -36,22 +36,48 @@
   color: rgb(255, 71, 71);
 }
 .sliderContainer {
-  outline: 2px solid red;
-  width: 95%;
-  height: 100%;
+  align-self: center;
+  width: 100%;
+  padding-bottom: 50px;
   //   background-color: tomato;
 }
+.arrow {
+  // background: #fff;
+  height: 300px;
+  width: 70px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+  box-shadow: var(--main-brand-color) 0px 0px 0px 1px;
+  cursor: pointer;
+  &:hover {
+    background: #2c80fe;
+    .icon {
+      color: #fff;
+    }
+  }
+  &.next {
+    right: 10px;
+  }
+  &.prev {
+    left: 10px;
+    .icon {
+      transform: rotate(180deg);
+    }
+  }
+  .icon {
+    color: #bbbdc1;
+    color: var(--main-brand-color);
+    height: 50px;
+    width: fit-content;
+  }
+}
 
-// .imageContainer {
-//   height: 50vh;
-//   width: 90%;
-//   background-color: rgba(255, 0, 0, 0.355);
-//   background-repeat: no-repeat;
-//   background-size: cover;
-//   background-position: center;
-// }
 .image {
-  border-radius: 10px;
-  //   flex-grow: 1;
   max-height: 500px;
 }

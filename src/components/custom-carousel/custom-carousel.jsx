@@ -5,12 +5,17 @@ import Slider from "react-slick";
 import PropTypes from "prop-types";
 import { RxCross1 } from "react-icons/rx";
 import { useEffect } from "react";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 const settings = {
   dots: true,
   infinite: true,
   speed: 500,
   slidesToShow: 1,
   slidesToScroll: 1,
+  dotsClass: "slick-dots slick-thumb",
+  customPaging: () => <></>,
+  nextArrow: <NextArrow />,
+  prevArrow: <PrevArrow />,
 };
 
 CustomCarousel.propTypes = {
@@ -35,29 +40,44 @@ function CustomCarousel({ close, images }) {
       </button>
       <div className={styles.sliderContainer}>
         <Slider {...settings} centerMode>
-          {/* {images.map((image, idx) => {
-            const imageUrl = `${
-              import.meta.env.VITE_SERVER_URL
-            }/images/${image}`;
-            console.log({ imageUrl });
-            return (
-              <div
-                key={idx}
-                className={styles.imageContainer}
-                style={{
-                  backgroundImage: `url("http://192.168.29.91:5000/images/1702614622195-pexels-pixabay-261102.jpg")`,
-                }}
-              ></div>
-            );
-          })} */}
           {images.map((image, idx) => {
             const imageUrl = `${
               import.meta.env.VITE_SERVER_URL
             }/images/${image}`;
-            return <img className={styles.image} src={imageUrl} key={idx} />;
+            return (
+              <img
+                style={{ borderRadius: "10px" }}
+                className={styles.image}
+                src={imageUrl}
+                key={idx}
+              />
+            );
           })}
         </Slider>
       </div>
+    </div>
+  );
+}
+
+NextArrow.propTypes = {
+  onClick: PropTypes.func,
+};
+
+export function NextArrow({ onClick }) {
+  return (
+    <div onClick={onClick} className={`${styles.arrow} ${styles.next}`}>
+      <MdOutlineKeyboardArrowRight className={styles.icon} />
+    </div>
+  );
+}
+
+PrevArrow.propTypes = {
+  onClick: PropTypes.func,
+};
+export function PrevArrow({ onClick }) {
+  return (
+    <div onClick={onClick} className={`${styles.arrow} ${styles.prev}`}>
+      <MdOutlineKeyboardArrowRight className={styles.icon} />
     </div>
   );
 }
