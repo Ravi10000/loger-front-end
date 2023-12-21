@@ -25,6 +25,6 @@ jobs:
             # Install rsync on CircleCI machine
             sudo apt-get update
             sudo apt-get install -y rsync
-            # sudo apt-get install sshpass
+           
             # Use rsync to sync build files to EC2 server
             rsync -av --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $USER@$DNSLF:/var/www/html/ --exclude .htaccess
