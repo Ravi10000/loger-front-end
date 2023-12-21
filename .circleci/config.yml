@@ -1,0 +1,30 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: cimg/node:21.4.0
+
+    steps:
+      - checkout
+
+      # Install dependencies
+      - run:
+          name: Install Dependencies
+          command: npm install
+
+      # Build React application
+      - run:
+          name: Build React App
+          command: npm run build
+
+      # Deploy to EC2
+      - deploy:
+          name: Deploy to EC2
+          command: |
+            # Install rsync on CircleCI machine
+            sudo apt-get update
+            sudo apt-get install -y rsync
+           
+            # Use rsync to sync build files to EC2 server
+            rsync -av --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $USER@$DNSLF:/var/www/html/ --exclude .htaccess
