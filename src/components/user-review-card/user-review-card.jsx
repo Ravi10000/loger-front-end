@@ -1,29 +1,36 @@
 import styles from "./user-review-card.module.scss";
 
 import { RiStarFill } from "react-icons/ri";
+import PropTypes from "prop-types";
+import dayjs from "dayjs";
+import ProfilePic from "#components/profile-pic/profile-pic";
+UserReviewCard.propTypes = {
+  review: PropTypes.object,
+};
 
 function UserReviewCard({ review }) {
+  const { user } = review;
+  const days = dayjs().diff(dayjs(review?.createdAt), "day");
+
   return (
     <div className={styles.userReviewCard}>
       <div className={styles.head}>
-        <img src="/images/user-circle.png" alt="user" />
+        <ProfilePic user={review?.user} />
         <div className={styles.userDetails}>
-          <h3>Ravinder Kumar</h3>
-          <p>5 days ago</p>
+          <h3>
+            {user.fName} {user.lName}
+          </h3>
+          <p>{days} days ago</p>
         </div>
         <div className={styles.stars}>
-          {[...Array(5)].map((_, i) => (
+          {[...Array(review?.rating)].map((_, i) => (
             <RiStarFill key={i} className={styles.star} />
           ))}
         </div>
       </div>
-      <p className={styles.reviewText}>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived{" "}
-        <span>Read More...</span>
-      </p>
+      {!!review?.comment && (
+        <p className={styles.reviewText}>{review?.comment}</p>
+      )}
     </div>
   );
 }

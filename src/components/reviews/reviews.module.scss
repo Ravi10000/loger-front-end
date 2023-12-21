@@ -89,6 +89,7 @@
       border-radius: 50px;
       color: var(--main-brand-color);
       box-shadow: 0px 2px 4px 1px rgba(0, 0, 0, 0.15);
+      border: none;
       cursor: pointer;
       &.disabled {
         opacity: 0.5;
