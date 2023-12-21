@@ -30,6 +30,7 @@ import CustomCarousel from "#components/custom-carousel/custom-carousel";
 import PropTypes from "prop-types";
 import { decrypt } from "#utils/secure-url.utils";
 import { Link as ScrollLink } from "react-scroll";
+import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
 const gridFooterOptions = [
   {
     name: "Overview",
@@ -100,7 +101,7 @@ function getAmenitiesNFamilityFacilities(property) {
 
 function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
-  const [isCarouselOpen, setIsCarouselOpen] = useState(false);
+  const [carouselImages, setCarouselImages] = useState(null);
   const [searchParams] = useSearchParams();
   // const checkIn = searchParams.get("checkIn");
   // const checkOut = searchParams.get("checkOut");
@@ -190,8 +191,12 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
     },
   });
 
-  const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
-  let foundMainPhoto = false;
+  const photos = reorderPhotos(property?.photos || []);
+  console.log({ photos });
+  const photoUrls = extractPhotUrls(photos);
+  console.log({ photosUrls: photoUrls });
+  // const mainPhoto = property?.photos?.find((photo) => photo?.isMain);
+  // let foundMainPhoto = false;
 
   useEffect(() => {
     let price = 0;
@@ -208,11 +213,12 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
 
   return (
     <div className={styles.propertyPage}>
-      {isCarouselOpen && (
+      {carouselImages?.length && (
         <CustomCarousel
-          images={property?.photos?.map((photo) => photo?.photoUrl)}
+          images={carouselImages}
+          // images={property?.photos?.map((photo) => photo?.photoUrl)}
           close={() => {
-            setIsCarouselOpen(false);
+            setCarouselImages(null);
           }}
         />
       )}
@@ -253,60 +259,40 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
         <div
           className={styles.imageGrid}
           onClick={() => {
-            if (property?.photos?.length) setIsCarouselOpen(true);
+            if (photoUrls?.length) setCarouselImages(photoUrls);
           }}
         >
           {!isLoading && !isError && (
             <>
-              <div
-                key={mainPhoto?._id}
-                style={{
-                  backgroundColor: "lightgray",
-                  backgroundImage: `url("${
-                    import.meta.env.VITE_SERVER_URL
-                  }/images/${mainPhoto?.photoUrl}")`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              ></div>
-              {property?.photos?.map((photo, idx) => {
-                if (photo?.isMain) {
-                  foundMainPhoto = true;
-                  return <Fragment key="mainPhotoSkipped"></Fragment>;
-                }
-
-                if (foundMainPhoto && idx > 6)
-                  return <Fragment key={photo?._id}></Fragment>;
-
-                if (!foundMainPhoto && idx > 5)
-                  return <Fragment key={photo?._id}></Fragment>;
-
+              {photoUrls?.map((photo, idx) => {
+                if (idx > 6) return <Fragment key={photo}></Fragment>;
                 return (
                   <div
-                    key={photo?._id}
+                    key={photo}
                     style={{
                       backgroundColor: "lightgray",
                       backgroundImage: `url("${
                         import.meta.env.VITE_SERVER_URL
-                      }/images/${photo?.photoUrl}")`,
+                      }/images/${photo}")`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
                   ></div>
                 );
               })}
-              {property?.photos?.length - 8 > 0 &&
-              property?.photos?.length - 8 > 1 ? (
+              {photoUrls?.length - 8 > 1 ? (
                 <div
                   key="rest of the photos"
                   style={{
                     background: `linear-gradient(to bottom, #1c1c1e84, #1c1c1e84),
-            url("/images/property/seven.png")`,
+                    url("${import.meta.env.VITE_SERVER_URL}/images/${
+                      photoUrls[8]
+                    }")`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
                 >
-                  <h4>+{property?.photos?.length - 8} photos</h4>
+                  <h4>+{photoUrls?.length - 8} photos</h4>
                 </div>
               ) : (
                 <div
@@ -314,9 +300,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                   style={{
                     background: `url("${
                       import.meta.env.VITE_SERVER_URL
-                    }/images/${
-                      property?.photos?.[property?.photos?.length - 1]?.photoUrl
-                    }")`,
+                    }/images/${photoUrls?.[photoUrls?.length - 1]}")`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -505,6 +489,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                       breakfastIncluded: property?.breakfastIncluded || false,
                       parkingAvailable: property?.parkingAvailable || false,
                     }}
+                    setCarouselImages={setCarouselImages}
                   />
                 );
               })}

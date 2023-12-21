@@ -1,47 +1,55 @@
 import styles from "./room-card.module.scss";
-import CustomButton from "#components/custom-button/custom-button";
+// import CustomButton from "#components/custom-button/custom-button";
 import { HiOutlineChevronRight } from "react-icons/hi";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { PiWarningCircle } from "react-icons/pi";
-import CustomSelect from "#components/custom-select/custom-select";
+// import CustomSelect from "#components/custom-select/custom-select";
 import { currencyFormator } from "#utils/currency-formator";
 import dayjs from "dayjs";
 import Counter from "#components/counter/counter";
+import PropTypes from "prop-types";
+import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
+// import CustomCarousel from "#components/custom-carousel/custom-carousel";
 
-// const photos = [
-//   "/images/property/one.png",
-//   "/images/property/seven.png",
-//   "/images/property/three.png",
-//   "/images/property/four.png",
-//   "/images/property/five.png",
-// ];
+RoomCard.propTypes = {
+  room: PropTypes.object,
+  bookingDetails: PropTypes.object,
+  property: PropTypes.object,
+  count: PropTypes.number,
+  totalCount: PropTypes.number,
+  pkgDetails: PropTypes.object,
+  setPkgDetails: PropTypes.func,
+  setCarouselImages: PropTypes.func,
+};
 
 function RoomCard({
   room,
   bookingDetails,
   property,
-  count,
-  totalCount,
   pkgDetails,
   setPkgDetails,
+  setCarouselImages,
 }) {
-  // let roomCount = pkgDetails?.[room.roomName]?.count || 0;
   const [roomCount, setRoomCount] = useState(
     parseInt(pkgDetails?.[room.roomName]?.count || 0)
   );
 
-  const photos = room.photos;
+  const photos = reorderPhotos(room?.photos);
+  const photosUrls = extractPhotUrls(photos);
+
   const [currentImage, setCurrentImage] = useState(0);
-  const nextImage = () => {
+  const nextImage = (e) => {
+    e.stopPropagation();
     if (currentImage < photos?.length - 1) {
       setCurrentImage(currentImage + 1);
     } else {
       setCurrentImage(0);
     }
   };
-  const prevImage = () => {
+  const prevImage = (e) => {
+    e.stopPropagation();
     if (currentImage > 0) {
       setCurrentImage(currentImage - 1);
     } else {
@@ -59,7 +67,13 @@ function RoomCard({
           count: roomCount,
         },
       }));
-  }, [roomCount]);
+  }, [
+    roomCount,
+    room.roomName,
+    room.discountedPrice,
+    room.price,
+    setPkgDetails,
+  ]);
   const checkInDate = dayjs(bookingDetails?.checkInDate).format(
     "dddd, DD/MM/YYYY"
   );
@@ -68,7 +82,10 @@ function RoomCard({
 
   return (
     <div className={styles.roomCard}>
-      <div className={styles.imageCarousel}>
+      <div
+        className={styles.imageCarousel}
+        onClick={() => setCarouselImages(photosUrls)}
+      >
         <p className={styles.label}>Popular Among Rooms</p>
         <img
           src={
@@ -170,8 +187,10 @@ function RoomCard({
             </div>
             <div className={styles.roomCount}>
               <Counter
+                containerStyles={{ color: "#fff" }}
+                buttonStyles={{ color: "#fff" }}
                 value={roomCount}
-                title="No Of Rooms"
+                title="Add Rooms"
                 setValue={setRoomCount}
               />
             </div>
