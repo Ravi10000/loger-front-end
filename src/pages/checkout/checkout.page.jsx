@@ -91,7 +91,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   const [doYouSmoke, setDoYouSmoke] = useState(false);
   const [specialRequests, setSpecialRequests] = useState("");
 
-  const [showNotification, setShowNotification] = useState(true);
+  // const [showNotification, setShowNotification] = useState(true);
   const [showSelectPartner, setShowSelectPartner] = useState(false);
   const [selectedGuests, setSelectedGuests] = useState([]);
 
@@ -328,7 +328,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           }}
         />
       )}
-      {showNotification && (
+      {/* {showNotification && (
         <div className={styles.notification}>
           <div className={styles.message}>
             <div className={styles.head}>
@@ -356,7 +356,6 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                 src="/images/logos/loger-logo.png"
                 alt="loger.ma"
               />
-              {/* <p>loger.ma</p> */}
             </div>
             <div className={styles.iconLink}>
               <p>Hotel Policies</p>
@@ -364,7 +363,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <div className={styles.coloredContainer}>
         <div className={styles.contentContainer}>
           <h1 className={styles.title}>

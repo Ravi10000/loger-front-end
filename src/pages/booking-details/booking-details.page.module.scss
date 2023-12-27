@@ -29,6 +29,10 @@
     padding: 10px 20px;
     border-radius: 5px;
     border: none;
+    &:disabled {
+      opacity: 0.5;
+      filter: brightness(1.1);
+    }
     .icon {
       height: 20px;
       width: fit-content;

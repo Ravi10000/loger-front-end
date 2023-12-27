@@ -48,6 +48,14 @@ function ConnectedSearchResultCard({
 
   const isHotel = property?.propertyType === "hotel";
   const content = isHotel ? property?.hotel : property?.apartment;
+  content.aboutProperty = content?.aboutProperty
+    ? content?.aboutProperty?.length > 150
+      ? content?.aboutProperty?.substring(0, 150) + "..."
+      : content?.aboutProperty
+    : `Lorem Ipsum is simply dummy text of the printing and
+    typesetting industry. Lorem Ipsum has been the industry Read
+    More...`;
+
   const matchedApartmentPkg =
     property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
     null;
@@ -126,7 +134,9 @@ function ConnectedSearchResultCard({
             <HiOutlineLocationMarker className={styles.locationIcon} />
           </div>
           <div className={styles.description}>
-            {isHotel ? (
+            <h4 style={{ fontSize: "18px" }}>Description</h4>
+            <p>{content?.aboutProperty}</p>
+            {/* {isHotel ? (
               <>
                 <h4 style={{ fontSize: "18px" }}>Description</h4>
                 <p>
@@ -142,7 +152,7 @@ function ConnectedSearchResultCard({
                   : "..."}
               </p>
               // <ApartmentDescription apartment={property.apartment} />
-            )}
+            )} */}
           </div>
           {isHotel && pkg ? (
             <div className={styles.rooms}>

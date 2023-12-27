@@ -7,13 +7,14 @@ import { RxCross1 } from "react-icons/rx";
 import { useEffect } from "react";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import WithBackdrop from "#components/with-backdrop/with-backdrop";
+import { MdClose } from "react-icons/md";
 const settings = {
   dots: true,
   infinite: true,
   speed: 500,
   slidesToShow: 1,
   slidesToScroll: 1,
-  dotsClass: "slick-dots slick-thumb",
+  dotsClass: "slick-dots slick-thumb-md",
   customPaging: () => <></>,
   nextArrow: <NextArrow />,
   prevArrow: <PrevArrow />,
@@ -41,7 +42,7 @@ function CustomCarousel({ close, images }) {
         }}
       >
         <button className={styles.closeBtn} onClick={close}>
-          <RxCross1 />
+          <span>Close</span> <MdClose />
         </button>
         <div className={styles.sliderContainer}>
           <Slider {...settings} centerMode>

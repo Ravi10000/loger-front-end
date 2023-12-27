@@ -10,6 +10,7 @@
   --icon-color: #323e4c;
   --max-width: 1600px;
   --primary-font: "Nordnet Mono";
+  // --primary-font: "Poppins", sans-serif;
   --card-text-clr: #1a232f;
   --info-clr: #f8b425;
   --warning-clr: #ff8800;
@@ -113,7 +114,8 @@ a {
   justify-content: center;
 }
 
-.slick-dots.slick-thumb li {
+.slick-dots.slick-thumb li,
+.slick-dots.slick-thumb-md li {
   width: 10px;
   height: 10px;
   margin: 0 3px;
@@ -126,6 +128,10 @@ a {
 }
 
 .slick-dots.slick-thumb li.slick-active {
+  background: var(--main-brand-color);
+}
+.slick-dots.slick-thumb-md li.slick-active {
+  width: 30px;
   background: var(--main-brand-color);
 }
 

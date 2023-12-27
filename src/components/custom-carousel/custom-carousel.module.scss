@@ -27,15 +27,22 @@
 
 .closeBtn {
   display: flex;
+  gap: 5px;
+  padding: 10px;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  width: 70px;
-  background: #ffdbdb;
+  // height: 50px;
+  // width: 70px;
+  // background: #ffdbdb;
+  background: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 24px;
-  color: rgb(255, 71, 71);
+  border-radius: 100vw;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 5px 10px;
+  font-weight: 600;
+  &:hover {
+    color: red;
+    box-shadow: #ffdbdb97 0px 3px 5px;
+  }
 }
 .sliderContainer {
   align-self: center;

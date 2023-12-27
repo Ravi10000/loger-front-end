@@ -153,7 +153,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
       : property?.hotel;
 
   console.log({ propertyType: property?.propertyType });
- 
+
   if (property?.propertyType === "hotel" && gridFooterOptions?.length === 5) {
     gridFooterOptions?.splice(4, 0, { name: "Rooms", target: "room-details" });
   }

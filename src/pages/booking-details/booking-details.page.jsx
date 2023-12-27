@@ -1,4 +1,6 @@
 import styles from "./booking-details.page.module.scss";
+import ReactDOMServer from "react-dom/server";
+import html2pdf from "html2pdf.js/dist/html2pdf.min";
 
 import { Balancer } from "react-wrap-balancer";
 import { PiPrinter } from "react-icons/pi";
@@ -11,6 +13,7 @@ import dayjs from "dayjs";
 import { currencyFormator } from "#utils/currency-formator";
 import Stars from "#components/stars/stars";
 import { fetchProperty } from "#api/properties.req";
+import PropTypes from "prop-types";
 
 function BookingDetailsPage() {
   const totalStars = 5;
@@ -46,6 +49,7 @@ function BookingDetailsPage() {
 
   const transaction = bookingQuery?.data?.transaction;
   const booking = bookingQuery?.data?.booking;
+  const isPropertyLoading = propertyQuery?.isLoading;
   const property = propertyQuery?.data?.property;
   const pkgDetails = booking?.pkgDetails && JSON.parse(booking?.pkgDetails);
   const paymentResponse =
@@ -59,6 +63,10 @@ function BookingDetailsPage() {
     pending: "Your Payment Transaction is Pending",
     cancelled: "Your Booking is Cancelled",
   };
+  const tripLength = dayjs(booking?.checkOutDate).diff(
+    booking?.checkInDate,
+    "day"
+  );
 
   if (bookingQuery.isLoading) return <LoadingPage />;
   if (bookingQuery.isError)
@@ -71,6 +79,126 @@ function BookingDetailsPage() {
         </h2>
       </div>
     );
+
+  const ContentToPrint = () => {
+    return (
+      <div style={{ padding: "20px" }}>
+        <div
+          className={styles.contentBox}
+          style={{
+            padding: "20px",
+            background: "#f9f9fa",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            maxWidth: "800px",
+          }}
+        >
+          <img
+            src="/images/logos/loger-logo.png"
+            alt="loger.ma"
+            style={{ height: "70px", width: "fit-content", marginLeft: "20px" }}
+          />
+          <div
+            className={styles.details}
+            style={{
+              padding: "20px",
+              paddingTop: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+            }}
+          >
+            <div
+              style={{
+                borderBottom: "2px solid #d0d0d079",
+                paddingBottom: "10px",
+                width: "100%",
+              }}
+            >
+              <h3>Booking Details</h3>
+            </div>
+            <Info
+              name="Booking No."
+              value={new Date(booking?.createdAt).getTime()}
+            />
+            <Info
+              name="Booking Date"
+              value={dayjs(booking?.createdAt).format("DD/MM/YYYY")}
+            />
+            <Info
+              name="Check-In Date"
+              value={dayjs(booking?.checkInDate).format("DD/MM/YYYY")}
+            />
+            <Info
+              name="Check-Out Date"
+              value={dayjs(booking?.checkOutDate).format("DD/MM/YYYY")}
+            />
+            <Info
+              name="Total Length of Stay"
+              value={`${tripLength} day${tripLength > 1 && "s"}`}
+            />
+            <Info name="First Name" value={transaction?.firstName} />
+
+            {transaction?.lastName && (
+              <Info name="Last Name" value={transaction?.lastName} />
+            )}
+            <Info
+              name="Phone Number"
+              value={`${transaction?.countryCode} ${transaction?.phone}`}
+            />
+            <Info name="Email Address" value={transaction?.email} />
+
+            {isPropertyLoading ? (
+              <p style={{ fontWeight: "500", textAlign: "center" }}>
+                loading...
+              </p>
+            ) : (
+              <>
+                <Info name="Street" value={property?.address} />
+                <Info name="State/City" value={property?.city} />
+                <Info name="Pincode" value={property?.pincode} />
+                <Info name="Country" value={property?.country} />
+              </>
+            )}
+          </div>
+          {booking?.specailRequests && (
+            <>
+              <div
+                className={styles.bottomContainer}
+                style={{
+                  padding: "10px 20px",
+                  borderBottom: "1px solid #e5e5e5",
+                }}
+              >
+                <h3>Special Requests</h3>
+                <p>{booking?.specailRequests}</p>
+              </div>
+            </>
+          )}
+          {transaction?.status === "paid" && (
+            <p
+              className={styles.lastMessage}
+              style={{ color: "#00c964", fontWeight: 600, padding: "0 20px" }}
+            >
+              We Wish You a Pleasant Stay
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  function handlePrint() {
+    const printElement = ReactDOMServer.renderToString(<ContentToPrint />);
+    html2pdf()
+      .from(printElement)
+      .set({
+        html2canvas: { scale: 5 },
+        filename: `Booking_Receipt_${Date.now()}.pdf`,
+      })
+      .save();
+  }
 
   return (
     <div className={styles.bookingDetailsPage}>
@@ -85,7 +213,11 @@ function BookingDetailsPage() {
                 <Balancer>Welcome to {property?.propertyName}</Balancer>
               </p>
             </div>
-            <button className={styles.print} onClick={() => window.print()}>
+            <button
+              className={styles.print}
+              onClick={handlePrint}
+              disabled={isPropertyLoading}
+            >
               <PiPrinter className={styles.icon} />
               <p>Print</p>
             </button>
@@ -94,74 +226,88 @@ function BookingDetailsPage() {
       )}
       <div className={styles.container}>
         <div className={styles.contentBox}>
-          <p>{StatusUI?.[booking?.status]}</p>
-          <div className={styles.details}>
-            <h3>Your Booking Details</h3>
-            <div className={styles.info}>
-              <p>Booking No.</p>
-              <p>{booking?._id}</p>
+          {isPropertyLoading ? (
+            <div
+              style={{
+                width: "100vw",
+                maxWidth: "800px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "400px",
+              }}
+            >
+              <LoadingPage.Loader></LoadingPage.Loader>
             </div>
-            <div className={styles.info}>
-              <p>First Name</p>
-              <p>{transaction?.firstName}</p>
-            </div>
-            {transaction?.lastName && (
-              <div className={styles.info}>
-                <p>Last Name</p>
-                <p>{transaction?.lastName}</p>
-              </div>
-            )}
-            <div className={styles.info}>
-              <p>Phone Number</p>
-              <p>
-                {transaction?.countryCode} {transaction?.phone}
-              </p>
-            </div>
-            <div className={styles.info}>
-              <p>Email Address</p>
-              <p>{transaction?.email}</p>
-            </div>
-            <div className={styles.info}>
-              <p>Street</p>
-              <p>1080, Northem Gate, Post Box 1442, Jama Masjid</p>
-            </div>
-            <div className={styles.info}>
-              <p>States/City</p>
-              <p>New Delhi</p>
-            </div>
-            <div className={styles.info}>
-              <p>Pin Code</p>
-              <p>110006</p>
-            </div>
-            <div className={styles.info}>
-              <p>Country</p>
-              <p>India</p>
-            </div>
-          </div>
-          {booking?.specailRequests && (
+          ) : (
             <>
-              <div className={styles.bottomContainer}>
-                <h3>Special Requests</h3>
-                <p>{booking?.specailRequests}</p>
+              <p>{StatusUI?.[booking?.status]}</p>
+              <div className={styles.details}>
+                <h3>Your Booking Details</h3>
+                <div className={styles.info}>
+                  <p>Booking No.</p>
+                  <p>{new Date(booking?.createdAt).getTime()}</p>
+                </div>
+                <div className={styles.info}>
+                  <p>First Name</p>
+                  <p>{transaction?.firstName}</p>
+                </div>
+                {transaction?.lastName && (
+                  <div className={styles.info}>
+                    <p>Last Name</p>
+                    <p>{transaction?.lastName}</p>
+                  </div>
+                )}
+                <div className={styles.info}>
+                  <p>Phone Number</p>
+                  <p>
+                    {transaction?.countryCode} {transaction?.phone}
+                  </p>
+                </div>
+                <div className={styles.info}>
+                  <p>Email Address</p>
+                  <p>{transaction?.email}</p>
+                </div>
+                {isPropertyLoading ? (
+                  <p style={{ fontWeight: "500", textAlign: "center" }}>
+                    loading...
+                  </p>
+                ) : (
+                  <>
+                    <div className={styles.info}>
+                      <p>Street</p>
+                      <p>{property?.address}</p>
+                    </div>
+                    <div className={styles.info}>
+                      <p>States/City</p>
+                      <p>{property?.city}</p>
+                    </div>
+                    <div className={styles.info}>
+                      <p>Pin Code</p>
+                      <p>{property?.pincode}</p>
+                    </div>
+                    <div className={styles.info}>
+                      <p>Country</p>
+                      <p>{property?.country}</p>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className={styles.bottomContainer}>
-                <h3>Payment By</h3>
-                <p>Credit Card</p>
-              </div>
-              <p className={styles.lastMessage}>We Wish You a Pleasant Stay</p>
+              {booking?.specailRequests && (
+                <>
+                  <div className={styles.bottomContainer}>
+                    <h3>Special Requests</h3>
+                    <p>{booking?.specailRequests}</p>
+                  </div>
+                </>
+              )}
+              {transaction?.status === "paid" && (
+                <p className={styles.lastMessage}>
+                  We Wish You a Pleasant Stay
+                </p>
+              )}
             </>
           )}
-          {/* <div className={styles.bottomContainer}>
-              <h3>Payment Information</h3>
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy text
-                ever since the 1500s, when an unknown printer took a galley of
-                type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic type setting
-              </p>
-            </div> */}
         </div>
         <div className={styles.contentBox}>
           <div className={styles.head}>
@@ -170,40 +316,35 @@ function BookingDetailsPage() {
               <p>{property?.state}</p>
             </div>
             <div className={styles.ratingsContainer}>
-              {/* <div className={styles.stars}>
-                {[...Array(rating)].map((_, i) => (
-                  <AiFillStar className={styles.star} key={i} />
-                ))}
-                {[...Array(totalStars - rating)].map((_, i) => (
-                  <AiOutlineStar className={styles.star} key={i + rating} />
-                ))}
-              </div> */}
-              <Stars ratings={property?.averageRating} size={20} />
-              <p>
+              <p style={{ textAlign: "end" }}>
                 {property?.averageRating} / {totalStars}
               </p>
+              <Stars ratings={property?.averageRating} size={18} />
             </div>
           </div>
           <div className={styles.featureList}>
-            <div className={styles.item}>
+            {/* <div className={styles.item}>
               <h4>Double Bed Room</h4>
               <p>10/10 Exceptional</p>
-            </div>
-            <div className={styles.item}>
+            </div> */}
+            {/* <div className={styles.item}>
               <h4>Breakfast</h4>
               <p>Morning Breakfast at 8:30 am</p>
-            </div>
-            <div className={styles.item}>
+            </div> */}
+            {/* <div className={styles.item}>
               <h4>Extra Bed</h4>
               <p>1 Bed or 2 Twin Beds</p>
-            </div>
-            <div className={styles.item}>
+            </div> */}
+            {/* <div className={styles.item}>
               <h4>Car Parking</h4>
               <p>Free Parking</p>
-            </div>
+            </div> */}
             <div className={styles.item}>
               <h4>Family Details</h4>
-              <p>{pkgDetails?.noOfAdults} Adults</p>
+              <p>
+                {pkgDetails?.noOfAdults} Adult
+                {pkgDetails?.noOfAdults > 1 && "s"}
+              </p>
             </div>
             <div className={styles.item}>
               <h4>Check - In</h4>
@@ -216,33 +357,27 @@ function BookingDetailsPage() {
             <div className={styles.item}>
               <h4>Total Length of Stay</h4>
               <p>
-                {pkgDetails?.noOfRooms} Rooms, for {pkgDetails?.noOfAdults}{" "}
-                People,{" "}
-                {dayjs(booking?.checkOutDate).diff(
-                  booking?.checkInDate,
-                  "day"
-                ) + 1}{" "}
-                Days
+                {/* {pkgDetails?.noOfRooms} Rooms, for {pkgDetails?.noOfAdults}{" "} */}
+                {/* People,  */}
+                {tripLength} Day{tripLength > 1 && "s"}
               </p>
             </div>
-            <div className={styles.item}>
+            {/* <div className={styles.item}>
               <h4>Cancelation</h4>
               <p>Free Cancelation</p>
-            </div>
+            </div> */}
           </div>
           <div className={styles.breakdown}>
-            <h4>Package Amount</h4>
+            {/* <h4>Package Amount</h4>
             <p>{currencyFormator(transaction?.amount)}</p>
-            {/* <h4>Getaway Deal</h4>
-            <p>- ₹ 768.60</p> */}
             <h4>Genius Discount</h4>
             <p>
               -
               {currencyFormator(
                 transaction?.amount - transaction?.discountedAmount
               )}
-            </p>
-            <h4>Final Amount</h4>
+            </p> */}
+            <h4>Paid Amount</h4>
             <p className={styles.finalPrice}>
               {currencyFormator(transaction?.discountedAmount)}
             </p>
@@ -262,6 +397,27 @@ function BookingDetailsPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+Info.propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+};
+
+function Info({ name, value }) {
+  return (
+    <div
+      className={styles.info}
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        gap: "20px",
+      }}
+    >
+      <p style={{ fontWeight: "700" }}>{name}</p>
+      <p>{value}</p>
     </div>
   );
 }
