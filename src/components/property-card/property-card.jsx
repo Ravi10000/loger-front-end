@@ -1,34 +1,32 @@
 import styles from "./property-card.module.scss";
-import CustomButton from "#components/custom-button/custom-button";
-import { RiStarFill } from "react-icons/ri";
-import Balancer from "react-wrap-balancer";
+
 import { useNavigate } from "react-router-dom";
+import Balancer from "react-wrap-balancer";
+import PropTypes from "prop-types";
+
 import Stars from "#components/stars/stars";
+import CustomButton from "#components/custom-button/custom-button";
+
 import { currencyFormator } from "#utils/currency-formator";
+
+PropertyCard.propTypes = {
+  property: PropTypes.object.isRequired,
+};
+
 function PropertyCard({ property }) {
   const navigate = useNavigate();
+  const mainPhoto = property?.photos?.find((photo) => photo.isMain);
+  const mainPhotoUrl = mainPhoto?.photoUrl || property?.photos?.[0]?.photoUrl;
   return (
     <div className={styles.propertyCard}>
-      {/* <img
-        className={styles.propertyImage}
-        src={
-          item?.photos?.[0]?.photoUrl
-            ? import.meta.env.VITE_SERVER_URL +
-              "/images/" +
-              item?.photos?.[0]?.photoUrl
-            : "/images/property (1).png"
-        }
-        alt="property"
-      /> */}
       <div
         className={styles.propertyImage}
         style={{
+          opacity: mainPhotoUrl ? 1 : 0.25,
           backgroundImage: `url("${
-            property?.photos?.[0]?.photoUrl
-              ? import.meta.env.VITE_SERVER_URL +
-                "/images/" +
-                property?.photos?.[0]?.photoUrl
-              : "/images/property (1).png"
+            mainPhotoUrl
+              ? import.meta.env.VITE_SERVER_URL + "/images/" + mainPhotoUrl
+              : "/images/blank-image.png"
           }")`,
         }}
       ></div>

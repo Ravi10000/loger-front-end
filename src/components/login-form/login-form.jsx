@@ -1,3 +1,5 @@
+import CustomButton from "#components/custom-button/custom-button";
+import CustomInput from "#components/custom-input/custom-input";
 import styles from "./login-form.module.scss";
 import { Link } from "react-router-dom";
 
@@ -26,7 +28,7 @@ function LoginForm() {
         forgot password?
       </Link>
       <Link to="/register" className={styles.registerLink}>
-        Don't have an account? <span>Please Registration</span>
+        Don&apos;t have an account? <span>Please Registration</span>
       </Link>
     </div>
   );

@@ -1,7 +1,14 @@
 import styles from "./with-backdrop.module.scss";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
-export default function WithBackdrop({ children, left, close }) {
+WithBackdrop.propTypes = {
+  children: PropTypes.node.isRequired,
+  close: PropTypes.func.isRequired,
+  left: PropTypes.bool,
+};
+
+export default function WithBackdrop({ children, close, left }) {
   const backdropRef = useRef(null);
   useEffect(() => {
     document.body.style.overflow = "hidden";

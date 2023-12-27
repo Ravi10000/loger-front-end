@@ -41,14 +41,14 @@ function HomePage() {
   return (
     <div className={styles.homePage}>
       <HeroSection />
-      <h2 className={styles.title}>Recently Viewed Properties</h2>
+      {/* <h2 className={styles.title}>Recently Viewed Properties</h2>
       <div className={styles.recentPropertiesContainer}>
         <div className={styles.recentProperties}>
           {recentProperties.map((property, index) => (
             <RecentPropertyCard property={property} key={index} />
           ))}
         </div>
-      </div>
+      </div> */}
       <div className={styles.recommendedPropertiesContainer}>
         <div className={styles.selectors}>
           <h2>Recommended Properties</h2>

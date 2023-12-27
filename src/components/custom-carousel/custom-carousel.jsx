@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { RxCross1 } from "react-icons/rx";
 import { useEffect } from "react";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import WithBackdrop from "#components/with-backdrop/with-backdrop";
 const settings = {
   dots: true,
   infinite: true,
@@ -24,8 +25,6 @@ CustomCarousel.propTypes = {
 };
 
 function CustomCarousel({ close, images }) {
-  console.log({ images });
-  console.log(`${import.meta.env.VITE_SERVER_URL}/images/${images[0]}`);
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -34,28 +33,35 @@ function CustomCarousel({ close, images }) {
   }, []);
 
   return (
-    <div className={styles.carouselContainer}>
-      <button className={styles.closeBtn} onClick={close}>
-        <RxCross1 />
-      </button>
-      <div className={styles.sliderContainer}>
-        <Slider {...settings} centerMode>
-          {images.map((image, idx) => {
-            const imageUrl = `${
-              import.meta.env.VITE_SERVER_URL
-            }/images/${image}`;
-            return (
-              <img
-                style={{ borderRadius: "10px" }}
-                className={styles.image}
-                src={imageUrl}
-                key={idx}
-              />
-            );
-          })}
-        </Slider>
+    <WithBackdrop close={close}>
+      <div
+        className={styles.carouselContainer}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <button className={styles.closeBtn} onClick={close}>
+          <RxCross1 />
+        </button>
+        <div className={styles.sliderContainer}>
+          <Slider {...settings} centerMode>
+            {images.map((image, idx) => {
+              const imageUrl = `${
+                import.meta.env.VITE_SERVER_URL
+              }/images/${image}`;
+              return (
+                <img
+                  style={{ borderRadius: "10px" }}
+                  className={styles.image}
+                  src={imageUrl}
+                  key={idx}
+                />
+              );
+            })}
+          </Slider>
+        </div>
       </div>
-    </div>
+    </WithBackdrop>
   );
 }
 

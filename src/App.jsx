@@ -1,22 +1,22 @@
 import styles from "./App.module.scss";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 import {
   Navigate,
   Route,
   Routes,
-  useLocation,
-  useSearchParams,
+  // useLocation,
+  // useSearchParams,
 } from "react-router-dom";
 
-import { connect } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserDetails } from "#api/auth.req";
-import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
+// import { connect } from "react-redux";
+// import { useQuery } from "@tanstack/react-query";
+// import { fetchUserDetails } from "#api/auth.req";
+// import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
 
 import Header from "#components/header/header";
 import Footer from "#components/footer/footer";
 import LoadingPage from "#pages/loading/loading";
-import ScrollTop from "#hooks/scroll-to-top";
+// import ScrollTop from "#hooks/scroll-to-top";
 import AuthWindow from "#components/auth-window";
 import ReviewPopup from "#components/review-popup/review-popup";
 import FlashGroup from "#components/flash-group/flash-group";
@@ -28,15 +28,15 @@ const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
 );
 const HomePage = lazy(() => import("#pages/home/home.page"));
-const LoginPage = lazy(() => import("#pages/login/login.page"));
-const ForgotPasswordPage = lazy(() =>
-  import("#pages/forgot-password/forgot-password.page")
-);
-const RegisterPage = lazy(() => import("#pages/register/register.page"));
+// const LoginPage = lazy(() => import("#pages/login/login.page"));
+// const ForgotPasswordPage = lazy(() =>
+//   import("#pages/forgot-password/forgot-password.page")
+// );
+// const RegisterPage = lazy(() => import("#pages/register/register.page"));
+// const VerifyEmailPage = lazy(() =>
+//   import("#pages/verify-email/verify-email.page")
+// );
 const PropertyPage = lazy(() => import("#pages/property/property.page"));
-const VerifyEmailPage = lazy(() =>
-  import("#pages/verify-email/verify-email.page")
-);
 const CheckoutPage = lazy(() => import("#pages/checkout/checkout.page"));
 const AboutPage = lazy(() => import("#pages/about/about.page"));
 const ContactPage = lazy(() => import("#pages/contact/contact.page"));
@@ -89,7 +89,7 @@ function App() {
             {/* <Route path="/auth/verify-email" element={<VerifyEmailPage />} /> */}
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/property/:propertyId" element={<PropertyPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout/:propertyId" element={<CheckoutPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/terms" element={<TermsPage />} />

@@ -120,7 +120,7 @@ function ConnectedSigninWindow({ setCurrentUser, pushFlash }) {
         </p>
         <p>
           By continuing you agree Loger.ma{" "}
-          <span className={styles.link}>
+          <span className={styles.link}> 
             Terms of Services & Privacy Policy
           </span>
         </p>

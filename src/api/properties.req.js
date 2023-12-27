@@ -24,3 +24,12 @@ export const getValidSearchOptions = (queryText) =>
   api.get(`/properties/options?queryText=${queryText}`);
 
 export const fetchProperty = (id) => api.get(`/properties/${id}`);
+
+export const findProperty = (propertyId, select, populate) => {
+  console.log(
+    `/properties/find/${propertyId}?select=${select}&populate=${populate}`
+  );
+  return api.get(
+    `/properties/find/${propertyId}?select=${select}&populate=${populate}`
+  );
+};

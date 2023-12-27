@@ -1,12 +1,13 @@
 .carouselContainer {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  // outline: 2px solid red;
+  // position: fixed;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  // z-index: 100000;
   height: 90vh;
   width: 90vw;
   border-radius: 10px;
-  z-index: 100000;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -21,7 +22,7 @@
   -webkit-backdrop-filter: blur(17px);
   border-radius: 10px;
   border: 1px solid rgba(48, 48, 48, 0.084);
-  animation: scaleIn 0.2s ease-in-out;
+  // animation: scaleIn 0.2s ease-in-out;
 }
 
 .closeBtn {
@@ -81,6 +82,7 @@
 
 .image {
   max-height: 500px;
+  // max-width: 700px;
 }
 
 @keyframes scaleIn {

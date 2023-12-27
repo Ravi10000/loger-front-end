@@ -117,10 +117,12 @@ function RoomCard({
           <p>{room?.rating}</p>
         </div>
         <div className={styles.features}>
-          <div className={styles.feature}>
-            <img src="/images/room-icons/size.svg" alt="size" />
-            <p>{room?.roomSize}</p>
-          </div>
+          {(room?.roomSize || property?.apartment?.apartmentSize) && (
+            <div className={styles.feature}>
+              <img src="/images/room-icons/size.svg" alt="size" />
+              <p>{room?.roomSize || property?.apartment?.apartmentSize}</p>
+            </div>
+          )}
           <div className={styles.feature}>
             <img src="/images/highlight-icons/bed.svg" alt="beds" />
             <p>
@@ -153,19 +155,21 @@ function RoomCard({
             <img src="/images/room-icons/meal.svg" alt="meal" />
             <p>{room?.breakfastIncluded ? "Included" : "Not Included"}</p>
           </div>
-          <div className={`${styles.feature} ${styles.colored}`}>
+          {/* <div className={`${styles.feature} ${styles.colored}`}>
             <img src="/images/room-icons/refund.svg" alt="refund" />
             <p>{room?.refundable}</p>
-          </div>
-          <div className={`${styles.feature} ${styles.colored} ${styles.lg}`}>
+          </div> */}
+          {/* <div className={`${styles.feature} ${styles.colored} ${styles.lg}`}>
             <img src="/images/room-icons/plus.svg" alt="cancellation" />
-            <p>Free Cancellation before {room?.freeCancellationBefore} Days</p>
-          </div>
+            <p>
+              Free Cancellation before {property?.freeCancellationBefore} Days
+            </p>
+          </div> */}
         </div>
-        <div className={styles.viewMore}>
+        {/* <div className={styles.viewMore}>
           <p>View Details</p>
           <HiOutlineChevronRight className={styles.icon} />
-        </div>
+        </div> */}
 
         {!bookingDetails ? (
           <>

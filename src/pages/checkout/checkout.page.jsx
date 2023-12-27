@@ -1,93 +1,142 @@
 import styles from "./checkout.page.module.scss";
 
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useForm } from "react-hook-form";
+import { connect } from "react-redux";
+// import z from "zod";
+import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import { Balancer } from "react-wrap-balancer";
 
 import { HiOutlineChevronRight } from "react-icons/hi";
-import { Balancer } from "react-wrap-balancer";
-import CustomCheckbox from "#components/custom-checkbox/custom-checkbox";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import CustomButton from "#components/custom-button/custom-button";
-import CustomInput from "#components/custom-input/custom-input";
-import FileInput from "#components/file-input/file-input";
-import { BiCheck } from "react-icons/bi";
-import RoomCard from "#components/room-card/room-card";
-import { roomDetail } from "#data/room.data";
-import { RiCheckboxBlankCircleLine, RiErrorWarningFill } from "react-icons/ri";
+import { RiCheckboxBlankCircleLine } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchProperty } from "#api/properties.req";
+
+import { useProperty } from "#hooks/property-info";
+
+import CustomCheckbox from "#components/custom-checkbox/custom-checkbox";
+import CustomButton from "#components/custom-button/custom-button";
+// import CustomInput from "#components/custom-input/custom-input";
+// import FileInput from "#components/file-input/file-input";
+import RoomCard from "#components/room-card/room-card";
+// import PhoneInput from "../../components/phone-input/phone-input";
+
 import { fetchGuestUsers } from "#api/user.req";
-import { connect } from "react-redux";
-import { useForm } from "react-hook-form";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import PhoneInput from "../../components/phone-input/phone-input";
-import { useFilter } from "#hooks/use-filter";
 import { initiateTransaction } from "#api/transaction.req";
-import dayjs from "dayjs";
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-  // "image/svg+xml",
-];
 
-const checkoutSchema = z.object({
-  firstName: z.string().nonempty({ message: "First Name is Req  uired" }),
-  lastName: z.string(),
-  // phone: z.string().nonempty({ message: "Phone is Required" }),
-  email: z.string().email({ message: "Invalid Email" }),
-  file: z
-    .any()
-    .refine((file) => file?.[0], "ID Proof Required.")
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    )
-    .refine((file) => file?.[0]?.size <= 50_00_000, `Max image size is 5MB.`),
-});
+import { decrypt } from "#utils/secure-url.utils";
 
-function CheckoutPage({ currentUser }) {
-  // console.log({ currentUser });
+// import { roomDetail } from "#data/room.data";
+import LoadingPage from "#pages/loading/loading";
+import GuestInfo from "#components/guest-info/guest-info";
+import { pushFlash } from "#redux/flash/flash.actions";
+import CustomCarousel from "#components/custom-carousel/custom-carousel";
+import api from "#api/index";
 
-  const [searchParams, setSearchParams] = useSearchParams();
+// const ACCEPTED_IMAGE_TYPES = [
+//   "image/jpeg",
+//   "image/jpg",
+//   "image/png",
+//   "image/webp",
+// ];
+
+// const checkoutSchema = z.object({
+//   firstName: z.string().nonempty({ message: "First Name is Req  uired" }),
+//   lastName: z.string(),
+//   email: z.string().email({ message: "Invalid Email" }),
+//   file: z
+//     .any()
+//     .refine((file) => file?.[0], "ID Proof Required.")
+//     .refine(
+//       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
+//       "Only .jpg, .jpeg, .png and .webp formats are supported."
+//     )
+//     .refine((file) => file?.[0]?.size <= 50_00_000, `Max image size is 5MB.`),
+// });
+
+ConnectedCheckoutPage.propTypes = {
+  currentUser: PropTypes.object,
+  isFetching: PropTypes.bool,
+  pushFlash: PropTypes.func,
+};
+
+function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
+  // const navigate = useNavigate();
+
+  const { propertyId } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const [guestInfo, setGuestInfo] = useState([
+    { firstName: "", lastName: "", email: "", phone: "", file: "" },
+  ]);
+
+  const [carouselImages, setCarouselImages] = useState(null);
+  const handleGuestInfoChange = ({ key, value, idx }) => {
+    setGuestInfo((ps) => {
+      const newGuestInfo = [...ps];
+      newGuestInfo[idx][key] = value;
+      return newGuestInfo;
+    });
+  };
+  const removeGuestInfo = (idx) => {
+    const guestToRemove = guestInfo[idx];
+    setGuestInfo((ps) => {
+      const newPs = [...ps];
+      newPs.splice(idx, 1);
+      return newPs;
+    });
+    if (guestToRemove?._id) {
+      setSelectedGuests((ps) => {
+        const tempList = [...ps];
+        return tempList.filter((guest) => guest !== guestToRemove._id);
+      });
+    }
+  };
+
   const checkInDate = searchParams.get("checkIn");
   const checkOutDate = searchParams.get("checkOut");
-  const noOfRooms = searchParams.get("noOfRooms");
+
   const noOfAdults = searchParams.get("noOfAdults");
+  const state = decrypt(searchParams.get("state"));
+  console.log({ state });
+
+  let { totalPrice, priceBeforeDiscount, pkgDetails } = state;
+  const noOfRooms = Object.keys(pkgDetails)?.reduce(
+    (acc, key) => acc + pkgDetails[key].count,
+    0
+  );
+  // console.log({ pkgDetails });
 
   const [sendDeals, setSendDeals] = useState(false);
   const [doYouSmoke, setDoYouSmoke] = useState(false);
-  const [phone, setPhone] = useState(
-    currentUser?.countryCode + currentUser?.phone || ""
-  );
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: currentUser?.email || "",
-      firstName: currentUser?.fName || "",
-      lastName: currentUser?.lName || "",
-    },
-    resolver: zodResolver(checkoutSchema),
-  });
+  const [specialRequests, setSpecialRequests] = useState("");
 
-  const file = watch("file");
+  // const [phone, setPhone] = useState(
+  //   currentUser?.countryCode + currentUser?.phone || ""
+  // );
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   watch,
+  //   formState: { errors },
+  // } = useForm({
+  //   defaultValues: {
+  //     email: currentUser?.email || "",
+  //     firstName: currentUser?.fName || "",
+  //     lastName: currentUser?.lName || "",
+  //   },
+  //   resolver: zodResolver(checkoutSchema),
+  // });
 
-  const navigate = useNavigate();
+  // const file = watch("file");
+
   const [showNotification, setShowNotification] = useState(true);
   const [showSelectPartner, setShowSelectPartner] = useState(false);
-  const [subscribed, setSubscribed] = useState(false);
-  const [bedsSelector, setBedsSelector] = useState(false);
   const [selectedGuests, setSelectedGuests] = useState([]);
-  let {
-    state: { property, totalPrice, priceBeforeDiscount, pkgDetails },
-  } = useLocation();
 
   let transactionAmount = 0;
   let transactionAmuontBeforeDiscount = 0;
@@ -111,24 +160,132 @@ function CheckoutPage({ currentUser }) {
 
   const guestQuery = useQuery({
     queryKey: ["user", "guests"],
+    enabled: !!currentUser,
     queryFn: async () => {
       const guestsResponse = await fetchGuestUsers();
-      // console.log({ guestsResponse });
       return guestsResponse?.data;
     },
   });
-
-  useEffect(() => {
-    if (!property || !totalPrice || !priceBeforeDiscount) navigate(-1);
-  }, []);
+  const { property } = useProperty(
+    propertyId,
+    ["propertyName", "photos", "facilities"],
+    ["facilities"]
+  );
   const transactionMutation = useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async () => {
+      const guestIds = [];
+      const guestErrors = [];
+      guestInfo?.forEach((guest) => {
+        const errors = {};
+        if (!guest?.firstName) {
+          errors.firstName = "First Name is required";
+        } else {
+          delete errors.firstName;
+        }
+
+        if (!guest?.phone) {
+          errors.phone = "Phone is required";
+        } else if (guest?.phone?.length < 10) {
+          errors.phone = "Phone is required";
+        } else {
+          delete errors.phone;
+        }
+        if (!guest?.email) {
+          errors.phone = "Email is required";
+        } else {
+          delete errors.email;
+        }
+        if (!guest.idProof && !guest.file)
+          errors.idProof = "ID Proof is required";
+        if (guest?.file && !guest?.file?.type?.includes?.("image")) {
+          errors.idProof = "Only Images are supported";
+        }
+        if (guest?.file && guest?.file?.type?.includes?.("image")) {
+          delete errors.idProof;
+        }
+        const allErros = Object.keys(errors);
+        if (allErros?.length) guestErrors.push(errors);
+      });
+      if (guestErrors?.length) {
+        setGuestInfo((guestInfo) => {
+          const newGuestInfo = [...guestInfo];
+          newGuestInfo.forEach((guest, idx) => {
+            guest.errors = guestErrors[idx];
+          });
+          return newGuestInfo;
+        });
+        pushFlash({
+          message: "Please Review Guest Details and Fill Required Fields",
+          type: "error",
+        });
+        return;
+      }
+      const [user, ...otherGuests] = guestInfo;
+      if (otherGuests?.length) {
+        await Promise.all(
+          otherGuests?.map?.(async (guest) => {
+            const { firstName, lastName, email, phone, file, _id } = guest;
+            const formData = new FormData();
+            formData.append("firstName", firstName);
+            formData.append("lastName", lastName);
+            formData.append("email", email);
+            formData.append("phone", phone);
+            formData.append("idProof", file);
+            if (_id) {
+              formData.append("guestId", _id);
+              const { data } = await api.putForm("/user/guest", formData);
+              guestIds.push(data?.guest?._id);
+            } else {
+              const { data } = await api.postForm("/user/guest", formData);
+              guestIds.push(data?.guest?._id);
+            }
+          })
+        );
+      }
+      const { firstName, lastName, email, phone, file, idProof } = user || {};
+      if (!firstName || !lastName || !email || !phone) {
+        pushFlash({ message: "Please Enter Your Details", type: "error" });
+        return;
+      } else if (!file && !idProof) {
+        pushFlash({ message: "Please Upload Your ID Proof", type: "error" });
+        return;
+      }
+      console.log({ idProof: file });
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("email", email);
+      formData.append("phone", phone?.split(" ")?.[1]);
+      formData.append("countryCode", phone?.split(" ")?.[0]);
+      formData.append("discountedAmount", transactionAmount);
+      formData.append("amount", transactionAmuontBeforeDiscount);
+      formData.append("propertyId", property._id);
+      formData.append("checkInDate", checkInDate);
+      formData.append("checkOutDate", checkOutDate);
+      if (guestIds?.length)
+        guestIds.forEach((guestId) => {
+          formData.append("guestList[]", guestId);
+        });
+
+      if (file?.name) formData.append("idProof", file);
+
+      if (specialRequests) formData.append("specialRequests", specialRequests);
+
+      const pkgDetails = newPkgDetails?.rooms
+        ? newPkgDetails
+        : {
+            price: priceBeforeDiscount,
+            discountedAmount: totalPrice,
+            occupancy: noOfAdults,
+          };
+
+      formData.append("pkgDetails", JSON.stringify(pkgDetails));
       const requestData = {
-        firstName: formData?.firstName,
-        lastName: formData?.lastName,
-        email: formData?.email,
-        file: formData?.file?.[0],
-        specialRequests: formData?.specialRequests,
+        firstName,
+        lastName,
+        email,
+        ...(idProof && { idProof: file }),
+        ...(specialRequests && { specialRequests }),
         discountedAmount: transactionAmount,
         amount: transactionAmuontBeforeDiscount,
         phone: phone?.split(" ")?.[1],
@@ -136,7 +293,7 @@ function CheckoutPage({ currentUser }) {
         propertyId: property._id,
         checkInDate,
         checkOutDate,
-        guestList: selectedGuests,
+        ...(!!guestIds?.length && { guestList: guestIds }),
         pkgDetails: newPkgDetails?.rooms
           ? newPkgDetails
           : {
@@ -145,15 +302,10 @@ function CheckoutPage({ currentUser }) {
               occupancy: noOfAdults,
             },
       };
-      const response = await initiateTransaction(requestData);
-      console.log({ response });
-      const transaction = response?.data?.transaction;
+      const transactionResponse = await initiateTransaction(formData);
+      console.log({ transactionResponse });
+      const transaction = transactionResponse?.data?.transaction;
       if (transaction) {
-        // $amount = $_GET["amount"];
-        // $transactionId = $_GET["transactionId"];
-        // $email = $_GET["email"];
-        // $phone = $_GET["phone"];
-        // $name = $_GET["name"];
         open(
           `${
             import.meta.env.VITE_SITE_URL
@@ -166,29 +318,67 @@ function CheckoutPage({ currentUser }) {
         );
       }
 
-      return response?.data;
+      return transactionResponse?.data;
     },
     onSuccess: (data) => {
       console.log({ data });
     },
     onError: (err) => {
+      pushFlash({
+        message: `Something went wrong😢,
+            🙏please refresh the page and try again.`,
+        type: "error",
+      });
       console.log({ err });
     },
   });
 
   const guests = guestQuery?.data?.guests;
-  // console.log({ guests });
 
-  return (
-    <form
-      className={styles.checkoutPage}
-      onSubmit={handleSubmit(transactionMutation.mutate)}
-    >
+  useEffect(() => {
+    if (!isFetching && currentUser) {
+      // (ps) => {
+      //   const newPs = [...ps];
+      //   newPs[0].firstName = currentUser?.fName || "";
+      //   newPs[0].lastName = currentUser?.lName || "";
+      //   newPs[0].email = currentUser?.email || "";
+      //   console.log({
+      //     phone: currentUser?.countryCode + " " + currentUser?.phone,
+      //   });
+      //   newPs[0].phone = currentUser?.countryCode + " " + currentUser?.phone;
+      //   console.log({ newPs });
+      //   return newPs;
+      // }
+      setGuestInfo([
+        {
+          firstName: currentUser?.fName || "",
+          lastName: currentUser?.lName || "",
+          email: currentUser?.email || "",
+          phone: currentUser?.countryCode + " " + currentUser?.phone,
+          idProof: currentUser?.idProof || "",
+        },
+      ]);
+    }
+  }, [isFetching, currentUser]);
+  console.log({ guestInfo });
+
+  return isFetching ? (
+    <LoadingPage />
+  ) : (
+    <div className={styles.checkoutPage}>
+      {carouselImages && (
+        <CustomCarousel
+          images={carouselImages}
+          close={() => {
+            setCarouselImages(null);
+          }}
+        />
+      )}
       {showNotification && (
         <div className={styles.notification}>
           <div className={styles.message}>
             <div className={styles.head}>
-              <img src="/images/icons/calendar-remove.svg" alt="" />
+              <img src="/images/icons/calendar-remove.svg" alt="calendar" />
               <h3>Non-Refundable Rate</h3>
             </div>
             <p>
@@ -202,13 +392,17 @@ function CheckoutPage({ currentUser }) {
               onClick={() => setShowNotification(false)}
               className={styles.close}
               src="/images/icons/cross.svg"
-              alt=""
+              alt="close"
             />
           </div>
           <div className={styles.notificationFooter}>
             <div className={styles.logoContainer}>
-              <img className={styles.logo} src="/images/logos/loger-logo.png" />
-              <p>www.loger.ma.com</p>
+              <img
+                className={styles.logo}
+                src="/images/logos/loger-logo.png"
+                alt="loger.ma"
+              />
+              {/* <p>loger.ma</p> */}
             </div>
             <div className={styles.iconLink}>
               <p>Hotel Policies</p>
@@ -223,9 +417,7 @@ function CheckoutPage({ currentUser }) {
             <Balancer>Complete Your Booking</Balancer>
           </h1>
           <p className={styles.subtitle}>
-            <Balancer>
-              Welcome to Tirath View, Haridwar - A Four Star Luxury
-            </Balancer>
+            <Balancer>Welcome to {property?.propertyName}</Balancer>
           </p>
         </div>
       </div>
@@ -239,8 +431,7 @@ function CheckoutPage({ currentUser }) {
               <p>
                 <Balancer>
                   Please tell us the name of the guest staying at the hotel as
-                  it appears on the ID that they'll present at check-in. If the
-                  guest has more than one last name, please enter them all.
+                  it appears on the ID that they&apos;ll present at check-in.
                 </Balancer>
               </p>
             </div>
@@ -248,79 +439,63 @@ function CheckoutPage({ currentUser }) {
               <div className={styles.head}>
                 <p>
                   <Balancer>
-                    Please give us the name of one of the people staying in this
-                    room.
+                    Please give us the details of the people who will stay here.
                   </Balancer>
                 </p>
-                <MultiSelect
-                  label="Your Travel Partners ?"
-                  isVisible={showSelectPartner}
-                  setVisibility={setShowSelectPartner}
-                  items={(guests || []).map((guest) => ({
-                    label: guest.name,
-                    value: guest._id,
-                  }))}
-                  selectedItems={selectedGuests}
-                  setItems={setSelectedGuests}
-                />
+                {guestQuery?.isLoading ? (
+                  <p>loading...</p>
+                ) : (
+                  <MultiSelect
+                    label="Your Travel Partners ?"
+                    isVisible={showSelectPartner}
+                    setVisibility={setShowSelectPartner}
+                    items={(guests || []).map((guest) => ({
+                      label: `${guest?.firstName ? guest.firstName : ""}  ${
+                        guest?.lastName ? guest.lastName : ""
+                      }`,
+                      value: guest._id,
+                    }))}
+                    addToList={(idx) => {
+                      setGuestInfo((ps) => [...ps, guests[idx]]);
+                    }}
+                    removeFromList={(id) => {
+                      setGuestInfo((ps) => {
+                        const idx = ps.findIndex((guest) => guest?._id === id);
+                        if (idx >= 0) {
+                          const newPs = [...ps];
+                          newPs.splice(idx, 1);
+                          return newPs;
+                        }
+                      });
+                    }}
+                    selectedItems={selectedGuests}
+                    setItems={setSelectedGuests}
+                  />
+                )}
               </div>
-              <div className={styles.inputsContainer}>
-                <div className={styles.inputContainer}>
-                  <CustomInput
-                    secondary
-                    label="First Name"
-                    bold
-                    placeholder="First Name"
-                    register={{ ...register("firstName") }}
-                    error={errors?.firstName?.message}
+              {!isFetching &&
+                guestInfo?.map((guest, idx) => (
+                  <GuestInfo
+                    info={guest}
+                    idx={idx}
+                    key={idx}
+                    setGuestInfo={({ key, value }) => {
+                      handleGuestInfoChange({ key, value, idx });
+                    }}
+                    removeGuestInfo={() => removeGuestInfo(idx)}
                   />
-                </div>
-                <div className={styles.inputContainer}>
-                  <CustomInput
-                    secondary
-                    label="Last Name"
-                    bold
-                    placeholder="Last Name"
-                    register={{ ...register("lastName") }}
-                    error={errors?.lastName?.message}
-                  />
-                </div>
-                <div className={styles.inputContainer}>
-                  {/* <CustomInput
-                    secondary
-                    label="Phone"
-                    bold
-                    placeholder="Phone"
-                    register={{ ...register("phone") }}
-                  /> */}
-                  <PhoneInput
-                    phone={phone}
-                    setPhone={setPhone}
-                    label="Phone"
-                    secondary
-                  />
-                </div>
-                <div className={styles.inputContainer}>
-                  <CustomInput
-                    secondary
-                    label="Email"
-                    bold
-                    placeholder="Email"
-                    register={{ ...register("email") }}
-                    error={errors?.email?.message}
-                  />
-                </div>
-
-                <div className={styles.inputContainer}>
-                  <FileInput
-                    label={"Any ID Proof"}
-                    file={file}
-                    placeholder="Attach Any ID Proof"
-                    register={{ ...register("file") }}
-                    error={errors?.file?.message}
-                  />
-                </div>
-              </div>
+                ))}
+              <CustomButton
+                fit
+                onClick={() => {
+                  setGuestInfo((ps) => [
+                    ...ps,
+                    { firstName: "", lastName: "", email: "", phone: "" },
+                  ]);
+                }}
+              >
+                Add Guest
+              </CustomButton>
               <div className={styles.subscribeSection}>
                 {/* <div
                   className={styles.checkboxContainer}
@@ -356,15 +531,17 @@ function CheckoutPage({ currentUser }) {
                 <p>
                   <Balancer>
                     Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's
-                    standard dummy text ever since the 1500s, when an unknown
-                    printer took a galley of type and scrambled it to make a
-                    type specimen book.
+                    typesetting industry. Lorem Ipsum has been the
+                    industry&apos;s standard dummy text ever since the 1500s,
+                    when an unknown printer took a galley of type and scrambled
+                    it to make a type specimen book.
                   </Balancer>
                 </p>
                 <textarea
                   placeholder="Write Something Special"
-                  {...register("specialRequests")}
+                  value={specialRequests}
+                  onChange={(e) => setSpecialRequests(e.target.value)}
+                  // {...register("specialRequests")}
                 ></textarea>
               </div>
             </div>
@@ -375,7 +552,7 @@ function CheckoutPage({ currentUser }) {
               <p>
                 <Balancer>
                   Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
+                  typesetting industry. Lorem Ipsum has been the industry&apos;s
                   standard dummy text ever since the 1500s, when an unknown
                   printer took
                 </Balancer>
@@ -384,29 +561,17 @@ function CheckoutPage({ currentUser }) {
             <div className={styles.formContainer}>
               <h3>Property highlights</h3>
               <div className={styles.features}>
-                <div className={styles.feature}>
-                  <img src="/images/highlight-icons/bed.svg" alt="beds" />
-                  <p>Luxury Bed</p>
-                </div>
-                <div className={styles.feature}>
-                  <img src="/images/highlight-icons/ice.svg" alt="" />
-                  <p>Air Conditioner</p>
-                </div>
-                <div className={styles.feature}>
-                  <img src="/images/highlight-icons/towel.svg" alt="" />
-                  <p>Laundry</p>
-                </div>
-                <div className={styles.feature}>
-                  <img
-                    src="/images/highlight-icons/parking.svg"
-                    alt="parking"
-                  />
-                  <p>Free Parking</p>
-                </div>
-                <div className={styles.feature}>
-                  <img src="/images/room-icons/meal.svg" alt="meal" />
-                  <p>Breakfast/Lunch/Dinner</p>
-                </div>
+                {property?.facilities?.map?.((facility) => (
+                  <div className={styles.feature} key={facility?._id}>
+                    <img
+                      src={`${import.meta.env.VITE_SERVER_URL}/images/${
+                        facility?.image
+                      }`}
+                      alt={facility?.name}
+                    />
+                    <p>{facility?.name}</p>
+                  </div>
+                ))}
               </div>
               <div className={styles.included}>
                 <h3>Included in Your Room</h3>
@@ -425,13 +590,6 @@ function CheckoutPage({ currentUser }) {
                 <h3>Preferences</h3>
                 <p>Please note that room preferences cannot be guaranteed.</p>
                 <div className={styles.preference}>
-                  {/* <MultiSelect
-                    flexible
-                    label="1 Queen Bed"
-                    items={["King Bed"]}
-                    isVisible={bedsSelector}
-                    setVisibility={setBedsSelector}
-                  /> */}
                   <div className={styles.checkboxContainer}>
                     <CustomCheckbox
                       label="Do You Smoke?"
@@ -446,63 +604,31 @@ function CheckoutPage({ currentUser }) {
               </div>
             </div>
           </div>
-          <div className={styles.roomContainer}>
-            <RoomCard
-              room={{
-                ...roomDetail,
-                photos: property?.photos,
-                roomName: property?.propertyName,
-                capacity: newPkgDetails?.noOfAdults,
-              }}
-              bookingDetails={{
-                checkInDate,
-                checkOutDate,
-              }}
-              property={property}
-              pkgDetails={newPkgDetails}
-            />
-          </div>
+          {property && (
+            <div className={styles.roomContainer}>
+              <RoomCard
+                setCarouselImages={setCarouselImages}
+                room={{
+                  // ...roomDetail,
+                  photos: property?.photos,
+                  roomName: property?.propertyName,
+                  capacity: newPkgDetails?.noOfAdults,
+                }}
+                bookingDetails={{
+                  checkInDate,
+                  checkOutDate,
+                }}
+                property={property}
+                pkgDetails={newPkgDetails}
+              />
+            </div>
+          )}
         </div>
       </div>
-      <div className={styles.protectBooking}>
-        <div className={styles.contentContainer}>
-          <div className={styles.head}>
-            <h3>Protect Your Booking</h3>
-            <p>Recommended</p>
-          </div>
-          <div className={styles.description}>
-            <Balancer>
-              <RiErrorWarningFill className={styles.icon} />
-              Important : Lorem Ipsum is simply dummy text of the printing and
-              typesetting industry. Lorem Ipsum has been the industry's standard
-              dummy text ever since the 1500s, when an unknown printer took a
-              galley of type and scrambled it to make a type specimen book. It
-              has survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions
-            </Balancer>
-          </div>
-        </div>
-      </div>
-      {/* <div className={styles.checkinoutDetails}>
-        <p>
-          <span>Check In: </span>Friday, 29/06/2023 (Afternoon)
-        </p>
-        <p>
-          <span>Check Out: </span>Thursday, 04/07/2023 (Afternoon)
-        </p>
-        <div className={styles.timings}>
-          <p>
-            <span>Arrive Time</span>
-          </p>
-        </div>
-      </div> */}
+
       <div className={styles.container}>
         <div className={`${styles.contentContainer}`}>
           <h2>Cancellation Policies</h2>
-          <h4>Double Bed Room</h4>
           <div className={styles.cancellation}>
             <div className={styles.head}>
               <h4>Fully Refundable Until 15/07/2023</h4>
@@ -523,8 +649,8 @@ function CheckoutPage({ currentUser }) {
                 </div>
                 <p>
                   If you change or cancel this booking after 6:00 PM, 12/07/2023
-                  property's local time (Bangladesh Standard Time), you'll be
-                  charged for 1 night (including tax).
+                  property&apos;s local time (Bangladesh Standard Time),
+                  you&apos;ll be charged for 1 night (including tax).
                 </p>
                 <div className={styles.path}></div>
               </div>
@@ -532,7 +658,7 @@ function CheckoutPage({ currentUser }) {
                 <div className={`${styles.status}`}>
                   <RiCheckboxBlankCircleLine className={styles.icon} />
                 </div>
-                <p>Check-in 14/07/2023</p>
+                <p>Check-in {dayjs(checkInDate).format("DD-MM-YYYY")}</p>
               </div>
             </div>
           </div>
@@ -540,10 +666,7 @@ function CheckoutPage({ currentUser }) {
       </div>
       <div className={styles.container}>
         <div className={styles.contentContainer}>
-          <CustomButton
-            fit
-            // onClick={() => navigate("/booking-details")}
-          >
+          <CustomButton fit onClick={transactionMutation.mutate}>
             Confirm Booking
           </CustomButton>
           <div className={styles.tNc}>
@@ -558,18 +681,33 @@ function CheckoutPage({ currentUser }) {
           </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
 
-export function MultiSelect({
-  label,  
+MultiSelect.propTypes = {
+  label: PropTypes.string,
+  items: PropTypes.array,
+  isVisible: PropTypes.bool,
+  setVisibility: PropTypes.func,
+  flexible: PropTypes.bool,
+  selectedItems: PropTypes.array,
+  setItems: PropTypes.func,
+  addToList: PropTypes.func,
+  removeFromList: PropTypes.func,
+  emptyMsg: PropTypes.string,
+};
+function MultiSelect({
+  label,
   items,
   isVisible,
   setVisibility,
   flexible,
   selectedItems,
   setItems,
+  addToList,
+  removeFromList,
+  emptyMsg = "Your Added guests will appear here.",
 }) {
   const ref = useRef(null);
 
@@ -583,8 +721,9 @@ export function MultiSelect({
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [ref.current]);
-  return (  
+  }, [ref, setVisibility]);
+
+  return (
     <div
       className={`${styles.multiSelect} ${flexible ? styles.flexible : ""}`}
       ref={ref}
@@ -600,31 +739,44 @@ export function MultiSelect({
       </div>
       {isVisible && (
         <div className={styles.optionsContainer}>
-          <div className={styles.options}>
-            {items?.map((item, i) => (
-              <CustomCheckbox
-                checked={selectedItems.includes(item.value)}
-                setChecked={() => {
-                  if (selectedItems.includes(item.value)) {
-                    setItems((prevState) =>
-                      prevState.filter((guest) => guest !== item.value)
-                    );
-                  } else {
-                    setItems((prevState) => [...prevState, item.value]);
-                  }
-                }}
-                label={item.label}
-                key={i}
-              />
-            ))}
-          </div>
-          <CustomButton onClick={() => setVisibility(false)}>Save</CustomButton>
+          {!items?.length ? (
+            <p>{emptyMsg}</p>
+          ) : (
+            <>
+              <div className={styles.options}>
+                {items?.map((item, i) => (
+                  <CustomCheckbox
+                    checked={selectedItems.includes(item.value)}
+                    setChecked={() => {
+                      if (selectedItems.includes(item.value)) {
+                        removeFromList(item.value);
+                        setItems((prevState) =>
+                          prevState.filter((guest) => guest !== item.value)
+                        );
+                      } else {
+                        addToList(i);
+                        setItems((prevState) => [...prevState, item.value]);
+                      }
+                    }}
+                    label={item.label}
+                    key={i}
+                  />
+                ))}
+              </div>
+              <CustomButton onClick={() => setVisibility(false)}>
+                Save
+              </CustomButton>
+            </>
+          )}
         </div>
       )}
-    </div>  
+    </div>
   );
 }
-const mapState = ({ user: { currentUser } }) => ({
+const mapState = ({ user: { currentUser, isFetching } }) => ({
   currentUser,
+  isFetching,
 });
-export default connect(mapState)(CheckoutPage);
+
+const CheckoutPage = connect(mapState, { pushFlash })(ConnectedCheckoutPage);
+export default CheckoutPage;

@@ -28,7 +28,7 @@ import { currencyFormator } from "#utils/currency-formator";
 import { pushFlash } from "#redux/flash/flash.actions";
 import CustomCarousel from "#components/custom-carousel/custom-carousel";
 import PropTypes from "prop-types";
-import { decrypt } from "#utils/secure-url.utils";
+import { decrypt, encrypt } from "#utils/secure-url.utils";
 import { Link as ScrollLink } from "react-scroll";
 import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
 const gridFooterOptions = [
@@ -39,7 +39,6 @@ const gridFooterOptions = [
   { name: "Description", target: "description" },
   { name: "Facilities & Amenities", target: "facilities" },
   { name: "Location", target: "location" },
-  // { name: "Policies", target: "policies" },
   { name: "Reviews", target: "reviews" },
 ];
 
@@ -103,8 +102,6 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { openAuthWindow } = useAuthWindow();
   const [carouselImages, setCarouselImages] = useState(null);
   const [searchParams] = useSearchParams();
-  // const checkIn = searchParams.get("checkIn");
-  // const checkOut = searchParams.get("checkOut");
   const noOfAdults = searchParams.get("noOfAdults");
   const { pathname } = useLocation();
   let pkg = searchParams.get("pkg");
@@ -154,6 +151,12 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
     property?.propertyType === "apartment"
       ? property?.apartment
       : property?.hotel;
+
+  console.log({ propertyType: property?.propertyType });
+ 
+  if (property?.propertyType === "hotel" && gridFooterOptions?.length === 5) {
+    gridFooterOptions?.splice(4, 0, { name: "Rooms", target: "room-details" });
+  }
 
   const { amenities, familyOptions } =
     getAmenitiesNFamilityFacilities(property);
@@ -342,14 +345,29 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                   openAuthWindow("signin");
                   return;
                 }
-                return navigate(`/checkout?${currentUrlParams}`, {
-                  state: {
+                console.log({ currentUrlParams });
+                const newparams = new URLSearchParams(currentUrlParams);
+                newparams.delete("pkg");
+                newparams.append(
+                  "state",
+                  encrypt({
                     pkgDetails,
                     totalPrice,
                     priceBeforeDiscount,
-                    property,
-                  },
-                });
+                    // property,
+                  })
+                );
+                console.log({ newparams: newparams.toString() });
+                navigate(`/checkout/${propertyId}?${newparams}`);
+                // return;
+                // return navigate(`/checkout?${newparams}`, {
+                //   state: {
+                //     pkgDetails,
+                //     totalPrice,
+                //     priceBeforeDiscount,
+                //     property,
+                //   },
+                // });
               }}
               fit
             >
@@ -468,7 +486,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
               <h2>Availability</h2>
               <p className={styles.link}>View All</p>
             </div>
-            <div className={styles.availableRoomsGroup} id="reserve-room">
+            <div className={styles.availableRoomsGroup} id="room-details">
               {rooms?.map((room) => {
                 let count = 0;
                 let totalCount = 0;

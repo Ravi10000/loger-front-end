@@ -107,16 +107,16 @@
       gap: 20px;
       justify-content: space-between;
     }
-    .inputsContainer {
-      padding: 10px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      .inputContainer {
-        min-width: 250px;
-        max-width: 400px;
-      }
-    }
+    // .inputsContainer {
+    //   padding: 10px 0;
+    //   display: flex;
+    //   flex-direction: column;
+    //   gap: 20px;
+    //   .inputContainer {
+    //     min-width: 250px;
+    //     max-width: 400px;
+    //   }
+    // }
     .subscribeSection {
       h3 {
         color: var(--main-brand-color);
@@ -324,7 +324,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    padding: 15px 20px;
+    padding: 12px 20px;
     border-radius: 10px;
     .icon {
       height: 25px;
