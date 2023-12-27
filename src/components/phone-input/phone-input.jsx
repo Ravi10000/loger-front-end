@@ -11,7 +11,6 @@ PhoneInput.propTypes = {
 };
 
 function PhoneInput({ phone, error, setPhone, secondary, label }) {
-  console.log({ phone });
   return (
     <div className="__custom_phone_container">
       {label && <label className="secondary_phone_label">{label}</label>}

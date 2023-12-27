@@ -28,8 +28,6 @@ function FileInput({
   } else if (defaultValue) {
     placeholder = defaultValue;
   }
-
-  console.log({ placeholder, file, defaultValue });
   return (
     <div className={styles.fileInput}>
       <label htmlFor={id}>{label}</label>

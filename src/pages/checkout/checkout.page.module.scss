@@ -179,6 +179,12 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    &.colored {
+      .icon {
+        font-size: 24px;
+        color: #00c964;
+      }
+    }
   }
   .included {
     display: flex;

@@ -25,11 +25,7 @@ export const getValidSearchOptions = (queryText) =>
 
 export const fetchProperty = (id) => api.get(`/properties/${id}`);
 
-export const findProperty = (propertyId, select, populate) => {
-  console.log(
+export const findProperty = (propertyId, select, populate) =>
+  api.get(
     `/properties/find/${propertyId}?select=${select}&populate=${populate}`
   );
-  return api.get(
-    `/properties/find/${propertyId}?select=${select}&populate=${populate}`
-  );
-};

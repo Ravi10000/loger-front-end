@@ -22,7 +22,7 @@ import CustomCheckbox from "#components/custom-checkbox/custom-checkbox";
 import CustomButton from "#components/custom-button/custom-button";
 // import CustomInput from "#components/custom-input/custom-input";
 // import FileInput from "#components/file-input/file-input";
-import RoomCard from "#components/room-card/room-card";
+// import RoomCard from "#components/room-card/room-card";
 // import PhoneInput from "../../components/phone-input/phone-input";
 
 import { fetchGuestUsers } from "#api/user.req";
@@ -36,27 +36,10 @@ import GuestInfo from "#components/guest-info/guest-info";
 import { pushFlash } from "#redux/flash/flash.actions";
 import CustomCarousel from "#components/custom-carousel/custom-carousel";
 import api from "#api/index";
-
-// const ACCEPTED_IMAGE_TYPES = [
-//   "image/jpeg",
-//   "image/jpg",
-//   "image/png",
-//   "image/webp",
-// ];
-
-// const checkoutSchema = z.object({
-//   firstName: z.string().nonempty({ message: "First Name is Req  uired" }),
-//   lastName: z.string(),
-//   email: z.string().email({ message: "Invalid Email" }),
-//   file: z
-//     .any()
-//     .refine((file) => file?.[0], "ID Proof Required.")
-//     .refine(
-//       (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
-//       "Only .jpg, .jpeg, .png and .webp formats are supported."
-//     )
-//     .refine((file) => file?.[0]?.size <= 50_00_000, `Max image size is 5MB.`),
-// });
+import { MdFreeBreakfast } from "react-icons/md";
+import { IoCarSport } from "react-icons/io5";
+import { LuPartyPopper } from "react-icons/lu";
+import CheckoutCard from "#components/checkout-card/checkout-card";
 
 ConnectedCheckoutPage.propTypes = {
   currentUser: PropTypes.object,
@@ -65,14 +48,10 @@ ConnectedCheckoutPage.propTypes = {
 };
 
 function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
-  // const navigate = useNavigate();
-
   const { propertyId } = useParams();
   const [searchParams] = useSearchParams();
 
-  const [guestInfo, setGuestInfo] = useState([
-    { firstName: "", lastName: "", email: "", phone: "", file: "" },
-  ]);
+  const [guestInfo, setGuestInfo] = useState([]);
 
   const [carouselImages, setCarouselImages] = useState(null);
   const handleGuestInfoChange = ({ key, value, idx }) => {
@@ -102,37 +81,15 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
 
   const noOfAdults = searchParams.get("noOfAdults");
   const state = decrypt(searchParams.get("state"));
-  console.log({ state });
-
   let { totalPrice, priceBeforeDiscount, pkgDetails } = state;
   const noOfRooms = Object.keys(pkgDetails)?.reduce(
     (acc, key) => acc + pkgDetails[key].count,
     0
   );
-  // console.log({ pkgDetails });
 
   const [sendDeals, setSendDeals] = useState(false);
   const [doYouSmoke, setDoYouSmoke] = useState(false);
   const [specialRequests, setSpecialRequests] = useState("");
-
-  // const [phone, setPhone] = useState(
-  //   currentUser?.countryCode + currentUser?.phone || ""
-  // );
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   watch,
-  //   formState: { errors },
-  // } = useForm({
-  //   defaultValues: {
-  //     email: currentUser?.email || "",
-  //     firstName: currentUser?.fName || "",
-  //     lastName: currentUser?.lName || "",
-  //   },
-  //   resolver: zodResolver(checkoutSchema),
-  // });
-
-  // const file = watch("file");
 
   const [showNotification, setShowNotification] = useState(true);
   const [showSelectPartner, setShowSelectPartner] = useState(false);
@@ -168,9 +125,23 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   });
   const { property } = useProperty(
     propertyId,
-    ["propertyName", "photos", "facilities"],
-    ["facilities"]
+    [
+      "propertyName",
+      "propertyType",
+      "photos",
+      "facilities",
+      "breakfastServed",
+      "parkingAvailable",
+      "apartment",
+      "hotel",
+      "checkInStartTime",
+      "checkInEndTime",
+      "checkOutStartTime",
+      "checkOutEndTime",
+    ],
+    ["facilities", "hotel", "apartment"]
   );
+  const content = property?.hotel || property?.apartment || {};
   const transactionMutation = useMutation({
     mutationFn: async () => {
       const guestIds = [];
@@ -280,30 +251,29 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           };
 
       formData.append("pkgDetails", JSON.stringify(pkgDetails));
-      const requestData = {
-        firstName,
-        lastName,
-        email,
-        ...(idProof && { idProof: file }),
-        ...(specialRequests && { specialRequests }),
-        discountedAmount: transactionAmount,
-        amount: transactionAmuontBeforeDiscount,
-        phone: phone?.split(" ")?.[1],
-        countryCode: phone?.split(" ")?.[0],
-        propertyId: property._id,
-        checkInDate,
-        checkOutDate,
-        ...(!!guestIds?.length && { guestList: guestIds }),
-        pkgDetails: newPkgDetails?.rooms
-          ? newPkgDetails
-          : {
-              price: priceBeforeDiscount,
-              discountedAmount: totalPrice,
-              occupancy: noOfAdults,
-            },
-      };
+      // const requestData = {
+      //   firstName,
+      //   lastName,
+      //   email,
+      //   ...(idProof && { idProof: file }),
+      //   ...(specialRequests && { specialRequests }),
+      //   discountedAmount: transactionAmount,
+      //   amount: transactionAmuontBeforeDiscount,
+      //   phone: phone?.split(" ")?.[1],
+      //   countryCode: phone?.split(" ")?.[0],
+      //   propertyId: property._id,
+      //   checkInDate,
+      //   checkOutDate,
+      //   ...(!!guestIds?.length && { guestList: guestIds }),
+      //   pkgDetails: newPkgDetails?.rooms
+      //     ? newPkgDetails
+      //     : {
+      //         price: priceBeforeDiscount,
+      //         discountedAmount: totalPrice,
+      //         occupancy: noOfAdults,
+      //       },
+      // };
       const transactionResponse = await initiateTransaction(formData);
-      console.log({ transactionResponse });
       const transaction = transactionResponse?.data?.transaction;
       if (transaction) {
         open(
@@ -320,9 +290,6 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
 
       return transactionResponse?.data;
     },
-    onSuccess: (data) => {
-      console.log({ data });
-    },
     onError: (err) => {
       pushFlash({
         message: `Something went wrong😢,
@@ -337,18 +304,6 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
 
   useEffect(() => {
     if (!isFetching && currentUser) {
-      // (ps) => {
-      //   const newPs = [...ps];
-      //   newPs[0].firstName = currentUser?.fName || "";
-      //   newPs[0].lastName = currentUser?.lName || "";
-      //   newPs[0].email = currentUser?.email || "";
-      //   console.log({
-      //     phone: currentUser?.countryCode + " " + currentUser?.phone,
-      //   });
-      //   newPs[0].phone = currentUser?.countryCode + " " + currentUser?.phone;
-      //   console.log({ newPs });
-      //   return newPs;
-      // }
       setGuestInfo([
         {
           firstName: currentUser?.fName || "",
@@ -360,7 +315,6 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
       ]);
     }
   }, [isFetching, currentUser]);
-  console.log({ guestInfo });
 
   return isFetching ? (
     <LoadingPage />
@@ -473,7 +427,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                   />
                 )}
               </div>
-              {!isFetching &&
+              {!!guestInfo?.length &&
                 guestInfo?.map((guest, idx) => (
                   <GuestInfo
                     info={guest}
@@ -530,11 +484,10 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                 </h3>
                 <p>
                   <Balancer>
-                    Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the
-                    industry&apos;s standard dummy text ever since the 1500s,
-                    when an unknown printer took a galley of type and scrambled
-                    it to make a type specimen book.
+                    We want to ensure your order is perfect! If you have any
+                    special requests, preferences, or specific instructions,
+                    please feel free to share them with us in the space below.
+                    We&apos;ll do our best to accommodate your needs.
                   </Balancer>
                 </p>
                 <textarea
@@ -550,12 +503,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                 <Balancer>Step 2 - Property Details</Balancer>
               </h2>
               <p>
-                <Balancer>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry&apos;s
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took
-                </Balancer>
+                <Balancer>{content?.aboutProperty}</Balancer>
               </p>
             </div>
             <div className={styles.formContainer}>
@@ -574,18 +522,24 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                 ))}
               </div>
               <div className={styles.included}>
-                <h3>Included in Your Room</h3>
+                <h3>Included</h3>
                 <div
                   className={`${styles.coloredContainer} ${styles.features}`}
                 >
-                  <div className={styles.feature}>
-                    <img src="/images/icons/breakfast-colored.svg" alt="" />
-                    <p>Breakfast Full Family</p>
-                  </div>
-                  <div className={styles.feature}>
-                    <img src="/images/icons/smoking.svg" alt="" />
-                    <p>Smoking Zone</p>
-                  </div>
+                  {property?.breakfastServed && (
+                    <div className={styles.feature + "  " + styles.colored}>
+                      <MdFreeBreakfast className={styles.icon} />
+                      {/* <img src="/images/icons/breakfast-colored.svg" alt="" /> */}
+                      <p>Breakfast</p>
+                    </div>
+                  )}
+                  {property?.parkingAvailable && (
+                    <div className={styles.feature + "  " + styles.colored}>
+                      <IoCarSport className={styles.icon} />
+                      {/* <img src="/images/icons/smoking.svg" alt="" /> */}
+                      <p>Parking</p>
+                    </div>
+                  )}
                 </div>
                 <h3>Preferences</h3>
                 <p>Please note that room preferences cannot be guaranteed.</p>
@@ -606,12 +560,10 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           </div>
           {property && (
             <div className={styles.roomContainer}>
-              <RoomCard
+              <CheckoutCard
                 setCarouselImages={setCarouselImages}
-                room={{
-                  // ...roomDetail,
+                checkoutDetails={{
                   photos: property?.photos,
-                  roomName: property?.propertyName,
                   capacity: newPkgDetails?.noOfAdults,
                 }}
                 bookingDetails={{

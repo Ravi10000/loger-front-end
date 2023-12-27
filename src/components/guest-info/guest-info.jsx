@@ -5,11 +5,6 @@ import FileInput from "#components/file-input/file-input";
 import PhoneInput from "#components/phone-input/phone-input";
 import { IoRemoveCircleOutline } from "react-icons/io5";
 import PropTypes from "prop-types";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { IoCheckmarkDone } from "react-icons/io5";
 
 GuestInfo.propTypes = {
   info: PropTypes.object,
@@ -18,50 +13,9 @@ GuestInfo.propTypes = {
   idx: PropTypes.number,
 };
 
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-const checkoutSchema = z.object({
-  firstName: z.string().nonempty({ message: "First Name is Req  uired" }),
-  lastName: z.string(),
-  email: z.string().email({ message: "Invalid Email" }),
-  file: z
-    .any()
-    .refine((file) => file?.[0], "ID Proof Required.")
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
-    )
-    .refine((file) => file?.[0]?.size <= 50_00_000, `Max image size is 5MB.`),
-});
-
 function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
-  const {
-    register,
-    handleSubmit,
-    // watch,
-    trigger,
-    formState: { errors },
-  } = useForm({ resolver: zodResolver(checkoutSchema) });
-  // useEffect(() => {
-  //   setGuestInfo((ps) => {
-  //     const tempState = [...ps];
-  //     tempState[idx].trigger = trigger;
-  //     return tempState;
-  //   });
-  // }, []);
-
   return (
-    <form
-      className={styles.inputsContainer}
-      onSubmit={handleSubmit((data) => {
-        console.log({ data });
-      })}
-    >
+    <div className={styles.inputsContainer}>
       <div className={styles.inputContainer}>
         <CustomInput
           secondary
@@ -72,7 +26,6 @@ function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
           onChange={(e) => {
             setGuestInfo({ key: "firstName", value: e.target.value });
           }}
-          //   register={{ ...register("firstName") }}
           error={info?.errors?.firstName}
         />
       </div>
@@ -86,8 +39,6 @@ function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
           onChange={(e) => {
             setGuestInfo({ key: "lastName", value: e.target.value });
           }}
-          // register={{ ...register("lastName") }}
-          // error={errors?.lastName?.message}
         />
       </div>
       <div className={styles.inputContainer}>
@@ -111,7 +62,6 @@ function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
           onChange={(e) => {
             setGuestInfo({ key: "email", value: e.target.value });
           }}
-          // register={{ ...register("email") }}
           error={info?.errors?.email}
         />
       </div>
@@ -126,7 +76,6 @@ function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
           }}
           defaultValue={info?.idProof ? "ID Proof Uploaded" : null}
           file={info?.file?.name ? info.file : null}
-          // register={{ ...register("file") }}
           error={info?.errors?.idProof}
         />
       </div>
@@ -136,7 +85,7 @@ function GuestInfo({ info, setGuestInfo, idx, removeGuestInfo }) {
           <IoRemoveCircleOutline />
         </div>
       )}
-    </form>
+    </div>
   );
 }
 
