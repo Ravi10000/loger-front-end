@@ -27,4 +27,4 @@ jobs:
             sudo apt-get install -y rsync
            
             # Use rsync to sync build files to EC2 server
-            rsync -av --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $USER@$DNSLF:/var/www/html/ --exclude .htaccess
+            rsync -av --delete -e "ssh -o StrictHostKeyChecking=no" ./dist/ $USER@$DNSLF:/var/www/html/ --exclude .htaccess --exclude cmi
