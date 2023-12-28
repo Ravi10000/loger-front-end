@@ -1,0 +1,23 @@
+.inputsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signInEmailForm {
+  width: 100%;
+  p {
+    margin-top: 10px;
+    padding-right: 15px;
+    width: 100%;
+    text-align: right;
+    color: #1a232fb5;
+    cursor: pointer;
+  }
+}
+
+.buttonContainer {
+  width: 100%;
+  max-width: 250px;
+}

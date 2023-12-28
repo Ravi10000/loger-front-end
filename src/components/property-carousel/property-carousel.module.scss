@@ -10,6 +10,18 @@
   transform: translateY(-50%);
   z-index: 1;
   cursor: pointer;
+  border: 1px solid #e9e9e9;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  transition: all 0.25s ease-out;
+  &:active {
+    transform: translateY(-50%) scale(0.9);
+  }
+  &:hover {
+    background: rgb(236, 250, 255);
+    .icon {
+      color: var(--main-brand-color);
+    }
+  }
   &.next {
     right: 10px;
   }

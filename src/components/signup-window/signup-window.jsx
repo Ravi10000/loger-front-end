@@ -259,7 +259,10 @@ function SignupWindow({ pushFlash }) {
         <div className={styles.buttonContainer}>
           <CustomButton form="signup-form">Signup</CustomButton>
         </div>
-        <p className={styles.link} onClick={() => openAuthWindow("signin")}>
+        <p
+          className={styles.link}
+          onClick={() => openAuthWindow({ type: "signin", method: "email" })}
+        >
           Signin
         </p>
         <p>

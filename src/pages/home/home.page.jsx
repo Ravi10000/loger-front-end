@@ -1,6 +1,6 @@
 import styles from "./home.page.module.scss";
-import RecentPropertyCard from "#components/recent-property-card/recent-property-card";
-import { recentProperties } from "#data/recent-properties";
+// import RecentPropertyCard from "#components/recent-property-card/recent-property-card";
+// import { recentProperties } from "#data/recent-properties";
 import HeroSection from "#components/hero-section/hero-section";
 import { useState } from "react";
 import PropertyCarousel from "#components/property-carousel/property-carousel";
@@ -8,15 +8,17 @@ import PromotionCard from "#components/promotion-card/promotion-card";
 import DownloadSection from "#components/download-section/download-section";
 // import { properties } from "#data/properties.info";
 import PropertyCard from "#components/property-card/property-card";
-import LocationCard from "#components/location-card/location-card";
+// import LocationCard from "#components/location-card/location-card";
 // import { locations } from "#data/locations";
 import FeedbackCard from "#components/feedback-card/feedback-card";
 import { feedbacks } from "#data/feedbacks";
 import FeedbackCarousel from "#components/feedback-carousel/feedback-carousel";
-import { typesOfProperties } from "#data/types-of-properties";
+// import { typesOfProperties } from "#data/types-of-properties";
 import ImageGrid from "#components/image-grid/image-grid";
 import { fetchAllProperties } from "#api/properties.req";
 import { useQuery } from "@tanstack/react-query";
+import PropTypes from "prop-types";
+import LoadingPage from "#pages/loading/loading";
 
 const cities = [
   "Delhi NCR",
@@ -72,7 +74,7 @@ function HomePage() {
         >
           {/* <PropertyCarousel items={properties} Component={PropertyCard} /> */}
           {propertiesQuery?.isFetching ? (
-            "loading..."
+            <LoadingPage.Loader style={{ margin: "auto" }}></LoadingPage.Loader>
           ) : propertiesQuery?.isError ? (
             "error loading properties"
           ) : (
@@ -170,6 +172,12 @@ function HomePage() {
 }
 
 export default HomePage;
+
+RecommendedProperties.propTypes = {
+  city: PropTypes.string,
+  selectedCity: PropTypes.string,
+  setSelectedCity: PropTypes.func,
+};
 
 function RecommendedProperties({ city, selectedCity, setSelectedCity }) {
   return (

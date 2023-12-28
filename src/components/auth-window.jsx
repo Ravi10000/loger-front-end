@@ -7,9 +7,9 @@ function AuthWindow() {
   const { authWindow } = useAuthWindow();
   return (
     <Suspense fallback="">
-      {authWindow === "signin" ? (
+      {authWindow.type === "signin" ? (
         <SigninWindow />
-      ) : authWindow === "signup" ? (
+      ) : authWindow.type === "signup" ? (
         <SignupWindow />
       ) : null}
     </Suspense>

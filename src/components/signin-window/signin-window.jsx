@@ -1,62 +1,63 @@
 import styles from "./signin-window.module.scss";
 import WithBackdrop from "#components/with-backdrop/with-backdrop";
 import CustomButton from "#components/custom-button/custom-button";
-import CustomInput from "#components/custom-input/custom-input";
+// import CustomInput from "#components/custom-input/custom-input";
 import { useEffect, useRef } from "react";
 import { useAuthWindow } from "#contexts/auth-window.context";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { loginWithEmail } from "#api/auth.req";
+// import z from "zod";
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useMutation } from "@tanstack/react-query";
+// import { loginWithEmail } from "#api/auth.req";
 import { setCurrentUser } from "#redux/user/user.actions";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
-import { setAuthToken } from "#api/index";
+// import { setAuthToken } from "#api/index";
 // import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
+import SigninEmail from "#components/signin-email/signin-email";
 
-const schema = z.object({
-  email: z.string().email({ message: "invalid email" }),
-  password: z.string().min(1, { message: "password required" }),
-});
+// const schema = z.object({
+//   email: z.string().email({ message: "invalid email" }),
+//   password: z.string().min(1, { message: "password required" }),
+// });
 
-ConnectedSigninWindow.propTypes = {
-  setCurrentUser: PropTypes.func,
-  pushFlash: PropTypes.func,
-};
+// ConnectedSigninWindow.propTypes = {
+//   setCurrentUser: PropTypes.func,
+//   pushFlash: PropTypes.func,
+// };
 
-function ConnectedSigninWindow({ setCurrentUser, pushFlash }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      email: "email@admin51.com",
-      password: "Password123@",
-    },
-  });
+function ConnectedSigninWindow() {
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm({
+  //   resolver: zodResolver(schema),
+  //   defaultValues: {
+  //     email: "email@admin51.com",
+  //     password: "Password123@",
+  //   },
+  // });
 
-  const mutation = useMutation({
-    mutationKey: ["user", "login"],
-    mutationFn: async (data) => {
-      console.log({ data });
-      const response = await loginWithEmail(data);
-      return response;
-    },
-    onSuccess: ({ data }) => {
-      setCurrentUser(data?.user);
-      setAuthToken(data?.accessToken);
-      pushFlash({ message: "Login Successfull", type: "success" });
-      closeAuthWindow();
-    },
-    onError: ({ response: { data } }) => {
-      console.error({ error: data });
-      pushFlash({ message: data?.message, type: "error" });
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationKey: ["user", "login"],
+  //   mutationFn: async (data) => {
+  //     console.log({ data });
+  //     const response = await loginWithEmail(data);
+  //     return response;
+  //   },
+  //   onSuccess: ({ data }) => {
+  //     setCurrentUser(data?.user);
+  //     setAuthToken(data?.accessToken);
+  //     pushFlash({ message: "Login Successfull", type: "success" });
+  //     closeAuthWindow();
+  //   },
+  //   onError: ({ response: { data } }) => {
+  //     console.error({ error: data });
+  //     pushFlash({ message: data?.message, type: "error" });
+  //   },
+  // });
 
   const popupRef = useRef(null);
   const { closeAuthWindow, openAuthWindow } = useAuthWindow();
@@ -92,7 +93,8 @@ function ConnectedSigninWindow({ setCurrentUser, pushFlash }) {
         <div className={styles.seperator}>
           <p>or</p>
         </div>
-        <form
+        <SigninEmail />
+        {/* <form
           id="signin-form"
           onSubmit={handleSubmit(mutation.mutate)}
           className={styles.inputsNforgotPassword}
@@ -111,16 +113,19 @@ function ConnectedSigninWindow({ setCurrentUser, pushFlash }) {
             />
           </div>
           <p>Forgot Password?</p>
-        </form>
-        <div className={styles.buttonContainer}>
+        </form> */}
+        {/* <div className={styles.buttonContainer}>
           <CustomButton form="signin-form">Signin</CustomButton>
-        </div>
-        <p className={styles.link} onClick={() => openAuthWindow("signup")}>
+        </div> */}
+        <p
+          className={styles.link}
+          onClick={() => openAuthWindow({ type: "signup", method: "email" })}
+        >
           Signup
         </p>
         <p>
           By continuing you agree Loger.ma{" "}
-          <span className={styles.link}> 
+          <span className={styles.link}>
             Terms of Services & Privacy Policy
           </span>
         </p>

@@ -1,0 +1,67 @@
+.reviewsSlider {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  max-width: 450px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  z-index: 10000;
+  overflow: auto;
+  padding-bottom: 100px;
+}
+.head {
+  position: fixed;
+  top: 0;
+  right: 0;
+  box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+  background: #fff;
+  width: 100%;
+  max-width: 450px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .closeBtn {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.337);
+    border-radius: 100vw;
+    box-shadow: rgba(0, 0, 0, 0.04) 0px 5px 10px;
+    font-weight: 600;
+  }
+}
+.reviewsContainer {
+  margin-top: 50px;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-block: 20px;
+  button {
+    background: transparent;
+    border: none;
+    color: var(--main-brand-color);
+    font-weight: 500;
+  }
+  p {
+    color: lightgray;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reviewsSlider {
+    padding-bottom: 0;
+  }
+}

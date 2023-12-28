@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import PropTypes from "prop-types";
-import { RxCross1 } from "react-icons/rx";
+// import { RxCross1 } from "react-icons/rx";
 import { useEffect } from "react";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import WithBackdrop from "#components/with-backdrop/with-backdrop";

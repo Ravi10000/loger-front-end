@@ -10,12 +10,14 @@
   z-index: 999999999;
 }
 .loader {
-  width: 35px;
-  height: 35px;
-  border: 2px solid var(--main-brand-color);
-  border-radius: 50%;
-  border-top-color: transparent;
-  border-right-color: transparent;
+  // width: fit-content;
+  // height: 35px;
+  font-size: 48px;
+  color: var(--main-brand-color);
+  // border: 2px solid var(--main-brand-color);
+  // border-radius: 50%;
+  // border-top-color: transparent;
+  // border-right-color: transparent;
   animation: spin 0.5s linear forwards infinite;
 }
 

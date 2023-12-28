@@ -78,9 +78,9 @@ NextArrow.propTypes = {
 
 export function NextArrow({ onClick }) {
   return (
-    <div onClick={onClick} className={`${styles.arrow} ${styles.next}`}>
+    <button onClick={onClick} className={`${styles.arrow} ${styles.next}`}>
       <MdOutlineKeyboardArrowRight className={styles.icon} />
-    </div>
+    </button>
   );
 }
 
@@ -89,9 +89,9 @@ PrevArrow.propTypes = {
 };
 export function PrevArrow({ onClick }) {
   return (
-    <div onClick={onClick} className={`${styles.arrow} ${styles.prev}`}>
+    <button onClick={onClick} className={`${styles.arrow} ${styles.prev}`}>
       <MdOutlineKeyboardArrowRight className={styles.icon} />
-    </div>
+    </button>
   );
 }
 export default PropertyCarousel;

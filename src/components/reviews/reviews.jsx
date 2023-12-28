@@ -9,10 +9,11 @@ import { useState } from "react";
 import { totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
 import PropTypes from "prop-types";
-import { useQuery } from "@tanstack/react-query";
-import api from "#api/index";
 import LoadingPage from "#pages/loading/loading";
 import { TbMoodEmpty } from "react-icons/tb";
+import ReviewsSlider from "#components/reviews-slider/reviews-slider";
+import { AnimatePresence } from "framer-motion";
+import useReviews from "#hooks/reviews-query";
 const barColors = {
   5: {
     filledColor: "#00C964",
@@ -42,37 +43,27 @@ Reviews.propTypes = {
 
 function Reviews({ property }) {
   const totalRating = property?.ratings ? totalReviews(property?.ratings) : 0;
-  const [currentUserReviewPage, setCurrentUserReviewPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const nextReviewPage = () => {
-    setCurrentUserReviewPage((prevState) => prevState + 1);
-  };
-
-  const prevReviewPage = () => {
-    setCurrentUserReviewPage((prevState) => prevState - 1);
-  };
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   const {
-    data: reviews,
+    reviews,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["reviews", property?._id, currentUserReviewPage],
-    enabled: !!property?._id,
-    queryFn: async () => {
-      const res = await api.get(
-        `/review/${property?._id}?page=${currentUserReviewPage}&limit=4&status=active`
-      );
-      if (res?.data?.totalPages) setTotalPages(res?.data?.totalPages);
-      return res?.data?.reviews;
-    },
-  });
-
-  console.log({ reviews });
+    prevPage,
+    nextPage,
+    totalPages,
+    currentPage,
+  } = useReviews({ propertyId: property?._id });
 
   return (
     <div className={styles.container}>
+      <AnimatePresence mode="wait">
+        <ReviewsSlider
+          isOpen={showAllReviews}
+          close={() => setShowAllReviews(false)}
+          propertyId={property?._id}
+        />
+      </AnimatePresence>
       <div
         style={{
           display: "flex",
@@ -135,10 +126,10 @@ function Reviews({ property }) {
               justifyContent: "center",
               height: "200px",
               width: "100%",
-              background: "lightgray",
+              background: "#f9fbfd",
             }}
           >
-            <LoadingPage.Loader />
+            <LoadingPage.Loader style={{ fontSize: "24px" }} />
           </div>
         ) : error ? (
           <div>
@@ -160,7 +151,14 @@ function Reviews({ property }) {
               <h2 style={{ fontWeight: 900 }}>
                 See What Guests Loved the Most:
               </h2>
-              <CustomButton fit>View All</CustomButton>
+              <CustomButton
+                fit
+                onClick={() => {
+                  setShowAllReviews(true);
+                }}
+              >
+                View All
+              </CustomButton>
             </div>
             <div className={styles.userReviews}>
               {reviews?.map((review) => (
@@ -169,28 +167,28 @@ function Reviews({ property }) {
             </div>
             <div className={styles.reviewNav}>
               <button
-                disabled={currentUserReviewPage <= 1}
+                disabled={currentPage <= 1}
                 className={`${styles.arrowContainer} ${
-                  currentUserReviewPage <= 1 ? styles.disabled : ""
+                  currentPage <= 1 ? styles.disabled : ""
                 }`}
-                onClick={prevReviewPage}
+                onClick={prevPage}
               >
                 <BsArrowRight className={styles.arrow} />
               </button>
               <div className={styles.pages}>
                 <p>
                   <span className={`${styles.page} ${styles.active}`}>
-                    {currentUserReviewPage}
+                    {currentPage}
                   </span>
                   <span> of {totalPages} Pages</span>
                 </p>
               </div>
               <button
-                disabled={currentUserReviewPage >= totalPages}
+                disabled={currentPage >= totalPages}
                 className={`${styles.arrowContainer} ${
-                  currentUserReviewPage >= totalPages ? styles.disabled : ""
+                  currentPage >= totalPages ? styles.disabled : ""
                 }`}
-                onClick={nextReviewPage}
+                onClick={nextPage}
               >
                 <BsArrowRight className={styles.arrow} />
               </button>
