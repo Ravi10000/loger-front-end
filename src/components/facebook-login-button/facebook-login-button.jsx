@@ -9,10 +9,12 @@ const { FB } = window;
 function ConnectedFaceBookLoginButton() {
   console.log({ FB });
   useEffect(() => {
-    FB.getLoginStatus(function (response) {
-      console.log({ response });
-      // statusChangeCallback(response);
-    });
+    if (FB) {
+      FB.getLoginStatus(function (response) {
+        console.log({ response });
+        // statusChangeCallback(response);
+      });
+    }
   }, []);
   return (
     <button className={styles["fb-login-button"]}>
