@@ -1,24 +1,21 @@
 import styles from "./date-input.module.scss";
 import "react-date-picker/dist/DatePicker.css";
-// import "react-calendar/dist/Calendar.css";
 
 import { useState } from "react";
 import dayjs from "dayjs";
 import DatePicker from "react-date-picker";
+import PropTypes from "prop-types";
 
-function DateInput({
-  label,
-  placeholder,
-  error,
-  date,
-  setDate,
-  ...otherProps
-}) {
-  // const [date, setDate] = useState(false);
+DateInput.propTypes = {
+  label: PropTypes.string,
+  placeholder: PropTypes.string,
+  error: PropTypes.string,
+  date: PropTypes.string,
+  setDate: PropTypes.func,
+};
+
+function DateInput({ label, placeholder, error, date, setDate }) {
   const [showCalendar, setShowCalendar] = useState(false);
-  // let now = new Date();
-  // let maxDate = new Date();
-  // maxDate.setDate(now.getDate() + 365);
   const datePickerProps = {
     ...(date && { value: Date.parse(date) }),
   };
@@ -30,13 +27,10 @@ function DateInput({
           setShowCalendar(false);
           return true;
         }}
-        // minDate={new Date()}
-        // maxDate={maxDate}
         isOpen={showCalendar}
         onChange={(date) =>
-          setDate && setDate(dayjs(date).format("DD-MM-YYYY"))
+          setDate && setDate(dayjs(date).format("YYYY-MM-DD"))
         }
-        // value={date && Date.parse(data)}
         {...datePickerProps}
       />
       <div className={styles.dateInput}>
@@ -45,7 +39,7 @@ function DateInput({
           className={styles.datePickerBtn}
           onClick={() => setShowCalendar((prevState) => !prevState)}
         >
-          {date || <p>{placeholder}</p>}
+          {date || placeholder}
           <img
             className={styles.calendarIcon}
             src="/images/icons/calendar.svg"

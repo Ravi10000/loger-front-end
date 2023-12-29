@@ -1,4 +1,5 @@
 import { fetchUserDetails } from "#api/auth.req";
+import { getAuthToken } from "#api/index";
 import { clearIsFetching, setCurrentUser } from "#redux/user/user.actions";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -8,6 +9,8 @@ function useFetchUser(onSuccess) {
   const dispatch = useDispatch();
   const userQuery = useQuery({
     queryKey: ["user"],
+    enabled: !!getAuthToken(),
+    retry: 3,
     queryFn: async () => {
       const { data } = await fetchUserDetails();
       dispatch(setCurrentUser(data.user));

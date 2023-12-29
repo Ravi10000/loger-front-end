@@ -5,9 +5,16 @@
   gap: 10px;
 }
 
-.signInPhoneForm {
+.signUpEmailForm {
   width: 100%;
-  max-width: 350px;
+  p {
+    margin-top: 10px;
+    padding-right: 15px;
+    width: 100%;
+    text-align: right;
+    color: #1a232fb5;
+    cursor: pointer;
+  }
 }
 
 .buttonContainer {
@@ -15,11 +22,7 @@
   max-width: 250px;
 }
 
-.backBtn {
+.twoInputs {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  background: #fff;
-  border: none;
-  color: gray;
+  gap: 10px;
 }

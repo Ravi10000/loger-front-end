@@ -28,6 +28,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border: none;
+      background: transparent;
       img {
         height: 30px;
         width: fit-content;
@@ -86,4 +88,8 @@
     cursor: pointer;
     color: var(--main-brand-color);
   }
+}
+
+.method {
+  font-size: 20px;
 }

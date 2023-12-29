@@ -1,125 +1,71 @@
 import styles from "./signin-window.module.scss";
 import WithBackdrop from "#components/with-backdrop/with-backdrop";
-import CustomButton from "#components/custom-button/custom-button";
-// import CustomInput from "#components/custom-input/custom-input";
-import { useEffect, useRef } from "react";
 import { useAuthWindow } from "#contexts/auth-window.context";
-// import z from "zod";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useMutation } from "@tanstack/react-query";
-// import { loginWithEmail } from "#api/auth.req";
 import { setCurrentUser } from "#redux/user/user.actions";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
-// import { setAuthToken } from "#api/index";
-// import GoogleAuthButton from "#components/google-auth-button/google-auth-button";
-// import PropTypes from "prop-types";
 import SigninEmail from "#components/signin-email/signin-email";
+import SigninPhone from "#components/signin-phone/signin-phone";
+import { FaPhone } from "react-icons/fa6";
+import { MdEmail } from "react-icons/md";
+// import { useEffect, useRef } from "react";
+// import { useClickAway } from "@uidotdev/usehooks";
 
-// const schema = z.object({
-//   email: z.string().email({ message: "invalid email" }),
-//   password: z.string().min(1, { message: "password required" }),
-// });
-
-// ConnectedSigninWindow.propTypes = {
-//   setCurrentUser: PropTypes.func,
-//   pushFlash: PropTypes.func,
-// };
+const authComponents = {
+  email: <SigninEmail />,
+  phone: <SigninPhone />,
+};
 
 function ConnectedSigninWindow() {
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm({
-  //   resolver: zodResolver(schema),
-  //   defaultValues: {
-  //     email: "email@admin51.com",
-  //     password: "Password123@",
-  //   },
-  // });
-
-  // const mutation = useMutation({
-  //   mutationKey: ["user", "login"],
-  //   mutationFn: async (data) => {
-  //     console.log({ data });
-  //     const response = await loginWithEmail(data);
-  //     return response;
-  //   },
-  //   onSuccess: ({ data }) => {
-  //     setCurrentUser(data?.user);
-  //     setAuthToken(data?.accessToken);
-  //     pushFlash({ message: "Login Successfull", type: "success" });
-  //     closeAuthWindow();
-  //   },
-  //   onError: ({ response: { data } }) => {
-  //     console.error({ error: data });
-  //     pushFlash({ message: data?.message, type: "error" });
-  //   },
-  // });
-
-  const popupRef = useRef(null);
-  const { closeAuthWindow, openAuthWindow } = useAuthWindow();
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (popupRef.current && !popupRef.current.contains(event.target))
-        closeAuthWindow();
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [popupRef, closeAuthWindow]);
+  const { closeAuthWindow, openAuthWindow, authWindow } = useAuthWindow();
+  const method = authWindow?.method;
   return (
-    <WithBackdrop>
-      <div ref={popupRef} className={styles.signinWindow}>
+    <WithBackdrop close={closeAuthWindow}>
+      <div
+        className={styles.signinWindow}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <div className={styles.heading}>
           <h2>Welcome to Loger.ma</h2>
           <p>Login & Find Your Hotel Near Best Location</p>
         </div>
         <div className={styles.icons}>
-          <div className={styles.iconContainer}>
-            <img src="/images/icons/phone.png" alt="phone" />
-          </div>
-          <div className={styles.iconContainer}>
+          {method === "email" ? (
+            <button
+              className={styles.iconContainer}
+              onClick={() => {
+                openAuthWindow({ type: "signin", method: "phone" });
+              }}
+            >
+              <FaPhone className={styles.method} />
+            </button>
+          ) : (
+            <button
+              className={styles.iconContainer}
+              onClick={() => {
+                openAuthWindow({ type: "signin", method: "email" });
+              }}
+            >
+              <MdEmail className={styles.method} />
+            </button>
+          )}
+          <button className={styles.iconContainer}>
             <img src="/images/icons/facebook.png" alt="facebook" />
-          </div>
-          {/* <div className={styles.iconContainer}>
+          </button>
+          <button className={styles.iconContainer}>
             <img src="/images/icons/google.png" alt="google" />
-          </div> */}
+          </button>
           {/* <GoogleAuthButton /> */}
         </div>
         <div className={styles.seperator}>
           <p>or</p>
         </div>
-        <SigninEmail />
-        {/* <form
-          id="signin-form"
-          onSubmit={handleSubmit(mutation.mutate)}
-          className={styles.inputsNforgotPassword}
-        >
-          <div className={styles.inputsContainer}>
-            <CustomInput
-              placeholder="example@email.com"
-              register={{ ...register("email") }}
-              error={errors?.email?.message}
-            />
-            <CustomInput
-              placeholder="password"
-              type="password"
-              register={{ ...register("password") }}
-              error={errors?.password?.message}
-            />
-          </div>
-          <p>Forgot Password?</p>
-        </form> */}
-        {/* <div className={styles.buttonContainer}>
-          <CustomButton form="signin-form">Signin</CustomButton>
-        </div> */}
+        {authComponents[method]}
         <p
           className={styles.link}
-          onClick={() => openAuthWindow({ type: "signup", method: "email" })}
+          onClick={() => openAuthWindow({ type: "signup", method: "phone" })}
         >
           Signup
         </p>

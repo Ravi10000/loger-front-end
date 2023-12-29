@@ -1,5 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./signin-email.module.scss";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { useMutation } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import CustomInput from "#components/custom-input/custom-input";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import CustomButton from "#components/custom-button/custom-button";
+import LoadingPage from "#pages/loading/loading";
 
 const schema = z.object({
   email: z.string().email({ message: "invalid email" }),
@@ -38,7 +39,7 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
     },
   });
 
-  const mutation = useMutation({
+  const { status, mutate } = useMutation({
     mutationKey: ["user", "login"],
     mutationFn: async (data) => {
       console.log({ data });
@@ -48,7 +49,7 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
     onSuccess: ({ data }) => {
       setCurrentUser(data?.user);
       setAuthToken(data?.accessToken);
-      pushFlash({ message: "Login Successfull", type: "success" });
+      pushFlash({ message: "Welcome to Loger.ma", type: "success" });
       closeAuthWindow();
     },
     onError: ({ response: { data } }) => {
@@ -61,7 +62,7 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
     <>
       <form
         id="signin-email"
-        onSubmit={handleSubmit(mutation.mutate)}
+        onSubmit={handleSubmit(mutate)}
         className={styles.signInEmailForm}
       >
         <div className={styles.inputsContainer}>
@@ -80,11 +81,11 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
         <p>forgot password?</p>
       </form>
       <div className={styles.buttonContainer}>
-        <CustomButton
-          form="signin-email"
-          disabled={mutation?.status === "pending"}
-        >
-          Signin
+        <CustomButton form="signin-email" disabled={status === "pending"}>
+          <span>Signin</span>
+          {status === "pending" && (
+            <LoadingPage.Loader style={{ fontSize: "16px", color: "#fff" }} />
+          )}
         </CustomButton>
       </div>
     </>

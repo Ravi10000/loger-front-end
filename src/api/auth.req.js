@@ -36,3 +36,6 @@ export const loginWithEmail = async (creds) => {
   }
   return response;
 };
+
+export const generateOTP = async (creds) => api.post("/auth/phone", creds);
+export const verifyOTP = async (creds) => api.put("/auth/phone", creds);
