@@ -11,7 +11,7 @@ export default function AuthWindowProvider({ children }) {
   const [authWindow, setAuthWindow] = useState(false);
   // const openAuthWindow = (type) => setAuthWindow(type || "signin");
   const openAuthWindow = (authProps) =>
-    setAuthWindow(authProps || { type: "signin", method: "phone" });
+    setAuthWindow(authProps || { type: "signin", method: "email" });
   const closeAuthWindow = () => setAuthWindow(false);
   return (
     <SigninWindowContext.Provider

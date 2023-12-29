@@ -12,7 +12,8 @@
       "#hooks/*": ["./src/hooks/*"],
       "#utils/*": ["./src/utils/*"],
       "#schemas/*": ["./src/schemas/*"],
-      "#contexts/*": ["./src/contexts/*"]
+      "#contexts/*": ["./src/contexts/*"],
+      "#firebase/*": ["./src/firebase/*"]
     }
   },
   "include": ["./src/**/*"],

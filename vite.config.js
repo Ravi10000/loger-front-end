@@ -18,6 +18,7 @@ export default defineConfig({
       "#schemas": "/src/schemas",
       "#contexts": "/src/contexts",
       "#redux": "/src/redux",
+      "#firebase": "/src/firebase",
     },
   },
 });

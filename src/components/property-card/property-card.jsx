@@ -10,10 +10,10 @@ import CustomButton from "#components/custom-button/custom-button";
 import { currencyFormator } from "#utils/currency-formator";
 
 PropertyCard.propTypes = {
-  property: PropTypes.object.isRequired,
+  property: PropTypes.object,
 };
 
-function PropertyCard({ property }) {
+function PropertyCard({ property = {} }) {
   const navigate = useNavigate();
   const mainPhoto = property?.photos?.find((photo) => photo.isMain);
   const mainPhotoUrl = mainPhoto?.photoUrl || property?.photos?.[0]?.photoUrl;

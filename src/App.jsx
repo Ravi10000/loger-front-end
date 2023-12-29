@@ -1,4 +1,5 @@
 import styles from "./App.module.scss";
+import firebaseApp from "#firebase/firebase.config";
 import { Suspense, lazy } from "react";
 import {
   Navigate,

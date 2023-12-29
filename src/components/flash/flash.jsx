@@ -29,7 +29,7 @@ function Flash({ flash: { type, message, id }, clearFlash }) {
     return () => {
       clearTimeout(clear);
     };
-  }, [type]);
+  }, [type, clearFlash, id]);
 
   return (
     <div

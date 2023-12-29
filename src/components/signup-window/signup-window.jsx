@@ -57,7 +57,7 @@ function ConnectedSignupWindow() {
         {authComponents?.[method]}
         <p
           className={styles.link}
-          onClick={() => openAuthWindow({ type: "signin", method: "phone" })}
+          onClick={() => openAuthWindow({ type: "signin", method: "email" })}
         >
           Signin
         </p>

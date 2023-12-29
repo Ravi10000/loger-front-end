@@ -20,6 +20,7 @@
     "axios": "^1.5.0",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.9",
+    "firebase": "^10.7.1",
     "framer-motion": "^10.16.16",
     "html2pdf.js": "^0.10.1",
     "prop-types": "^15.8.1",

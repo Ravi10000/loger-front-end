@@ -15,15 +15,12 @@ export const fetchUserDetails = async () => {
   return response;
 };
 
-export const signupWithEmail = (signupData) => {
-  console.log({ signupData });
-  return api.post("/auth", signupData, {
+export const signupWithEmail = (signupData) =>
+  api.post("/auth", signupData, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-};
-
 export const googleSignIn = (creds) => api.post("/auth/google", creds);
 
 export const loginWithEmail = async (creds) => {
@@ -37,5 +34,8 @@ export const loginWithEmail = async (creds) => {
   return response;
 };
 
-export const generateOTP = async (creds) => api.post("/auth/phone", creds);
-export const verifyOTP = async (creds) => api.put("/auth/phone", creds);
+export const generateOTP = (creds) => api.post("/auth/phone", creds);
+export const verifyOTP = (creds) => api.put("/auth/phone", creds);
+
+export const googleLogin = (userInfo) =>
+  api.post(`/auth/login/google`, userInfo);

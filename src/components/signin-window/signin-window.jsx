@@ -8,6 +8,8 @@ import SigninEmail from "#components/signin-email/signin-email";
 import SigninPhone from "#components/signin-phone/signin-phone";
 import { FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import GoogleLoginButton from "#components/google-login-button/google-login-button";
+import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 // import { useEffect, useRef } from "react";
 // import { useClickAway } from "@uidotdev/usehooks";
 
@@ -51,12 +53,14 @@ function ConnectedSigninWindow() {
               <MdEmail className={styles.method} />
             </button>
           )}
-          <button className={styles.iconContainer}>
+          <FaceBookLoginButton />
+          {/* <button className={styles.iconContainer}>
             <img src="/images/icons/facebook.png" alt="facebook" />
-          </button>
-          <button className={styles.iconContainer}>
+          </button> */}
+          <GoogleLoginButton />
+          {/* <button className={styles.iconContainer}>
             <img src="/images/icons/google.png" alt="google" />
-          </button>
+          </button> */}
           {/* <GoogleAuthButton /> */}
         </div>
         <div className={styles.seperator}>
