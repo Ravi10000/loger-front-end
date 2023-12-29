@@ -7,6 +7,8 @@ import { FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import SignupEmail from "#components/signup-email/signup-email";
 import SigninPhone from "#components/signin-phone/signin-phone";
+import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
+import GoogleLoginButton from "#components/google-login-button/google-login-button";
 
 const authComponents = {
   email: <SignupEmail />,
@@ -44,12 +46,14 @@ function ConnectedSignupWindow() {
               <MdEmail className={styles.method} />
             </button>
           )}
-          <div className={styles.iconContainer}>
+          <FaceBookLoginButton />
+          <GoogleLoginButton />
+          {/* <div className={styles.iconContainer}>
             <img src="/images/icons/facebook.png" alt="facebook" />
           </div>
           <div className={styles.iconContainer}>
             <img src="/images/icons/google.png" alt="google" />
-          </div>
+          </div> */}
         </div>
         <div className={styles.seperator}>
           <p>or</p>
