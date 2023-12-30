@@ -9,6 +9,7 @@ import SignupEmail from "#components/signup-email/signup-email";
 import SigninPhone from "#components/signin-phone/signin-phone";
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 import GoogleLoginButton from "#components/google-login-button/google-login-button";
+import { Link } from "react-router-dom";
 
 const authComponents = {
   email: <SignupEmail />,
@@ -18,7 +19,16 @@ const authComponents = {
 function ConnectedSignupWindow() {
   const { openAuthWindow, closeAuthWindow, authWindow } = useAuthWindow();
   const method = authWindow?.method;
-
+  const loginOptions = [
+    {
+      method: "email",
+      Icon: MdEmail,
+    },
+    {
+      method: "phone",
+      Icon: FaPhone,
+    },
+  ];
   return (
     <WithBackdrop close={closeAuthWindow}>
       <div className={styles.signupWindow} onClick={(e) => e.stopPropagation()}>
@@ -27,33 +37,21 @@ function ConnectedSignupWindow() {
           <p>Sign Up & Find Your Hotel Near Best Location </p>
         </div>
         <div className={styles.icons}>
-          {method === "email" ? (
+          {loginOptions?.map((LoginType) => (
             <button
-              className={styles.iconContainer}
+              key={LoginType.method}
+              className={`${styles.iconContainer} ${
+                LoginType.method === method ? styles.selected : ""
+              }`}
               onClick={() => {
-                openAuthWindow({ type: "signup", method: "phone" });
+                openAuthWindow({ type: "signup", method: LoginType.method });
               }}
             >
-              <FaPhone className={styles.method} />
+              <LoginType.Icon className={styles.method} />
             </button>
-          ) : (
-            <button
-              className={styles.iconContainer}
-              onClick={() => {
-                openAuthWindow({ type: "signup", method: "email" });
-              }}
-            >
-              <MdEmail className={styles.method} />
-            </button>
-          )}
+          ))}
           <FaceBookLoginButton />
           <GoogleLoginButton />
-          {/* <div className={styles.iconContainer}>
-            <img src="/images/icons/facebook.png" alt="facebook" />
-          </div>
-          <div className={styles.iconContainer}>
-            <img src="/images/icons/google.png" alt="google" />
-          </div> */}
         </div>
         <div className={styles.seperator}>
           <p>or</p>
@@ -66,10 +64,11 @@ function ConnectedSignupWindow() {
           Signin
         </p>
         <p>
-          By continuing you agree Loger.ma{" "}
-          <span className={styles.link}>
+          <span>By continuing you agree to Loger.ma</span>
+          <br />
+          <Link to="/terms" className={styles.link} onClick={closeAuthWindow}>
             Terms of Services & Privacy Policy
-          </span>
+          </Link>
         </p>
       </div>
     </WithBackdrop>

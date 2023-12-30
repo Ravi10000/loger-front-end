@@ -4,16 +4,17 @@
   gap: 50px;
   color: var(--card-text-clr);
   background: #fff;
-  padding: 5px 20px;
-  border-radius: 5px;
+  padding: 10px 20px;
+  border-radius: 12px;
   // box-shadow: 0px 0px 2px 0px rgba(107, 105, 131, 0.419);
   width: 80vw;
   max-width: 500px;
   position: relative;
-  animation: slideIn 0.5s ease-in-out,
-    outroAnimation 0.5s ease-in-out 7.5s forwards;
+  animation: slideIn 0.25s ease-in-out,
+    outroAnimation 0.25s ease-in-out 7.75s forwards;
   overflow: hidden;
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.25s ease-in-out;
+  font-family: "Poppins";
   &.outro {
     transform: translateX(200%);
   }
@@ -55,7 +56,8 @@
     .message {
       text-align: start;
       letter-spacing: 1px;
-      font-weight: 600;
+      font-weight: 500;
+      // font-weight: 600;
       text-transform: capitalize;
     }
   }
@@ -64,8 +66,23 @@
     border: none;
     height: fit-content;
     width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    padding: 10px;
+    height: 30px;
+    width: 30px;
+    border-radius: 100vw;
+    transition: all 0.1s ease-in-out;
+    &:active {
+      transform: scale(0.9);
+    }
+    &:hover {
+      background: lightgray;
+      .icon {
+        transform: scale(1.1);
+      }
+    }
     .icon {
       height: 1.2rem;
       width: fit-content;

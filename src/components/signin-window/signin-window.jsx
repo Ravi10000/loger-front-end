@@ -10,13 +10,25 @@ import { FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import GoogleLoginButton from "#components/google-login-button/google-login-button";
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
-// import { useEffect, useRef } from "react";
-// import { useClickAway } from "@uidotdev/usehooks";
+import { Link } from "react-router-dom";
+import ForgotPassword from "#components/forgot-password/forgot-password";
+import { MdLockReset } from "react-icons/md";
 
 const authComponents = {
   email: <SigninEmail />,
   phone: <SigninPhone />,
+  forgotPassword: <ForgotPassword />,
 };
+const loginOptions = [
+  {
+    method: "email",
+    Icon: MdEmail,
+  },
+  {
+    method: "phone",
+    Icon: FaPhone,
+  },
+];
 
 function ConnectedSigninWindow() {
   const { closeAuthWindow, openAuthWindow, authWindow } = useAuthWindow();
@@ -29,56 +41,62 @@ function ConnectedSigninWindow() {
           e.stopPropagation();
         }}
       >
-        <div className={styles.heading}>
-          <h2>Welcome to Loger.ma</h2>
-          <p>Login & Find Your Hotel Near Best Location</p>
-        </div>
-        <div className={styles.icons}>
-          {method === "email" ? (
-            <button
-              className={styles.iconContainer}
-              onClick={() => {
-                openAuthWindow({ type: "signin", method: "phone" });
-              }}
-            >
-              <FaPhone className={styles.method} />
-            </button>
-          ) : (
-            <button
-              className={styles.iconContainer}
-              onClick={() => {
-                openAuthWindow({ type: "signin", method: "email" });
-              }}
-            >
-              <MdEmail className={styles.method} />
-            </button>
-          )}
-          <FaceBookLoginButton />
-          {/* <button className={styles.iconContainer}>
-            <img src="/images/icons/facebook.png" alt="facebook" />
-          </button> */}
-          <GoogleLoginButton />
-          {/* <button className={styles.iconContainer}>
-            <img src="/images/icons/google.png" alt="google" />
-          </button> */}
-          {/* <GoogleAuthButton /> */}
-        </div>
-        <div className={styles.seperator}>
-          <p>or</p>
-        </div>
+        {method !== "forgotPassword" && (
+          <>
+            <div className={styles.heading}>
+              <h2>Welcome to Loger.ma</h2>
+              <p>Login & Find Your Hotel Near Best Location</p>
+            </div>
+            <div className={styles.icons}>
+              {loginOptions?.map((LoginType) => (
+                <button
+                  key={LoginType.method}
+                  className={`${styles.iconContainer} ${
+                    LoginType.method === method ? styles.selected : ""
+                  }`}
+                  onClick={() => {
+                    openAuthWindow({
+                      type: "signin",
+                      method: LoginType.method,
+                    });
+                  }}
+                >
+                  <LoginType.Icon className={styles.method} />
+                </button>
+              ))}
+              <FaceBookLoginButton />
+              <GoogleLoginButton />
+            </div>
+            <div className={styles.seperator}>
+              <p>or</p>
+            </div>
+          </>
+        )}
+
         {authComponents[method]}
-        <p
-          className={styles.link}
-          onClick={() => openAuthWindow({ type: "signup", method: "phone" })}
-        >
-          Signup
-        </p>
-        <p>
-          By continuing you agree Loger.ma{" "}
-          <span className={styles.link}>
-            Terms of Services & Privacy Policy
-          </span>
-        </p>
+        {method !== "forgotPassword" && (
+          <>
+            <p
+              className={styles.link}
+              onClick={() =>
+                openAuthWindow({ type: "signup", method: "phone" })
+              }
+            >
+              Signup
+            </p>
+            <p>
+              <span>By continuing you agree to Loger.ma</span>
+              <br />
+              <Link
+                to="/terms"
+                className={styles.link}
+                onClick={closeAuthWindow}
+              >
+                Terms of Services & Privacy Policy
+              </Link>
+            </p>
+          </>
+        )}
       </div>
     </WithBackdrop>
   );

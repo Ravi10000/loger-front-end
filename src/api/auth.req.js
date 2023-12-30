@@ -39,3 +39,9 @@ export const verifyOTP = (creds) => api.put("/auth/phone", creds);
 
 export const googleLogin = (userInfo) =>
   api.post(`/auth/login/google`, userInfo);
+
+export const generateResetPasswordRequest = ({ email }) =>
+  api.post("/auth/reset-password", { email });
+
+export const resetPassword = ({ password, requestId }) =>
+  api.put("/auth/reset-password", { password, requestId });

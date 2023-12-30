@@ -17,8 +17,8 @@ import { useAuthWindow } from "#contexts/auth-window.context";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import ApartmentDescription from "#components/apartment-description";
-import { decrypt, encrypt } from "#utils/secure-url.utils";
+// import ApartmentDescription from "#components/apartment-description";
+import { encrypt } from "#utils/secure-url.utils";
 
 ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
@@ -43,7 +43,6 @@ function ConnectedSearchResultCard({
   const roomsCount = parseInt(searchParams.get("noOfRooms"));
   const adultsCount = parseInt(searchParams.get("noOfAdults"));
 
-  console.log({ property });
   const { openAuthWindow } = useAuthWindow();
 
   const isHotel = property?.propertyType === "hotel";
@@ -113,7 +112,6 @@ function ConnectedSearchResultCard({
           onClick={(e) => {
             e.stopPropagation();
             wishlistMutation.mutate();
-            // setLiked((prevState) => !prevState);
           }}
         >
           {liked ? (
@@ -137,23 +135,6 @@ function ConnectedSearchResultCard({
           <div className={styles.description}>
             <h4 style={{ fontSize: "18px" }}>Description</h4>
             <p>{content?.aboutProperty}</p>
-            {/* {isHotel ? (
-              <>
-                <h4 style={{ fontSize: "18px" }}>Description</h4>
-                <p>
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry Read
-                  More...
-                </p>
-              </>
-            ) : (
-              <p>
-                {content?.aboutProperty
-                  ? content?.aboutProperty?.substring?.(0, 150) + "..."
-                  : "..."}
-              </p>
-              // <ApartmentDescription apartment={property.apartment} />
-            )} */}
           </div>
           {isHotel && pkg ? (
             <div className={styles.rooms}>

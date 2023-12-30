@@ -10,6 +10,8 @@ import { IoClose } from "react-icons/io5";
 import { PiWarningFill } from "react-icons/pi";
 import { BiSolidCommentError } from "react-icons/bi";
 import { clearFlash } from "../../redux/flash/flash.actions";
+import { Balancer } from "react-wrap-balancer";
+import PropTypes from "prop-types";
 
 const icons = {
   success: <FaCircleCheck color="var(--success-clr)" className={styles.icon} />,
@@ -20,7 +22,12 @@ const icons = {
   info: <AiFillInfoCircle color="var(--info-clr)" className={styles.icon} />,
 };
 
-function Flash({ flash: { type, message, id }, clearFlash }) {
+ConnectedFlash.propTypes = {
+  flash: PropTypes.object,
+  clearFlash: PropTypes.func,
+};
+
+function ConnectedFlash({ flash: { type, message, id }, clearFlash }) {
   const [clicked, setClicked] = useState(false);
   useEffect(() => {
     const clear = setTimeout(() => {
@@ -43,7 +50,7 @@ function Flash({ flash: { type, message, id }, clearFlash }) {
             color: `var(--${type}-clr)`,
           }}
         >
-          {message}
+          <Balancer>{message}</Balancer>
         </h5>
       </div>
       <button
@@ -61,4 +68,5 @@ function Flash({ flash: { type, message, id }, clearFlash }) {
   );
 }
 
-export default connect(null, { clearFlash })(Flash);
+const Flash = connect(null, { clearFlash })(ConnectedFlash);
+export default Flash;

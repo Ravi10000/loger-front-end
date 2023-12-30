@@ -25,7 +25,7 @@ ConnectedSigninEmail.propTypes = {
 };
 
 function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
-  const { closeAuthWindow } = useAuthWindow();
+  const { closeAuthWindow, openAuthWindow } = useAuthWindow();
 
   const {
     register,
@@ -78,7 +78,16 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
             error={errors?.password?.message}
           />
         </div>
-        <p>forgot password?</p>
+        <p
+          onClick={() => {
+            openAuthWindow({
+              type: "signin",
+              method: "forgotPassword",
+            });
+          }}
+        >
+          forgot password?
+        </p>
       </form>
       <div className={styles.buttonContainer}>
         <CustomButton form="signin-email" disabled={status === "pending"}>

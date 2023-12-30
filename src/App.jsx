@@ -24,6 +24,8 @@ import FlashGroup from "#components/flash-group/flash-group";
 import ScrollToTop from "#components/scrollToTop";
 import useFetchUser from "#hooks/fetch-user";
 import WithShouldMount from "#components/withShouldMount";
+import ResetPasswordPage from "#pages/reset-password/reset-password.page";
+import ResetPasswordSuccessPage from "#pages/reset-password-success/reset-password-success.page";
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -112,6 +114,14 @@ function App() {
             <Route path="/account/:tab" element={<AccountDetailsPage />} />
             <Route path="/account" element={<ManageAccountPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
+            <Route
+              path="/reset-password/:requestId"
+              element={<ResetPasswordPage />}
+            />
+            <Route
+              path="/reset-password-success"
+              element={<ResetPasswordSuccessPage />}
+            />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
         </Suspense>

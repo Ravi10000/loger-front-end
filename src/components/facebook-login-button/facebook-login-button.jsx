@@ -3,13 +3,16 @@ import { setCurrentUser } from "#redux/user/user.actions";
 import { connect } from "react-redux";
 import { FaFacebook } from "react-icons/fa6";
 import styles from "./facebook-login-button.module.scss";
-import { useEffect } from "react";
-import { FacebookAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
-
+import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "#firebase/firebase.config";
+import PropTypes from "prop-types";
 const provider = new FacebookAuthProvider();
-const auth = getAuth();
 
-function ConnectedFaceBookLoginButton() {
+ConnectedFaceBookLoginButton.propTypes = {
+  pushFlash: PropTypes.func,
+  setCurrentUser: PropTypes.func,
+};
+function ConnectedFaceBookLoginButton({ pushFlash, setCurrentUser }) {
   const handleFacebookLogin = async () => {
     if (!import.meta.env.PROD) {
       pushFlash({
@@ -18,7 +21,6 @@ function ConnectedFaceBookLoginButton() {
       });
       return;
     }
-    auth.useDeviceLanguage();
     try {
       const res = await signInWithPopup(auth, provider);
       console.log({ res });

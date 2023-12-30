@@ -1,11 +1,16 @@
 import styles from "./footer.module.scss";
 import { footerOptions } from "#data/footer-options";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Footer() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const hideHeader = pathname?.includes("reset-password");
   return (
-    <footer className={styles.footer}>
+    <footer
+      className={styles.footer}
+      style={hideHeader ? { display: "none" } : {}}
+    >
       <div className={styles.container}>
         <div className={styles.groupMenu}>
           <div className={styles.menuContainer}>

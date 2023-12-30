@@ -8,6 +8,9 @@
   justify-content: center;
   border: none;
   background: transparent;
+  &:active {
+    transform: scale(0.9);
+  }
 }
 .icon {
   font-size: 30px;

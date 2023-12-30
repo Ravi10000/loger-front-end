@@ -3,15 +3,19 @@ import CurrencySelector from "#components/currency-selector/currency-selector";
 import CountrySelector from "#components/country-selector/country-selector";
 import CustomButton from "#components/custom-button/custom-button";
 import { RiUserFill } from "react-icons/ri";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuthWindow } from "#contexts/auth-window.context";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useRef, useState } from "react";
 import UserPopup from "#components/user-popup/user-popup";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
+Header.propTypes = {
+  currentUser: PropTypes.object,
+};
 
 function Header({ currentUser }) {
-  const navigate = useNavigate();
   const { openAuthWindow } = useAuthWindow();
   const { pathname } = useLocation();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -26,7 +30,8 @@ function Header({ currentUser }) {
   ];
   const isSpecialRoutes = specialRoutes.includes(pathname);
   const popupRef = useRef(null);
-
+  const hideHeader = pathname?.includes("reset-password");
+  console.log({ hideHeader, pathname });
   useEffect(() => {
     function handleClickOutside(e) {
       if (popupRef.current && !popupRef.current.contains(e.target))
@@ -34,13 +39,14 @@ function Header({ currentUser }) {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [popupRef.current]);
+  }, [popupRef]);
 
   return (
     <div
       className={`${styles.header} ${
         isSpecialRoutes ? styles.specialRoute : ""
       }`}
+      style={hideHeader ? { display: "none" } : {}}
     >
       <div className={styles.container}>
         <Link to="/">

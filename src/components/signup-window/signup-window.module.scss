@@ -31,6 +31,12 @@
       justify-content: center;
       border: none;
       background: transparent;
+      &:active {
+        transform: scale(0.9);
+      }
+      &.selected {
+        border: 1px solid var(--main-brand-color);
+      }
       img {
         height: 30px;
         width: fit-content;
