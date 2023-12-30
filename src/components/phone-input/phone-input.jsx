@@ -19,7 +19,8 @@ function PhoneInput({ phone, error, setPhone, secondary, label }) {
         inputClassName={secondary ? "secondary_phone_input" : ""}
         defaultCountry="ma"
         value={phone}
-        onChange={setPhone}
+        // onChange={setPhone}
+        onChange={(_, values) => setPhone(values?.inputValue)}
       />
       {error && (
         <p

@@ -54,9 +54,9 @@ function ForgotPassword() {
   if (!isLinkSent)
     return (
       <form className={styles.forgotPassword} onSubmit={handleSubmit(mutate)}>
+        <MdLockReset style={{ fontSize: "36px" }} />
         <h3>
-          <MdLockReset />
-          Reset Password
+          <Balancer>Get Reset Password Link</Balancer>
         </h3>
         <CustomInput
           placeholder="Enter your email address"
@@ -69,6 +69,14 @@ function ForgotPassword() {
             <LoadingPage.Loader style={{ color: "#fff", fontSize: "14px" }} />
           )}
         </CustomButton>
+        <button
+          className={styles.backBtn}
+          onClick={() => {
+            openAuthWindow({ type: "signin", method: "email" });
+          }}
+        >
+          Go back
+        </button>
       </form>
     );
   return (

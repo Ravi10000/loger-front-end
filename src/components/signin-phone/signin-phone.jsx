@@ -46,6 +46,7 @@ function GenerateOTPForm({ setStage, phone, setPhone, pushFlash }) {
   const { countryCode, phoneNumber } = getPhoneNCountryCode(phone);
   const { mutate, status } = useMutation({
     mutationFn: async () => {
+      console.log({ countryCode, phoneNumber });
       const response = await generateOTP({ countryCode, phone: phoneNumber });
       if (response?.data?.message === "otp sent") {
         setStage(1);
@@ -61,19 +62,12 @@ function GenerateOTPForm({ setStage, phone, setPhone, pushFlash }) {
   });
   return (
     <>
-      <form
-        name="generate-otp"
-        className={styles.signInPhoneForm}
-        onSubmit={(e) => {
-          e.preventDefault();
-          mutate();
-        }}
-      >
+      <div className={styles.signInPhoneForm}>
         <PhoneInput phone={phone} setPhone={setPhone} />
-      </form>
+      </div>
       <div className={styles.buttonContainer}>
         <CustomButton
-          form="generate-otp"
+          onClick={mutate}
           disabled={
             !countryCode || !(phone?.length > 5) || status === "pending"
           }
@@ -106,6 +100,7 @@ function VerifyOTPForm({
   const inputRef = useRef();
   const [otp, setOtp] = useState("");
   const { countryCode, phoneNumber } = getPhoneNCountryCode(phone);
+  console.log({ countryCode, phoneNumber });
   const { mutate, status } = useMutation({
     mutationFn: async () => {
       const response = await verifyOTP({
@@ -143,14 +138,7 @@ function VerifyOTPForm({
   return (
     <>
       <h3>{phone}</h3>
-      <form
-        name="verify-otp"
-        className={styles.signInPhoneForm}
-        onSubmit={(e) => {
-          e.preventDefault();
-          mutate();
-        }}
-      >
+      <div className={styles.signInPhoneForm}>
         <CustomInput
           ref={inputRef}
           otp
@@ -164,10 +152,10 @@ function VerifyOTPForm({
             setOtp(e.target.value);
           }}
         />
-      </form>
+      </div>
       <div className={styles.buttonContainer}>
         <CustomButton
-          form="verify-otp"
+          onClick={mutate}
           disabled={otp?.length !== 6 || status === "pending"}
         >
           <span>Verify</span>

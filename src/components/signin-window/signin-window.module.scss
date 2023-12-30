@@ -24,16 +24,22 @@
     .iconContainer {
       height: 60px;
       width: 60px;
-      border-radius: 5px;
-      box-shadow: 15px 15px 33px 0px rgba(35, 45, 51, 0.17);
+      border-radius: 10px;
+      box-shadow: 15px 15px 33px 0px #232d332b;
       display: flex;
       align-items: center;
       justify-content: center;
       border: none;
       background: transparent;
-      transition: all 0.2s ease-in-out;
+      transition: all 0.25s ease-in-out;
+      &:hover {
+      box-shadow: 2px 0px 50px 0px rgba(0, 140, 255, 0.258);
+        .method {
+          transform: scale(1.2);
+        }
+      }
       &:active {
-        transform: scale(0.9);
+        transform: scale(0.8);
       }
       &.selected {
         border: 1px solid var(--main-brand-color);
@@ -91,4 +97,5 @@
 }
 .method {
   font-size: 20px;
+  transition: all 0.2s ease-in-out;
 }

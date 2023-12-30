@@ -50,7 +50,6 @@ function ConnectedGoogleLoginButton({ pushFlash, setCurrentUser }) {
       }
     } catch (googleError) {
       console.error({ googleError });
-      console.log("error");
       // pushFlash({
       //   message:
       //     googleError?.response?.data?.message ||
@@ -58,7 +57,6 @@ function ConnectedGoogleLoginButton({ pushFlash, setCurrentUser }) {
       //   type: "error",
       // });
     } finally {
-      console.log("finally");
       setIsPopupOpen(false);
     }
   };

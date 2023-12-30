@@ -3,10 +3,10 @@ import { setCurrentUser } from "#redux/user/user.actions";
 import { connect } from "react-redux";
 import { FaFacebook } from "react-icons/fa6";
 import styles from "./facebook-login-button.module.scss";
-import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "#firebase/firebase.config";
+// import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
+// import { auth } from "#firebase/firebase.config";
 import PropTypes from "prop-types";
-const provider = new FacebookAuthProvider();
+// const provider = new FacebookAuthProvider();
 
 ConnectedFaceBookLoginButton.propTypes = {
   pushFlash: PropTypes.func,
@@ -14,19 +14,23 @@ ConnectedFaceBookLoginButton.propTypes = {
 };
 function ConnectedFaceBookLoginButton({ pushFlash, setCurrentUser }) {
   const handleFacebookLogin = async () => {
-    if (!import.meta.env.PROD) {
-      pushFlash({
-        message: "Facebook login is not available in development mode",
-        type: "warning",
-      });
-      return;
-    }
-    try {
-      const res = await signInWithPopup(auth, provider);
-      console.log({ res });
-    } catch (facebookLoginError) {
-      console.log({ facebookLoginError });
-    }
+    return pushFlash({
+      type: "warning",
+      message: "Facebook login is not available at the moment",
+    });
+    // if (!import.meta.env.PROD) {
+    //   pushFlash({
+    //     message: "Facebook login is not available in development mode",
+    //     type: "warning",
+    //   });
+    //   return;
+    // }
+    // try {
+    //   const res = await signInWithPopup(auth, provider);
+    //   console.log({ res });
+    // } catch (facebookLoginError) {
+    //   console.log({ facebookLoginError });
+    // }
   };
   return (
     <button className={styles["fb-login-button"]} onClick={handleFacebookLogin}>

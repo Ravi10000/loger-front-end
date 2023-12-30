@@ -1,31 +1,40 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./user-popup.module.scss";
 import { HashLink } from "react-router-hash-link";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import api, { removeAuthToken } from "#api/index";
 import { connect } from "react-redux";
 import { setCurrentUser } from "#redux/user/user.actions";
 import { pushFlash } from "#redux/flash/flash.actions";
-import { useQueryClient } from "@tanstack/react-query";
+import PropTypes from "prop-types";
 
-function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
+ConnectedUserPopup.propTypes = {
+  setCurrentUser: PropTypes.func,
+  currentUser: PropTypes.object,
+  pushFlash: PropTypes.func,
+};
+
+function ConnectedUserPopup({ setCurrentUser, currentUser, pushFlash }) {
   const popupRef = useRef(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   return (
     <div className={styles.userPopup} ref={popupRef}>
       <div className={styles.option} onClick={() => navigate("/account")}>
         <img src="/images/account-icons/user.svg" alt="user" />
         <div className={styles.innerText}>
           <p>Manage Account</p>
-          <p>{currentUser?.email}</p>
+          <p>
+            {currentUser?.email ||
+              currentUser?.countryCode + " " + currentUser?.phone}
+          </p>
         </div>
       </div>
       <div className={styles.option} onClick={() => navigate("/wishlist")}>
         <img src="/images/icons/heart.svg" alt="wishlist" />
         <div className={styles.innerText}>
           <p>
-            My Wishlist <span>04</span>
+            My Wishlist
+            {/* <span>04</span> */}
           </p>
         </div>
       </div>
@@ -36,7 +45,8 @@ function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
         <img src="/images/icons/calender-2.svg" alt="bookings" />
         <div className={styles.innerText}>
           <p>
-            My Trips <span>01</span>
+            My Trips
+            {/* <span>01</span> */}
           </p>
         </div>
       </div>
@@ -44,7 +54,8 @@ function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
         <img src="/images/account-icons/wallet-add.svg" alt="wallet" />
         <div className={styles.innerText}>
           <p>
-            My Wallet <span>250 Coins</span>
+            My Wallet
+            {/* <span>250 Coins</span> */}
           </p>
         </div>
       </div>
@@ -82,4 +93,7 @@ function UserPopup({ setCurrentUser, currentUser, pushFlash }) {
 const mapState = (state) => ({
   currentUser: state.user.currentUser,
 });
-export default connect(mapState, { setCurrentUser, pushFlash })(UserPopup);
+const UserPopup = connect(mapState, { setCurrentUser, pushFlash })(
+  ConnectedUserPopup
+);
+export default UserPopup;

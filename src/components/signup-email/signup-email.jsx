@@ -21,7 +21,7 @@ ConnectedSignupEmail.propTypes = {
 };
 
 function ConnectedSignupEmail({ pushFlash }) {
-  const { closeAuthWindow } = useAuthWindow();
+  const { closeAuthWindow, openAuthWindow } = useAuthWindow();
   const {
     register,
     handleSubmit,
@@ -60,12 +60,6 @@ function ConnectedSignupEmail({ pushFlash }) {
       )
         validationErrors.phoneError = "invalid phone number";
       if (!dob) validationErrors.dobError = "invalid date of birth";
-
-      //   console.error({ validationErrors });
-      //   console.log({
-      //     isError: !!Object.keys(validationErrors).length,
-      //     validationErrors,
-      //   });
       if (Object.keys(validationErrors).length)
         throw new Error("validation error");
 
@@ -78,13 +72,12 @@ function ConnectedSignupEmail({ pushFlash }) {
       return response.data;
     },
     onSuccess: (data) => {
-      console.log("success");
-      console.log({ data });
-      pushFlash({
-        type: "success",
-        message: "OTP Sent to your email",
-      });
-      closeAuthWindow();
+      if (data?.status === "success") {
+        openAuthWindow({
+          type: "signup",
+          method: "emailSent",
+        });
+      }
     },
     onError: (error) => {
       console.error({ error });

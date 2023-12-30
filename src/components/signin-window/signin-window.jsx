@@ -12,7 +12,6 @@ import GoogleLoginButton from "#components/google-login-button/google-login-butt
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 import { Link } from "react-router-dom";
 import ForgotPassword from "#components/forgot-password/forgot-password";
-import { MdLockReset } from "react-icons/md";
 
 const authComponents = {
   email: <SigninEmail />,
