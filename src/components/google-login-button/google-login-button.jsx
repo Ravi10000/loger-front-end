@@ -47,12 +47,12 @@ function ConnectedGoogleLoginButton({ pushFlash, setCurrentUser }) {
       }
     } catch (googleError) {
       console.error({ googleError });
-      pushFlash({
-        message:
-          googleError?.response?.data?.message ||
-          "Something went wrong, please try again.",
-        type: "error",
-      });
+      // pushFlash({
+      //   message:
+      //     googleError?.response?.data?.message ||
+      //     "Something went wrong, please try again.",
+      //   type: "error",
+      // });
     }
   };
   return (

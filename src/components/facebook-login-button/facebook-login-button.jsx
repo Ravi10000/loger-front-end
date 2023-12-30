@@ -4,20 +4,30 @@ import { connect } from "react-redux";
 import { FaFacebook } from "react-icons/fa6";
 import styles from "./facebook-login-button.module.scss";
 import { useEffect } from "react";
+import { FacebookAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
-const { FB } = window;
+const provider = new FacebookAuthProvider();
+const auth = getAuth();
+
 function ConnectedFaceBookLoginButton() {
-  console.log({ FB });
-  useEffect(() => {
-    if (FB) {
-      FB.getLoginStatus(function (response) {
-        console.log({ response });
-        // statusChangeCallback(response);
+  const handleFacebookLogin = async () => {
+    if (!import.meta.env.PROD) {
+      pushFlash({
+        message: "Facebook login is not available in development mode",
+        type: "warning",
       });
+      return;
     }
-  }, []);
+    auth.useDeviceLanguage();
+    try {
+      const res = await signInWithPopup(auth, provider);
+      console.log({ res });
+    } catch (facebookLoginError) {
+      console.log({ facebookLoginError });
+    }
+  };
   return (
-    <button className={styles["fb-login-button"]}>
+    <button className={styles["fb-login-button"]} onClick={handleFacebookLogin}>
       <FaFacebook color="#1877f2" className={styles.icon} />
     </button>
   );
