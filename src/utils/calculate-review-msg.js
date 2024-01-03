@@ -7,6 +7,6 @@ export function calculateReviewMsg(rating) {
   if (rating >= 2) return "Poor Reviews";
 }
 
-export function totalReviews(ratings) {
+export function totalReviews(ratings = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }) {
   return [1, 2, 3, 4, 5].reduce((acc, cur) => acc + ratings[cur], 0);
 }

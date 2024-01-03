@@ -33,7 +33,8 @@ function PropertyCard({ property = {} }) {
       <div className={styles.infoContainer}>
         <div className={styles.info}>
           <h3>
-            <Balancer>{property?.propertyName || "no name"}</Balancer>
+            {/* <Balancer>{property?.propertyName || "no name"}</Balancer> */}
+            {property?.propertyName || "no name"}
           </h3>
           <div className={styles.rating}>
             <Stars
@@ -41,14 +42,6 @@ function PropertyCard({ property = {} }) {
               color="var(--main-brand-color)"
               size={20}
             />
-            {/* <div className={styles.stars}>
-              {Array(property?.rating || 1)
-                .fill()
-                .map((_, i) => (
-                  <RiStarFill key={i} className={styles.star} />
-                ))}
-            </div> */}
-            <p>{property?.averageRating || 1}</p>
           </div>
         </div>
         <div className={styles.location}>

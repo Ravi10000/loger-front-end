@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import { addReview } from "#api/review.req";
 import { useForm } from "react-hook-form";
 import ImageInput from "#components/image-input/image-input";
+import LoadingPage from "#pages/loading/loading";
 
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -132,7 +133,25 @@ function ReviewPopup({ currentUser, pushFlash }) {
                 })}
             </div>
             <div className={styles.userInfo}>
-              <img src="/images/user-circle.png" alt="user" />
+              <div
+                className={styles.initials}
+                style={{
+                  ...(currentUser?.profilePic && {
+                    backgroundImage: `url("${
+                      import.meta.env.VITE_SERVER_URL
+                    }/images/${currentUser?.profilePic}")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundColor: "transparent",
+                  }),
+                }}
+              >
+                {!currentUser?.profilePic && (
+                  <p>{currentUser?.fName?.[0].toUpperCase()}</p>
+                )}
+              </div>
+              {/* <img src="/images/user-circle.png" alt="user" /> */}
               <div className={styles.name}>
                 <h4>
                   {currentUser?.fName} {currentUser?.lName}
@@ -156,7 +175,14 @@ function ReviewPopup({ currentUser, pushFlash }) {
               )}
               {/* <input type="file" multiple name="images" /> */}
             </div>
-            <CustomButton>Save</CustomButton>
+            <CustomButton disabled={reviewMutation?.status === "pending"}>
+              <span>Save</span>
+              {reviewMutation?.status === "pending" && (
+                <LoadingPage.Loader
+                  style={{ color: "#fff", fontSize: "14px" }}
+                />
+              )}
+            </CustomButton>
           </form>
         </WithBackdrop>
       )}

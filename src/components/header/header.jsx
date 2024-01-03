@@ -30,8 +30,6 @@ function Header({ currentUser }) {
   ];
   const isSpecialRoutes = specialRoutes.includes(pathname);
   const popupRef = useRef(null);
-  const hideHeader = pathname?.includes("reset-password");
-  console.log({ hideHeader, pathname });
   useEffect(() => {
     function handleClickOutside(e) {
       if (popupRef.current && !popupRef.current.contains(e.target))
@@ -46,7 +44,6 @@ function Header({ currentUser }) {
       className={`${styles.header} ${
         isSpecialRoutes ? styles.specialRoute : ""
       }`}
-      style={hideHeader ? { display: "none" } : {}}
     >
       <div className={styles.container}>
         <Link to="/">

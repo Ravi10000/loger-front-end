@@ -8,6 +8,7 @@ import TripCard from "#components/trip-card/trip-card";
 import { useQuery } from "@tanstack/react-query";
 import { getBookings } from "#api/bookings.req";
 import CancelBookingPopup from "#components/cancel-booking-popup/cancel-booking-popup";
+import { connect } from "react-redux";
 
 const tabs = {
   upcomming: {
@@ -33,12 +34,13 @@ const tabs = {
   },
 };
 
-function MyTripsPage() {
+function MyTripsPage({ currentUser }) {
   const { status } = useParams();
   const navigate = useNavigate();
   const selectedTab = tabs[status];
   const bookingsQuery = useQuery({
     queryKey: ["bookings", selectedTab?.status],
+    enabled: !!currentUser,
     queryFn: async () => {
       const response = await getBookings(selectedTab?.status);
       return response?.data;
@@ -121,4 +123,7 @@ function MyTripsPage() {
   );
 }
 
-export default MyTripsPage;
+const mapState = (state) => ({
+  currentUser: state.user.currentUser,
+});
+export default connect(mapState)(MyTripsPage);

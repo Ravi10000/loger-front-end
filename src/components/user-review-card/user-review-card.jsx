@@ -20,7 +20,7 @@ function UserReviewCard({ review }) {
           <h3>
             {user.fName} {user.lName}
           </h3>
-          <p>{days} days ago</p>
+          {<p>{days > 0 ? `${days} days ago` : "Today"} </p>}
         </div>
         <div className={styles.stars}>
           {[...Array(review?.rating)].map((_, i) => (

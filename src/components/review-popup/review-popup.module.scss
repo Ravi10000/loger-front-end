@@ -51,6 +51,14 @@
     gap: 20px;
   }
 }
+.initials {
+  height: 45px;
+  width: 45px;
+  border-radius: 50px;
+  display: grid;
+  place-content: center;
+  background-color: #8e03cf;
+}
 .labelPublic {
   font-size: 0.8rem;
 }
