@@ -11,7 +11,6 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import { Balancer } from "react-wrap-balancer";
 
-import { HiOutlineChevronRight } from "react-icons/hi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { RiCheckboxBlankCircleLine } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -38,7 +37,6 @@ import CustomCarousel from "#components/custom-carousel/custom-carousel";
 import api from "#api/index";
 import { MdFreeBreakfast } from "react-icons/md";
 import { IoCarSport } from "react-icons/io5";
-import { LuPartyPopper } from "react-icons/lu";
 import CheckoutCard from "#components/checkout-card/checkout-card";
 
 ConnectedCheckoutPage.propTypes = {
@@ -144,6 +142,15 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   const content = property?.hotel || property?.apartment || {};
   const transactionMutation = useMutation({
     mutationFn: async () => {
+      if (guestInfo?.length !== noOfAdults) {
+        pushFlash({
+          message: `Please Enter Details of ${noOfAdults} Guest${
+            noOfAdults > 1 ? "s" : ""
+          }`,
+          type: "error",
+        });
+        return;
+      }
       const guestIds = [];
       const guestErrors = [];
       guestInfo?.forEach((guest) => {
@@ -423,6 +430,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                     }}
                     selectedItems={selectedGuests}
                     setItems={setSelectedGuests}
+                    disabled={guestInfo?.length >= noOfAdults}
                   />
                 )}
               </div>
@@ -438,17 +446,19 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                     removeGuestInfo={() => removeGuestInfo(idx)}
                   />
                 ))}
-              <CustomButton
-                fit
-                onClick={() => {
-                  setGuestInfo((ps) => [
-                    ...ps,
-                    { firstName: "", lastName: "", email: "", phone: "" },
-                  ]);
-                }}
-              >
-                Add Guest
-              </CustomButton>
+              {guestInfo?.length < noOfAdults && (
+                <CustomButton
+                  fit
+                  onClick={() => {
+                    setGuestInfo((ps) => [
+                      ...ps,
+                      { firstName: "", lastName: "", email: "", phone: "" },
+                    ]);
+                  }}
+                >
+                  Add Guest
+                </CustomButton>
+              )}
               <div className={styles.subscribeSection}>
                 {/* <div
                   className={styles.checkboxContainer}
@@ -647,6 +657,7 @@ MultiSelect.propTypes = {
   addToList: PropTypes.func,
   removeFromList: PropTypes.func,
   emptyMsg: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 function MultiSelect({
   label,
@@ -658,6 +669,7 @@ function MultiSelect({
   setItems,
   addToList,
   removeFromList,
+  disabled,
   emptyMsg = "Your Added guests will appear here.",
 }) {
   const ref = useRef(null);
@@ -697,6 +709,7 @@ function MultiSelect({
               <div className={styles.options}>
                 {items?.map((item, i) => (
                   <CustomCheckbox
+                    disabled={disabled}
                     checked={selectedItems.includes(item.value)}
                     setChecked={() => {
                       if (selectedItems.includes(item.value)) {

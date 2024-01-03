@@ -1,10 +1,35 @@
 import styles from "./custom-checkbox.module.scss";
-import { useState } from "react";
 import { BiCheck } from "react-icons/bi";
+import PropTypes from "prop-types";
 
-function CustomCheckbox({ label, leftSided, style, checked, setChecked }) {
+CustomCheckbox.propTypes = {
+  label: PropTypes.string,
+  leftSided: PropTypes.bool,
+  style: PropTypes.object,
+  checked: PropTypes.bool,
+  setChecked: PropTypes.func,
+  disabled: PropTypes.bool,
+};
+
+function CustomCheckbox({
+  label,
+  leftSided,
+  style,
+  checked,
+  setChecked,
+  disabled,
+}) {
   return (
-    <div style={style} className={styles.option} onClick={setChecked}>
+    <div
+      style={style}
+      className={`${styles.option} ${
+        !checked && disabled ? styles.disabled : ""
+      }`}
+      onClick={() => {
+        if (disabled && !checked) return;
+        setChecked();
+      }}
+    >
       {leftSided && (
         <div
           className={`${styles.checkbox} ${checked ? styles.checked : ""}`}
