@@ -1,0 +1,39 @@
+.emailSent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  .goToSignin {
+    background: transparent;
+    padding: 10px 20px;
+    border: 2px solid var(--main-brand-color);
+    color: var(--main-brand-color);
+    margin-block: 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.1s ease-in-out;
+    &:hover {
+      background-color: var(--main-brand-color);
+      color: #fff;
+    }
+    &:active {
+      transform: scale(0.95);
+    }
+    &:focus {
+      outline: 2px solid rgb(205, 211, 231);
+    }
+  }
+  .iconContainer {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(227, 248, 255);
+    border-radius: 100vw;
+    .icon {
+      font-size: 24px;
+      color: var(--main-brand-color);
+    }
+  }
+}

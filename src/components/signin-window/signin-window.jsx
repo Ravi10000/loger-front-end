@@ -12,11 +12,13 @@ import GoogleLoginButton from "#components/google-login-button/google-login-butt
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 import { Link } from "react-router-dom";
 import ForgotPassword from "#components/forgot-password/forgot-password";
+import EmailSent from "#components/email-sent-message/email-sent-message";
 
 const authComponents = {
   email: <SigninEmail />,
   phone: <SigninPhone />,
   forgotPassword: <ForgotPassword />,
+  emailSent: <EmailSent />,
 };
 const loginOptions = [
   {
@@ -40,7 +42,7 @@ function ConnectedSigninWindow() {
           e.stopPropagation();
         }}
       >
-        {method !== "forgotPassword" && (
+        {method !== "forgotPassword" && method !== "emailSent" && (
           <>
             <div className={styles.heading}>
               <h2>Welcome to Loger.ma</h2>
@@ -73,7 +75,7 @@ function ConnectedSigninWindow() {
         )}
 
         {authComponents[method]}
-        {method !== "forgotPassword" && (
+        {method !== "forgotPassword" && method !== "emailSent" && (
           <>
             <p
               className={styles.link}

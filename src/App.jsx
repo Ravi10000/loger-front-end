@@ -26,6 +26,9 @@ import useFetchUser from "#hooks/fetch-user";
 import WithShouldMount from "#components/withShouldMount";
 import ResetPasswordPage from "#pages/reset-password/reset-password.page";
 import ResetPasswordSuccessPage from "#pages/reset-password-success/reset-password-success.page";
+const EmailVerified = lazy(() =>
+  import("#pages/email-verified/email-verified")
+);
 
 const SearchResultsPage = lazy(() =>
   import("#pages/search-results/search-results.page")
@@ -36,9 +39,9 @@ const HomePage = lazy(() => import("#pages/home/home.page"));
 //   import("#pages/forgot-password/forgot-password.page")
 // );
 // const RegisterPage = lazy(() => import("#pages/register/register.page"));
-// const VerifyEmailPage = lazy(() =>
-//   import("#pages/verify-email/verify-email.page")
-// );
+const VerifyEmailPage = lazy(() =>
+  import("#pages/verify-email/verify-email.page")
+);
 const PropertyPage = lazy(() => import("#pages/property/property.page"));
 const CheckoutPage = lazy(() => import("#pages/checkout/checkout.page"));
 const AboutPage = lazy(() => import("#pages/about/about.page"));
@@ -75,7 +78,15 @@ function App() {
       <ReviewPopup />
       <AuthWindow />
       {/* {!isAuthRoute && !pathname.includes("/booking-details") && <Header />} */}
-      <WithShouldMount excludePathList={["/auth", "/booking-details"]}>
+      <WithShouldMount
+        excludePathList={[
+          "/auth",
+          "/booking-details",
+          "/verify-email",
+          "/reset-password",
+          "/email-verified",
+        ]}
+      >
         <Header />
       </WithShouldMount>
 
@@ -89,7 +100,11 @@ function App() {
               element={<ForgotPasswordPage />}
             /> */}
             {/* <Route path="/auth/register" element={<RegisterPage />} /> */}
-            {/* <Route path="/auth/verify-email" element={<VerifyEmailPage />} /> */}
+            <Route
+              path="/verify-email/:requestId"
+              element={<VerifyEmailPage />}
+            />
+            <Route path="/email-verified" element={<EmailVerified />} />
             <Route path="/search-results" element={<SearchResultsPage />} />
             <Route path="/property/:propertyId" element={<PropertyPage />} />
             <Route path="/checkout/:propertyId" element={<CheckoutPage />} />
@@ -127,7 +142,14 @@ function App() {
         </Suspense>
       </div>
       {/* {!pathname.includes("/booking-details") && <Footer />} */}
-      <WithShouldMount excludePathList={["/booking-details"]}>
+      <WithShouldMount
+        excludePathList={[
+          "/booking-details",
+          "/verify-email",
+          "/reset-password",
+          "/email-verified",
+        ]}
+      >
         <Footer />
       </WithShouldMount>
     </div>

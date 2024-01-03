@@ -25,11 +25,12 @@
   border-radius: 10px;
   font-weight: 600;
   transition: all 0.2s ease-in-out;
-  display: flex;
-  align-items: center;
-  gap: 5px;
   &:active {
     transform: scale(0.95);
+  }
+  &:hover {
+    background: var(--main-brand-color);
+    color: white;
   }
   &:focus {
     outline: 2px solid rgb(205, 211, 231);

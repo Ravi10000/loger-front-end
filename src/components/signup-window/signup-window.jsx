@@ -10,13 +10,12 @@ import SigninPhone from "#components/signin-phone/signin-phone";
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 import GoogleLoginButton from "#components/google-login-button/google-login-button";
 import { Link } from "react-router-dom";
-import { Balancer } from "react-wrap-balancer";
-import { MdMarkEmailRead } from "react-icons/md";
+import EmailSent from "#components/email-sent-message/email-sent-message";
 
 const authComponents = {
   email: <SignupEmail />,
   phone: <SigninPhone />,
-  emailSent: <EmailSent />,
+  emailSent: <EmailSent showMsg />,
 };
 const loginOptions = [
   {
@@ -95,30 +94,5 @@ function ConnectedSignupWindow() {
     </WithBackdrop>
   );
 }
-
-function EmailSent() {
-  const { openAuthWindow } = useAuthWindow();
-  return (
-    <div className={styles.emailSent}>
-      <div className={styles.iconContainer}>
-        <MdMarkEmailRead className={styles.icon} />
-      </div>
-      <p>
-        Thank you for registering on Loger.ma!
-        <br /> we&apos;ve sent you an email with verification link,
-        <br /> please verify your email address.
-      </p>
-      <button
-        className={styles.goToSignin}
-        onClick={() => {
-          openAuthWindow({ type: "signin", method: "email" });
-        }}
-      >
-        <Balancer>I&apos;ve verified my account, Take me to Sign in</Balancer>
-      </button>
-    </div>
-  );
-}
-
 const SignupWindow = connect(null, { pushFlash })(ConnectedSignupWindow);
 export default SignupWindow;

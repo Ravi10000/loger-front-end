@@ -13,6 +13,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import CustomButton from "#components/custom-button/custom-button";
 import LoadingPage from "#pages/loading/loading";
+import { useState } from "react";
+import EmailSent from "#components/email-sent-message/email-sent-message";
 
 const schema = z.object({
   email: z.string().email({ message: "invalid email" }),
@@ -54,6 +56,13 @@ function ConnectedSigninEmail({ setCurrentUser, pushFlash }) {
     },
     onError: ({ response: { data } }) => {
       console.error({ error: data });
+      if (data?.message === "verification link sent") {
+        openAuthWindow({
+          type: "signin",
+          method: "emailSent",
+        });
+        return;
+      }
       pushFlash({ message: data?.message, type: "error" });
     },
   });
