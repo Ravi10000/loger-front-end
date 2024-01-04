@@ -4,7 +4,6 @@ import html2pdf from "html2pdf.js/dist/html2pdf.min";
 
 import { Balancer } from "react-wrap-balancer";
 import { PiPrinter } from "react-icons/pi";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import { fetchTransactionAndBooking } from "#api/transaction.req";
 import { useParams } from "react-router-dom";
