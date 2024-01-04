@@ -7,7 +7,7 @@ function Stars({ ratings, color, size = 25 }) {
   const emptyStars = 5 - filledStars - (halfStar ? 1 : 0);
   return (
     <div className={styles.stars}>
-      {ratings && (
+      {!!ratings && (
         <>
           {[...Array(filledStars)].map((_, i) => (
             <RiStarFill

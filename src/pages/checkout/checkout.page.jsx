@@ -100,17 +100,17 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
     transactionAmount = totalPrice;
     transactionAmuontBeforeDiscount = priceBeforeDiscount;
   } else {
-    let stayLength = dayjs(checkOutDate).diff(dayjs(checkInDate), "day") + 1;
+    let stayLength = dayjs(checkOutDate).diff(dayjs(checkInDate), "day");
     transactionAmount = totalPrice * stayLength;
     transactionAmuontBeforeDiscount = priceBeforeDiscount * stayLength;
   }
   const newPkgDetails = {};
   if (pkgDetails) {
     newPkgDetails.rooms = { ...pkgDetails };
-    newPkgDetails.noOfAdults = noOfAdults;
-    newPkgDetails.noOfRooms = noOfRooms;
-    newPkgDetails.amount = transactionAmuontBeforeDiscount;
-    newPkgDetails.discountedAmount = transactionAmount;
+    newPkgDetails.noOfAdults = parseInt(noOfAdults);
+    newPkgDetails.noOfRooms = parseInt(noOfRooms);
+    newPkgDetails.amount = parseFloat(transactionAmuontBeforeDiscount);
+    newPkgDetails.discountedAmount = parseFloat(transactionAmount);
   }
 
   const guestQuery = useQuery({
@@ -142,7 +142,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   const content = property?.hotel || property?.apartment || {};
   const transactionMutation = useMutation({
     mutationFn: async () => {
-      if (guestInfo?.length !== noOfAdults) {
+      if (guestInfo?.length !== parseInt(noOfAdults)) {
         pushFlash({
           message: `Please Enter Details of ${noOfAdults} Guest${
             noOfAdults > 1 ? "s" : ""
