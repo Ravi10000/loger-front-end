@@ -32,6 +32,14 @@ body {
   min-height: 100vh;
   color: var(--text-color);
 }
+.__loader {
+  animation: spin 0.5s linear forwards infinite;
+}
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 button,
 label,

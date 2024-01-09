@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 // import ApartmentDescription from "#components/apartment-description";
 import { encrypt } from "#utils/secure-url.utils";
+import api from "#api/index";
 
 ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
@@ -85,6 +86,30 @@ function ConnectedSearchResultCard({
         setLiked((prevState) => !prevState);
       }
     },
+  });
+
+  const checkAvailability = useMutation({
+    mutationFn: async () => {
+      const res = await api.get(
+        `/calendar/check-availability/${property._id}?checkIn=${checkIn}&checkOut=${checkOut}`
+      );
+      console.log({ res });
+      if (!res?.data?.isAvailable) {
+        pushFlash({
+          type: "error",
+          message: "Property is not available for selected dates",
+        });
+        return;
+      }
+      navigate(
+        `/property/${
+          property?._id
+        }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
+          pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
+        }`
+      );
+    },
+    onError: console.log,
   });
 
   const rooms = useMemo(() => {
@@ -226,15 +251,8 @@ function ConnectedSearchResultCard({
           <div className={styles.btnContainer}>
             <CustomButton
               customStyles={!propertyPrice ? { opacity: ".5" } : {}}
-              onClick={() => {
-                navigate(
-                  `/property/${
-                    property?._id
-                  }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
-                    pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
-                  }`
-                );
-              }}
+              onClick={checkAvailability.mutate}
+              isLoading={checkAvailability.status === "pending"}
             >
               {!propertyPrice ? "Unavailable" : "Check Availabilities"}
             </CustomButton>
