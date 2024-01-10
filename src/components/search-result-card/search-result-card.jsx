@@ -91,7 +91,11 @@ function ConnectedSearchResultCard({
   const checkAvailability = useMutation({
     mutationFn: async () => {
       const res = await api.get(
-        `/calendar/check-availability/${property._id}?checkIn=${checkIn}&checkOut=${checkOut}`
+        `/calendar/check-availability/${
+          property._id
+        }?checkIn=${checkIn}&checkOut=${checkOut}${
+          pkg?.rooms?.length ? `&rooms=${JSON.stringify(pkg?.rooms)}` : ""
+        }`
       );
       console.log({ res });
       if (!res?.data?.isAvailable) {

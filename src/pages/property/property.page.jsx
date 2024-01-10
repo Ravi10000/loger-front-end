@@ -121,6 +121,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
           count: 1,
           discountedPrice: parseFloat(room.discountedPrice),
           price: parseFloat(room.price),
+          roomTypeId: room.roomTypeId,
         };
     });
     return details;

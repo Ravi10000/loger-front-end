@@ -84,7 +84,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
     (acc, key) => acc + pkgDetails[key].count,
     0
   );
-
+  console.log({ pkgDetails });
   const [sendDeals, setSendDeals] = useState(false);
   const [doYouSmoke, setDoYouSmoke] = useState(false);
   const [specialRequests, setSpecialRequests] = useState("");
@@ -252,7 +252,8 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
       const pkgDetails = newPkgDetails?.rooms
         ? newPkgDetails
         : {
-            price: priceBeforeDiscount,
+            // price: priceBeforeDiscount,
+            amount: priceBeforeDiscount,
             discountedAmount: totalPrice,
             occupancy: noOfAdults,
           };
@@ -294,7 +295,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           "_blank"
         );
       }
-
+          
       return transactionResponse?.data;
     },
     onError: (err) => {

@@ -3,7 +3,7 @@ export default function findUniqueObjects(arrayOfObjects) {
 
   arrayOfObjects.forEach((currentObject) => {
     // const currentObject = arrayOfObjects[i];
-    if (!uniqueObjects.hasOwnProperty(currentObject.name))
+    if (!uniqueObjects?.hasOwnProperty?.(currentObject.name))
       uniqueObjects[currentObject.name] = {
         ...currentObject,
         roomCount: 1,

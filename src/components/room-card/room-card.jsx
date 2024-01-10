@@ -56,8 +56,9 @@ function RoomCard({
       setCurrentImage(photos?.length - 1);
     }
   };
+  console.log({ roomCount, pkgDetails });
   useEffect(() => {
-    if (setPkgDetails && roomCount)
+    if (setPkgDetails && typeof roomCount === "number") {
       setPkgDetails((prevState) => ({
         ...prevState,
         [room.roomName]: {
@@ -67,13 +68,8 @@ function RoomCard({
           count: roomCount,
         },
       }));
-  }, [
-    roomCount,
-    room.roomName,
-    room.discountedPrice,
-    room.price,
-    setPkgDetails,
-  ]);
+    }
+  }, [roomCount, room, setPkgDetails]);
   const checkInDate = dayjs(bookingDetails?.checkInDate).format(
     "dddd, DD/MM/YYYY"
   );
@@ -193,8 +189,8 @@ function RoomCard({
               <Counter
                 containerStyles={{ color: "#fff" }}
                 buttonStyles={{ color: "#fff" }}
-                value={roomCount}
                 title="Add Rooms"
+                value={roomCount}
                 setValue={setRoomCount}
               />
             </div>
