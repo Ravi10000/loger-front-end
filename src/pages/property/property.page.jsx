@@ -31,6 +31,7 @@ import PropTypes from "prop-types";
 import { decrypt, encrypt } from "#utils/secure-url.utils";
 import { Link as ScrollLink } from "react-scroll";
 import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
+import api from "#api/index";
 const gridFooterOptions = [
   {
     name: "Overview",
@@ -103,6 +104,8 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const [carouselImages, setCarouselImages] = useState(null);
   const [searchParams] = useSearchParams();
   const noOfAdults = searchParams.get("noOfAdults");
+  const checkIn = searchParams.get("checkIn");
+  const checkOut = searchParams.get("checkOut");
   const { pathname } = useLocation();
   let pkg = searchParams.get("pkg");
   pkg = pkg?.length && decrypt(pkg);
@@ -148,6 +151,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { isError, isLoading } = propertyQuery;
 
   const { property, rooms, isInWishlist } = propertyQuery?.data || {};
+  console.log({ rooms });
   const content =
     property?.propertyType === "apartment"
       ? property?.apartment
@@ -192,6 +196,62 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
         client.invalidateQueries("wishlist");
         pushFlash({ type: "success", message: "Wishlist updated" });
       }
+    },
+  });
+
+  const checkAvailability = useMutation({
+    mutationFn: async () => {
+      // console.log({ pkgDetails });
+      const pkgRooms = Object.keys(pkgDetails);
+      // console.log({ pkgRooms });
+      const roomDetails = [];
+      pkgRooms.forEach((room) => {
+        for (let i = 1; i <= pkgDetails[room].count; i++) {
+          roomDetails.push({
+            roomTypeId: pkgDetails[room].roomTypeId,
+            name: room,
+          });
+        }
+      });
+      // console.log({ roomDetails });
+      // return;
+      const res = await api.get(
+        `/calendar/check-availability/${
+          property._id
+        }?checkIn=${checkIn}&checkOut=${checkOut}${
+          roomDetails?.length ? `&rooms=${JSON.stringify(roomDetails)}` : ""
+        }`
+      );
+      if (!res?.data?.isAvailable) {
+        pushFlash({
+          type: "warning",
+          message: "Property is not available for selected dates",
+        });
+      } else {
+        if (!totalPrice) return;
+        if (!currentUser) {
+          openAuthWindow("signin");
+          return;
+        }
+        const newparams = new URLSearchParams(currentUrlParams);
+        newparams.delete("pkg");
+        newparams.append(
+          "state",
+          encrypt({
+            pkgDetails,
+            totalPrice,
+            priceBeforeDiscount,
+          })
+        );
+        navigate(`/checkout/${propertyId}?${newparams}`);
+      }
+    },
+    onError: (err) => {
+      console.log({ err });
+      pushFlash({
+        type: "error",
+        message: "something went wrong, please try again later",
+      });
     },
   });
 
@@ -337,39 +397,11 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
           </div>
           <div className={styles.right}>
             <CustomButton
+              isLoading={checkAvailability.status === "pending"}
               customStyles={
                 totalPrice ? {} : { opacity: ".5", cursor: "not-allowed" }
               }
-              onClick={() => {
-                if (!totalPrice) return;
-                if (!currentUser) {
-                  openAuthWindow("signin");
-                  return;
-                }
-                console.log({ currentUrlParams });
-                const newparams = new URLSearchParams(currentUrlParams);
-                newparams.delete("pkg");
-                newparams.append(
-                  "state",
-                  encrypt({
-                    pkgDetails,
-                    totalPrice,
-                    priceBeforeDiscount,
-                    // property,
-                  })
-                );
-                console.log({ newparams: newparams.toString() });
-                navigate(`/checkout/${propertyId}?${newparams}`);
-                // return;
-                // return navigate(`/checkout?${newparams}`, {
-                //   state: {
-                //     pkgDetails,
-                //     totalPrice,
-                //     priceBeforeDiscount,
-                //     property,
-                //   },
-                // });
-              }}
+              onClick={checkAvailability.mutate}
               fit
             >
               {totalPrice ? "Book Now" : "Unavailable"}

@@ -97,10 +97,9 @@ function ConnectedSearchResultCard({
           pkg?.rooms?.length ? `&rooms=${JSON.stringify(pkg?.rooms)}` : ""
         }`
       );
-      console.log({ res });
       if (!res?.data?.isAvailable) {
         pushFlash({
-          type: "error",
+          type: "warning",
           message: "Property is not available for selected dates",
         });
         return;
@@ -113,7 +112,13 @@ function ConnectedSearchResultCard({
         }`
       );
     },
-    onError: console.log,
+    onError: (err) => {
+      console.log({ err });
+      pushFlash({
+        type: "error",
+        message: "something went wrong, please try again later",
+      });
+    },
   });
 
   const rooms = useMemo(() => {

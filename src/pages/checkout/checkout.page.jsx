@@ -295,7 +295,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           "_blank"
         );
       }
-          
+
       return transactionResponse?.data;
     },
     onError: (err) => {
@@ -628,7 +628,11 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
       </div>
       <div className={styles.container}>
         <div className={styles.contentContainer}>
-          <CustomButton fit onClick={transactionMutation.mutate}>
+          <CustomButton
+            fit
+            onClick={transactionMutation.mutate}
+            isLoading={transactionMutation.status === "pending"}
+          >
             Confirm Booking
           </CustomButton>
           <div className={styles.tNc}>

@@ -65,6 +65,7 @@ function RoomCard({
           ...prevState[room.roomName],
           discountedPrice: room.discountedPrice,
           price: room.price,
+          roomTypeId: room.roomTypeId,
           count: roomCount,
         },
       }));
