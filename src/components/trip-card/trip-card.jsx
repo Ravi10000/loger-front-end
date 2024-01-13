@@ -5,15 +5,20 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { RiStarFill } from "react-icons/ri";
 import { currencyFormator } from "#utils/currency-formator";
 import { totalReviews } from "#utils/calculate-review-msg";
 import Stars from "#components/stars/stars";
-import { useMutation } from "@tanstack/react-query";
 import { pushFlash } from "#redux/flash/flash.actions";
 import { connect } from "react-redux";
 import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import ChatButton from "#components/chat-button/chat-button";
+import { BsChatRightFill } from "react-icons/bs";
 
+TripCard.propTypes = {
+  booking: PropTypes.object.isRequired,
+  setBookingToCancel: PropTypes.func.isRequired,
+};
 function TripCard({ booking, setBookingToCancel }) {
   const property = booking?.property;
   const [isSaved, setIsSaved] = useState(false);
@@ -93,6 +98,10 @@ function TripCard({ booking, setBookingToCancel }) {
               ? "Cancelled"
               : "Reserve Again"}
           </button>
+          <ChatButton {...{ booking, propertyName: property?.propertyName }}>
+            <BsChatRightFill />
+            <span>chat</span>
+          </ChatButton>
         </div>
       </div>
       {booking?.status === "active" && (

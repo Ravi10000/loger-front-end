@@ -170,12 +170,14 @@ function RoomCard({
 
         {!bookingDetails ? (
           <>
-            <p className={styles.discount}>
-              {parseInt(
-                ((room?.price - room?.discountedPrice) / room?.price) * 100
-              ).toFixed(2)}
-              %
-            </p>
+            {!(room?.price === room?.discountedPrice) && (
+              <p className={styles.discount}>
+                {parseInt(
+                  ((room?.price - room?.discountedPrice) / room?.price) * 100
+                ).toFixed(2)}
+                %
+              </p>
+            )}
             <div className={styles.price}>
               <p className={styles.priceText}>&nbsp;₹ {room?.price} &nbsp;</p>
               <p className={styles.discountedPrice}>
