@@ -363,7 +363,7 @@ function ConnectedSearchResultCard({
                   <p className={styles.amount}>
                     {currencyFormator(
                       promotion?.discount
-                        ? propertyPrice - promotion?.discount
+                        ? propertyPrice
                         : discount?.discountedPrice
                     )}
                   </p>
