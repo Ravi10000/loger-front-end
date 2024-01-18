@@ -110,6 +110,8 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { pathname } = useLocation();
   let pkg = searchParams.get("pkg");
   pkg = pkg?.length && decrypt(pkg);
+  const promotion = (pkg && pkg?.promotion) || null;
+  console.log({ promotion: pkg?.promotion });
 
   const currentUrlParams = searchParams.toString();
   const { propertyId } = useParams();
@@ -175,13 +177,17 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
       for (let i = 0; i < property?.apartment?.prices?.length; i++) {
         const pkg = { ...property?.apartment?.prices?.[i] };
         if (pkg?.occupancy === parseInt(noOfAdults)) {
-          setTotalPrice(pkg?.discountedPrice);
-          setPriceBeforeDiscount(pkg?.price);
+          if (promotion?.discount) {
+            setTotalPrice(pkg?.discountedPrice - promotion?.discount);
+          } else {
+            setTotalPrice(pkg?.discountedPrice);
+          }
+          setPriceBeforeDiscount(pkg?.discountedPrice);
           break;
         }
       }
     }
-  }, [noOfAdults, property, checkIn, checkOut]);
+  }, [noOfAdults, property, checkIn, checkOut, promotion]);
   const client = useQueryClient();
 
   const wishlistMutation = useMutation({
@@ -247,6 +253,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
             totalPrice,
             priceBeforeDiscount,
             discount,
+            promotion,
           })
         );
         navigate(`/checkout/${propertyId}?${newparams}`);
@@ -271,22 +278,33 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   useEffect(() => {
     if (property?.propertyType === "hotel") {
       let price = 0;
-      let priceBeforeDiscount = 0;
+      // let priceBeforeDiscount = 0;
       Object.values(pkgDetails).forEach((room) => {
         if (room.count && room.discountedPrice && room.price) {
           price += room.count * room.discountedPrice;
-          priceBeforeDiscount += room.count * room.price;
+          // priceBeforeDiscount += room.count * room.price;
         }
       });
       if (price) {
-        setTotalPrice(price);
-        setPriceBeforeDiscount(priceBeforeDiscount);
+        if (promotion?.discount) setTotalPrice(price - promotion?.discount);
+        else setTotalPrice(price);
+        setPriceBeforeDiscount(price);
       }
     }
-  }, [pkgDetails, property, checkIn, checkOut]);
+  }, [pkgDetails, property, checkIn, checkOut, promotion]);
 
   useEffect(() => {
     if (property?.hotel || property?.apartment) {
+      //   let _totalPrice = totalPrice;
+
+      //   console.log({ beforeDiscount: _totalPrice });
+
+      //   if (promotion?.discount) {
+      //     _totalPrice =
+      //       _totalPrice - (_totalPrice / 100) * parseFloat(promotion?.discount);
+      //     console.log({ afterDiscount: _totalPrice });
+      //   }
+
       const discount = calculateAdditionalDiscount({
         content: property?.hotel || property?.apartment,
         checkIn,
@@ -296,6 +314,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
       setDiscount(discount);
     }
   }, [checkIn, checkOut, totalPrice, property]);
+
   return (
     <div className={styles.propertyPage}>
       {carouselImages?.length && (
@@ -456,8 +475,36 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                     : {}
                 }
               >
-                &nbsp; {totalPrice ? currencyFormator(totalPrice) : ""} &nbsp;
+                &nbsp;{" "}
+                {priceBeforeDiscount
+                  ? currencyFormator(priceBeforeDiscount)
+                  : ""}{" "}
+                &nbsp;
               </h3>
+              {!!promotion?.discount && (
+                <>
+                  <p
+                    style={{
+                      fontWeight: "bold",
+                      letterSpacing: "1px",
+                      color: "#fff",
+                      fontSize: "10px",
+                      background: "var(--main-brand-color)",
+                      padding: "5px",
+                      borderRadius: "100vw",
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Balancer>
+                      {promotion?.discountPercent}% off{" "}
+                      {promotion?.maxDiscount
+                        ? `upto ${currencyFormator(promotion?.maxDiscount)}`
+                        : ""}
+                    </Balancer>
+                  </p>
+                </>
+              )}
               {!!discount?.appliedDiscount?.label && (
                 <>
                   <p
@@ -469,6 +516,8 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                       background: "var(--main-brand-color)",
                       padding: "5px 15px",
                       borderRadius: "100vw",
+                      width: "100%",
+                      textAlign: "center",
                     }}
                   >
                     {discount?.appliedDiscount?.label}{" "}
@@ -479,6 +528,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
                   </h3>
                 </>
               )}
+
               <p>Per Night</p>
             </div>
             <p>₹ 100 taxes and charges</p>

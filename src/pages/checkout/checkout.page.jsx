@@ -79,7 +79,8 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   const checkOutDate = searchParams.get("checkOut");
   const noOfAdults = searchParams.get("noOfAdults");
   const state = decrypt(searchParams.get("state"));
-  let { totalPrice, priceBeforeDiscount, pkgDetails, discount } = state;
+  let { totalPrice, priceBeforeDiscount, pkgDetails, discount, promotion } =
+    state;
   const noOfRooms = Object.keys(pkgDetails)?.reduce(
     (acc, key) => acc + pkgDetails[key].count,
     0
@@ -95,11 +96,11 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
   let transactionAmuontBeforeDiscount = 0;
 
   if (checkInDate === checkOutDate) {
-    transactionAmount = totalPrice;
+    transactionAmount = priceBeforeDiscount;
     transactionAmuontBeforeDiscount = priceBeforeDiscount;
   } else {
     let stayLength = dayjs(checkOutDate).diff(dayjs(checkInDate), "day");
-    transactionAmount = totalPrice * stayLength;
+    transactionAmount = priceBeforeDiscount * stayLength;
     transactionAmuontBeforeDiscount = priceBeforeDiscount * stayLength;
   }
 
@@ -111,12 +112,23 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
       discount: 0,
     },
   ];
+  if (promotion?.discount) {
+    let lastDiscount = initialDiscounts[initialDiscounts.length - 1];
+    initialDiscounts.push({
+      key: `promotion_${promotion?._id}`,
+      promotionId: promotion?._id,
+      discount: promotion?.discountPercent,
+      label: promotion?.title,
+      amount: lastDiscount.amount - promotion?.discount,
+    });
+  }
   if (discount?.appliedDiscount?.label) {
+    let lastDiscount = initialDiscounts[initialDiscounts.length - 1];
     initialDiscounts.push({
       ...discount.appliedDiscount,
       amount:
-        transactionAmount -
-        (transactionAmount / 100) * discount?.appliedDiscount?.discount,
+        lastDiscount.amount -
+        (lastDiscount.amount / 100) * discount?.appliedDiscount?.discount,
     });
   }
   const [discounts, setDiscounts] = useState(initialDiscounts);
@@ -247,6 +259,9 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
             formData.append("email", email);
             formData.append("phone", phone);
             formData.append("idProof", file);
+            if (promotion?.discount) {
+              formData.append("promotion", promotion?._id);
+            }
             if (_id) {
               formData.append("guestId", _id);
               const { data } = await api.putForm("/user/guest", formData);

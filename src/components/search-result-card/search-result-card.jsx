@@ -20,8 +20,8 @@ import PropTypes from "prop-types";
 // import ApartmentDescription from "#components/apartment-description";
 import { encrypt } from "#utils/secure-url.utils";
 import api from "#api/index";
-import dayjs from "dayjs";
 import { calculateAdditionalDiscount } from "#utils/calculate-additional-discount";
+import { useQuery } from "@tanstack/react-query";
 
 ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
@@ -63,9 +63,31 @@ function ConnectedSearchResultCard({
     property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
     null;
 
-  let propertyPrice = isHotel
+  let initialPropertyPrice = isHotel
     ? pkg?.price
     : matchedApartmentPkg?.discountedPrice ?? null;
+  const {
+    data: promotion,
+    error: promotionError,
+    isFetchig: isPromotionFetching,
+  } = useQuery({
+    queryKey: ["promotion", property?._id, initialPropertyPrice],
+    enabled: !!initialPropertyPrice && !!property?._id,
+    queryFn: async () => {
+      const res = await api.get(
+        `/property-promotions/max-discount?propertyId=${property?._id}&amount=${propertyPrice}`
+      );
+      console.log({ res });
+      return res?.data?.promotion || {};
+    },
+  });
+  console.log({ promotion, promotionError, isPromotionFetching });
+
+  let propertyPrice = isHotel
+    ? pkg?.price - (promotion?.discount || 0)
+    : matchedApartmentPkg?.discountedPrice - (promotion?.discount || 0) ?? null;
+
+  console.log({ propertyPrice });
   const discount = calculateAdditionalDiscount({
     content,
     propertyPrice,
@@ -112,6 +134,8 @@ function ConnectedSearchResultCard({
         });
         return;
       }
+      if (promotion?.discount) pkg.promotion = promotion;
+      // pkg.initialPropertyPrice = initialPropertyPrice;
       navigate(
         `/property/${
           property?._id
@@ -261,7 +285,7 @@ function ConnectedSearchResultCard({
           {propertyPrice && (
             <div className={styles.priceContainer}>
               <h4>Per Night</h4>
-              <p
+              {/* <p
                 className={styles.amount}
                 style={{
                   ...(!!discount?.appliedDiscount?.label && {
@@ -272,10 +296,51 @@ function ConnectedSearchResultCard({
                 }}
               >
                 &nbsp;{currencyFormator(propertyPrice)}&nbsp;
+              </p> */}
+              <p
+                className={styles.amount}
+                style={{
+                  ...((!!promotion?.discount ||
+                    !!discount?.appliedDiscount?.label) && {
+                    textDecoration: "line-through",
+                    color: "#ccc",
+                    fontSize: "24px",
+                  }),
+                }}
+              >
+                &nbsp;{currencyFormator(initialPropertyPrice)}&nbsp;
               </p>
 
-              {!!discount?.appliedDiscount?.label && (
-                <>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "5px",
+                }}
+              >
+                {!!promotion?.discount && (
+                  <>
+                    <p
+                      style={{
+                        fontWeight: "bold",
+                        letterSpacing: "1px",
+                        color: "#fff",
+                        fontSize: "10px",
+                        background: "var(--main-brand-color)",
+                        padding: "5px",
+                        borderRadius: "100vw",
+                      }}
+                    >
+                      <Balancer>
+                        {promotion?.discountPercent}% off{" "}
+                        {promotion?.maxDiscount
+                          ? `upto ${currencyFormator(promotion?.maxDiscount)}`
+                          : ""}
+                      </Balancer>
+                    </p>
+                  </>
+                )}
+                {!!discount?.appliedDiscount?.label && (
                   <p
                     style={{
                       fontWeight: "bold",
@@ -287,14 +352,23 @@ function ConnectedSearchResultCard({
                       borderRadius: "100vw",
                     }}
                   >
-                    {discount?.appliedDiscount?.label}{" "}
-                    {discount?.appliedDiscount?.discount}% off
+                    <Balancer>
+                      {discount?.appliedDiscount?.label}{" "}
+                      {discount?.appliedDiscount?.discount}% off
+                    </Balancer>
                   </p>
+                )}
+                {(!!discount?.appliedDiscount?.label ||
+                  !!promotion?.discount) && (
                   <p className={styles.amount}>
-                    {currencyFormator(discount?.discountedPrice)}
+                    {currencyFormator(
+                      promotion?.discount
+                        ? propertyPrice - promotion?.discount
+                        : discount?.discountedPrice
+                    )}
                   </p>
-                </>
-              )}
+                )}
+              </div>
 
               <p>₹ 100 taxes and charges</p>
             </div>
