@@ -6,7 +6,7 @@ import { Balancer } from "react-wrap-balancer";
 import FilterSidebar from "#components/filter-sidebar/filter-sidebar";
 import { Fragment, useState } from "react";
 import { BsFilter } from "react-icons/bs";
-import ConnectedSearchResultCard from "#components/search-result-card/search-result-card";
+import SearchResultCard from "#components/search-result-card/search-result-card";
 import { useQuery } from "@tanstack/react-query";
 import { filterProperties, getOneProperty } from "#api/properties.req";
 import LoadingPage from "#pages/loading/loading";
@@ -134,7 +134,7 @@ function SearchResultsPage() {
                 <Fragment key={property?._id}>
                   {property?.packages?.map((pkg, idx) => {
                     return (
-                      <ConnectedSearchResultCard
+                      <SearchResultCard
                         key={property?._id + idx}
                         property={property}
                         pkg={pkg}
@@ -143,7 +143,7 @@ function SearchResultsPage() {
                   })}
                 </Fragment>
               ) : (
-                <ConnectedSearchResultCard
+                <SearchResultCard
                   occupancy={noOfAdults}
                   property={property}
                   key={property?._id}

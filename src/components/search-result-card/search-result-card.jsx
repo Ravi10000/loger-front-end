@@ -20,6 +20,8 @@ import PropTypes from "prop-types";
 // import ApartmentDescription from "#components/apartment-description";
 import { encrypt } from "#utils/secure-url.utils";
 import api from "#api/index";
+import dayjs from "dayjs";
+import { calculateAdditionalDiscount } from "#utils/calculate-additional-discount";
 
 ConnectedSearchResultCard.propTypes = {
   property: PropTypes.object,
@@ -61,9 +63,15 @@ function ConnectedSearchResultCard({
     property?.apartment?.prices?.find((pkg) => pkg?.occupancy == adultsCount) ??
     null;
 
-  const propertyPrice = isHotel
+  let propertyPrice = isHotel
     ? pkg?.price
     : matchedApartmentPkg?.discountedPrice ?? null;
+  const discount = calculateAdditionalDiscount({
+    content,
+    propertyPrice,
+    checkIn,
+    checkOut,
+  });
 
   const [liked, setLiked] = useState(property?.isInWishlist);
   const navigate = useNavigate();
@@ -238,7 +246,7 @@ function ConnectedSearchResultCard({
                 : "N/A"}
             </h4>
             <div className={styles.rating}>
-              <p>{property?.averageRating}</p>
+              <p>{property?.averageRating} / 5</p>
               <Stars
                 ratings={property?.averageRating}
                 color="#0868f8"
@@ -253,7 +261,41 @@ function ConnectedSearchResultCard({
           {propertyPrice && (
             <div className={styles.priceContainer}>
               <h4>Per Night</h4>
-              <p className={styles.amount}>{currencyFormator(propertyPrice)}</p>
+              <p
+                className={styles.amount}
+                style={{
+                  ...(!!discount?.appliedDiscount?.label && {
+                    textDecoration: "line-through",
+                    color: "#ccc",
+                    fontSize: "24px",
+                  }),
+                }}
+              >
+                &nbsp;{currencyFormator(propertyPrice)}&nbsp;
+              </p>
+
+              {!!discount?.appliedDiscount?.label && (
+                <>
+                  <p
+                    style={{
+                      fontWeight: "bold",
+                      letterSpacing: "1px",
+                      color: "#fff",
+                      fontSize: "10px",
+                      background: "var(--main-brand-color)",
+                      padding: "5px",
+                      borderRadius: "100vw",
+                    }}
+                  >
+                    {discount?.appliedDiscount?.label}{" "}
+                    {discount?.appliedDiscount?.discount}% off
+                  </p>
+                  <p className={styles.amount}>
+                    {currencyFormator(discount?.discountedPrice)}
+                  </p>
+                </>
+              )}
+
               <p>₹ 100 taxes and charges</p>
             </div>
           )}

@@ -32,6 +32,7 @@ import { decrypt, encrypt } from "#utils/secure-url.utils";
 import { Link as ScrollLink } from "react-scroll";
 import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
 import api from "#api/index";
+import { calculateAdditionalDiscount } from "#utils/calculate-additional-discount";
 const gridFooterOptions = [
   {
     name: "Overview",
@@ -114,6 +115,8 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { propertyId } = useParams();
 
   const [totalPrice, setTotalPrice] = useState(0);
+  const [discount, setDiscount] = useState(null);
+  console.log({ totalPrice });
   const [priceBeforeDiscount, setPriceBeforeDiscount] = useState(0);
   const [pkgDetails, setPkgDetails] = useState(() => {
     const details = {};
@@ -167,14 +170,18 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
     getAmenitiesNFamilityFacilities(property);
 
   useEffect(() => {
-    if (property?.propertyType === "apartment")
-      content?.prices?.forEach?.((pkg) => {
-        if (pkg?.occupancy == noOfAdults) {
+    if (property?.propertyType === "apartment") {
+      console.log(noOfAdults, property);
+      for (let i = 0; i < property?.apartment?.prices?.length; i++) {
+        const pkg = { ...property?.apartment?.prices?.[i] };
+        if (pkg?.occupancy === parseInt(noOfAdults)) {
           setTotalPrice(pkg?.discountedPrice);
           setPriceBeforeDiscount(pkg?.price);
+          break;
         }
-      });
-  }, [noOfAdults, content, property]);
+      }
+    }
+  }, [noOfAdults, property, checkIn, checkOut]);
   const client = useQueryClient();
 
   const wishlistMutation = useMutation({
@@ -213,8 +220,6 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
           });
         }
       });
-      // console.log({ roomDetails });
-      // return;
       const res = await api.get(
         `/calendar/check-availability/${
           property._id
@@ -241,6 +246,7 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
             pkgDetails,
             totalPrice,
             priceBeforeDiscount,
+            discount,
           })
         );
         navigate(`/checkout/${propertyId}?${newparams}`);
@@ -263,18 +269,33 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   // let foundMainPhoto = false;
 
   useEffect(() => {
-    let price = 0;
-    let priceBeforeDiscount = 0;
-    Object.values(pkgDetails).forEach((room) => {
-      if (room.count && room.discountedPrice && room.price) {
-        price += room.count * room.discountedPrice;
-        priceBeforeDiscount += room.count * room.price;
+    if (property?.propertyType === "hotel") {
+      let price = 0;
+      let priceBeforeDiscount = 0;
+      Object.values(pkgDetails).forEach((room) => {
+        if (room.count && room.discountedPrice && room.price) {
+          price += room.count * room.discountedPrice;
+          priceBeforeDiscount += room.count * room.price;
+        }
+      });
+      if (price) {
+        setTotalPrice(price);
+        setPriceBeforeDiscount(priceBeforeDiscount);
       }
-    });
-    setTotalPrice(price);
-    setPriceBeforeDiscount(priceBeforeDiscount);
-  }, [pkgDetails]);
+    }
+  }, [pkgDetails, property, checkIn, checkOut]);
 
+  useEffect(() => {
+    if (property?.hotel || property?.apartment) {
+      const discount = calculateAdditionalDiscount({
+        content: property?.hotel || property?.apartment,
+        checkIn,
+        checkOut,
+        propertyPrice: totalPrice,
+      });
+      setDiscount(discount);
+    }
+  }, [checkIn, checkOut, totalPrice, property]);
   return (
     <div className={styles.propertyPage}>
       {carouselImages?.length && (
@@ -424,8 +445,41 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
           </div>
           <div className={styles.priceContainer}>
             <div className={styles.price}>
+              <h3
+                style={
+                  discount?.appliedDiscount?.label
+                    ? {
+                        textDecoration: "line-through",
+                        color: "#ccc",
+                        fontSize: "24px",
+                      }
+                    : {}
+                }
+              >
+                &nbsp; {totalPrice ? currencyFormator(totalPrice) : ""} &nbsp;
+              </h3>
+              {!!discount?.appliedDiscount?.label && (
+                <>
+                  <p
+                    style={{
+                      fontWeight: "bold",
+                      letterSpacing: "1px",
+                      color: "#fff",
+                      fontSize: "10px",
+                      background: "var(--main-brand-color)",
+                      padding: "5px 15px",
+                      borderRadius: "100vw",
+                    }}
+                  >
+                    {discount?.appliedDiscount?.label}{" "}
+                    {discount?.appliedDiscount?.discount}% off
+                  </p>
+                  <h3 className={styles.amount}>
+                    {currencyFormator(discount?.discountedPrice)}
+                  </h3>
+                </>
+              )}
               <p>Per Night</p>
-              <h3>{totalPrice ? currencyFormator(totalPrice) : ""}</h3>
             </div>
             <p>₹ 100 taxes and charges</p>
           </div>

@@ -1,5 +1,5 @@
 import "./chat-box.css";
-import { PiDotsThreeBold } from "react-icons/pi";
+// import { PiDotsThreeBold } from "react-icons/pi";
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { db } from "#firebase/firebase.config";
@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import LoadingPage from "#pages/loading/loading";
 import Balancer from "react-wrap-balancer";
 import { AiOutlineClose } from "react-icons/ai";
-const Spinner = LoadingPage.Loader;
 import {
   ref,
   onValue,
@@ -40,13 +39,10 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
       if (!text) return;
       const newMessage = {
         text,
-        isReceived: false,
-        timestamp: d().valueOf(),
+        from: currentUser?._id,
+        timestamp: Date.now(),
       };
-      const chatsRef = ref(
-        db,
-        `chats/${booking?.propertyId}/${booking?.userId}`
-      );
+      const chatsRef = ref(db, `messages/${booking?._id}`);
       const newMessageRef = push(chatsRef);
       set(newMessageRef, newMessage);
       setText("");
@@ -63,12 +59,8 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     try {
-      if (booking?.propertyId && booking?.userId) {
-        const chatsRef = ref(
-          db,
-          `chats/${booking?.propertyId}/${currentUser._id}`
-        );
-        console.log({ chatsRef });
+      if (booking?._id) {
+        const chatsRef = ref(db, `messages/${booking?._id}`);
         const queryRef = query(chatsRef, orderByChild("timestamp"));
         onValue(queryRef, (snapshot) => {
           const chatsData = snapshot.val();
@@ -92,9 +84,11 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "flex-start",
             padding: "10px 20px",
+            boxShadow:
+              "#1b1f23a 0px 1px 0px, rgba(15, 14, 14, 0.417) 0px 3px 0px inset",
           }}
         >
           <h1>
@@ -103,12 +97,12 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
           <button
             onClick={close}
             style={{
-              width: "50px",
+              width: "35px",
               aspectRatio: "1/1",
               background: "rgb(255, 247, 247)",
               color: "red",
               border: "none",
-              fontSize: "25px",
+              fontSize: "18px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -138,9 +132,11 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
                   <Message
                     key={id}
                     {...{
-                      user: currentUser,
                       message,
-                      date: d.unix(message.timestamp).format("YYYY-MM-DD"),
+                      isSent: message?.from === currentUser?._id,
+                      date: d(new Date(message.timestamp)).format(
+                        "DD, MMM, YYYY"
+                      ),
                     }}
                   />
                 );
@@ -160,7 +156,7 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
             />
             <img src="/link.png" alt="" className="cb-icon" />
             {isPending ? (
-              <Spinner />
+              <LoadingPage.Loader />
             ) : (
               <button className="cb-submit-button" disabled={isPending}>
                 <img
@@ -183,14 +179,13 @@ function ChatBox({ propertyName, currentUser, booking, close }) {
 
 Message.propTypes = {
   message: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
   date: PropTypes.string.isRequired,
+  isSent: PropTypes.bool.isRequired,
 };
-function Message({ message, user, date }) {
-  const { text, isReceived } = message;
-  const isSent = !isReceived;
+function Message({ message, date, isSent }) {
+  const { text } = message;
 
-  const profilePicStyles = {};
+  // const profilePicStyles = {};
   // if (!isReceived && user?.profilePic) {
   //   profilePicStyles.backgroundImage = `url("${
   //     import.meta.env.VITE_SERVER_URL

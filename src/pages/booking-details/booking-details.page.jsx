@@ -50,8 +50,8 @@ function BookingDetailsPage() {
   const isPropertyLoading = propertyQuery?.isLoading;
   const property = propertyQuery?.data?.property;
   const pkgDetails = booking?.pkgDetails && JSON.parse(booking?.pkgDetails);
-  const paymentResponse =
-    transaction?.response && JSON.parse(transaction?.response);
+  // const paymentResponse =
+  //   transaction?.response && JSON.parse(transaction?.response);
 
   console.log({ booking, transaction, property, pkgDetails });
 
@@ -100,6 +100,7 @@ function BookingDetailsPage() {
           <div
             className={styles.details}
             style={{
+              width: "100%",
               padding: "20px",
               paddingTop: 0,
               display: "flex",
@@ -222,8 +223,8 @@ function BookingDetailsPage() {
           </div>
         </div>
       )}
-      <div className={styles.container}>
-        <div className={styles.contentBox}>
+      <div className={styles.container} style={{ width: "100%" }}>
+        <div className={styles.contentBox} style={{ width: "100%" }}>
           {isPropertyLoading ? (
             <div
               style={{
@@ -384,9 +385,9 @@ function BookingDetailsPage() {
             <h3>Need Help Booking?</h3>
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&;s standard dummy
-              text ever since the 1500s, when an unknown printer took a galley
-              of type and scrambled it to make a type specimen book. It has
+              industry. Lorem Ipsum has been the industry&;s standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
               survived not only five centuries, but also the leap into
               electronic typesetting, remaining essentially unchanged. It was
               popularised in the 1960s with the release of Letraset sheets

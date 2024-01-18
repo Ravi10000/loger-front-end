@@ -7,6 +7,7 @@ import { currencyFormator } from "#utils/currency-formator";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import { extractPhotUrls, reorderPhotos } from "#utils/photos.util";
+import { calculateAdditionalDiscount } from "#utils/calculate-additional-discount";
 
 CheckoutCard.propTypes = {
   checkoutDetails: PropTypes.object,
@@ -14,6 +15,7 @@ CheckoutCard.propTypes = {
   property: PropTypes.object,
   pkgDetails: PropTypes.object,
   setCarouselImages: PropTypes.func,
+  discounts: PropTypes.array,
 };
 
 function CheckoutCard({
@@ -22,8 +24,8 @@ function CheckoutCard({
   property,
   pkgDetails,
   setCarouselImages,
+  discounts,
 }) {
-  console.log({ checkoutDetails, bookingDetails, property, pkgDetails });
   const roomDetails = [];
   const isHotel = property?.propertyType === "hotel";
   if (isHotel) {
@@ -60,10 +62,8 @@ function CheckoutCard({
     "dddd, DD/MM/YYYY"
   );
 
-  const daysToGo = dayjs(bookingDetails?.checkInDate).diff(
-    dayjs(new Date()),
-    "day"
-  );
+  const daysToGo =
+    dayjs(bookingDetails?.checkInDate).get("date") - dayjs().get("date");
   const tripLength = dayjs(bookingDetails?.checkOutDate).diff(
     bookingDetails?.checkInDate,
     "day"
@@ -181,35 +181,58 @@ function CheckoutCard({
             <div className={styles.bookingDetails}>
               <h3>You Selected</h3>
             </div>
-            {roomDetails?.map?.((room) => (
-              <p key={room.roomName}>
-                {room.count} {room.roomName} Room{!!(room.count > 1) && "s"}
-              </p>
-            ))}
+            {roomDetails?.map?.((room) => {
+              if (!room.count) return null;
+              return (
+                <p key={room.roomName}>
+                  {room.count} {room.roomName} Room{!!(room.count > 1) && "s"}
+                </p>
+              );
+            })}
           </>
         )}
         <div className={styles.topBorder}></div>
         <h3>Your Price Summary</h3>
         <div className={styles.bookingDetails}>
           <div className={styles.breakdown}>
-            <p>Original Price</p>
-            <p>Genius Discount</p>
+            {discounts?.map?.((discount) => (
+              <p key={discount.label}>
+                {discount.label}{" "}
+                {discount?.discount ? (
+                  <span
+                    style={{
+                      background: "var(--main-brand-color)",
+                      color: "#fff",
+                      padding: "2px 10px",
+                      borderRadius: "10px",
+                      fontSize: "12px",
+                      marginLeft: "5px",
+                    }}
+                  >
+                    {discount?.discount}%
+                  </span>
+                ) : null}
+              </p>
+            ))}
           </div>
           <div className={styles.breakdown + " " + styles.prices}>
-            <p>{currencyFormator(pkgDetails?.amount)}</p>
-            <p>
-              -{" "}
-              {currencyFormator(
-                pkgDetails?.amount - pkgDetails?.discountedAmount
-              )}
-            </p>
+            {discounts?.map?.((discount, idx) => (
+              <p key={discount?.label}>
+                {idx > 0 ? "- " : ""}
+                {currencyFormator(
+                  idx > 0
+                    ? discounts[idx - 1].amount - discount.amount
+                    : discount.amount
+                )}
+              </p>
+            ))}
           </div>
         </div>
         <div className={styles.topBorder}></div>
         <div className={styles.bookingDetails}>
           <p className={styles.coloredBold}>Total</p>
           <p className={styles.coloredBold}>
-            {currencyFormator(pkgDetails?.discountedAmount)}
+            {currencyFormator(discounts?.[discounts.length - 1]?.amount)}
           </p>
         </div>
       </div>

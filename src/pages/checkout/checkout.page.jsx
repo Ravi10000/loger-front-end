@@ -38,6 +38,7 @@ import api from "#api/index";
 import { MdFreeBreakfast } from "react-icons/md";
 import { IoCarSport } from "react-icons/io5";
 import CheckoutCard from "#components/checkout-card/checkout-card";
+import { HiOutlineInformationCircle } from "react-icons/hi";
 
 ConnectedCheckoutPage.propTypes = {
   currentUser: PropTypes.object,
@@ -76,19 +77,16 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
 
   const checkInDate = searchParams.get("checkIn");
   const checkOutDate = searchParams.get("checkOut");
-
   const noOfAdults = searchParams.get("noOfAdults");
   const state = decrypt(searchParams.get("state"));
-  let { totalPrice, priceBeforeDiscount, pkgDetails } = state;
+  let { totalPrice, priceBeforeDiscount, pkgDetails, discount } = state;
   const noOfRooms = Object.keys(pkgDetails)?.reduce(
     (acc, key) => acc + pkgDetails[key].count,
     0
   );
-  console.log({ pkgDetails });
   const [sendDeals, setSendDeals] = useState(false);
   const [doYouSmoke, setDoYouSmoke] = useState(false);
   const [specialRequests, setSpecialRequests] = useState("");
-
   // const [showNotification, setShowNotification] = useState(true);
   const [showSelectPartner, setShowSelectPartner] = useState(false);
   const [selectedGuests, setSelectedGuests] = useState([]);
@@ -104,13 +102,53 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
     transactionAmount = totalPrice * stayLength;
     transactionAmuontBeforeDiscount = priceBeforeDiscount * stayLength;
   }
-  const newPkgDetails = {};
-  if (pkgDetails) {
-    newPkgDetails.rooms = { ...pkgDetails };
-    newPkgDetails.noOfAdults = parseInt(noOfAdults);
-    newPkgDetails.noOfRooms = parseInt(noOfRooms);
-    newPkgDetails.amount = parseFloat(transactionAmuontBeforeDiscount);
-    newPkgDetails.discountedAmount = parseFloat(transactionAmount);
+
+  const initialDiscounts = [
+    {
+      label: "Original Price",
+      amount: transactionAmount,
+      key: null,
+      discount: 0,
+    },
+  ];
+  if (discount?.appliedDiscount?.label) {
+    initialDiscounts.push({
+      ...discount.appliedDiscount,
+      amount:
+        transactionAmount -
+        (transactionAmount / 100) * discount?.appliedDiscount?.discount,
+    });
+  }
+  const [discounts, setDiscounts] = useState(initialDiscounts);
+  console.log({ discounts });
+
+  const hasNonRefundableDiscount =
+    discounts?.findIndex(
+      (discount) => discount?.label === "Non-Refundable Discount"
+    ) > -1;
+
+  function handleRefundableDiscountToggle() {
+    if (!hasNonRefundableDiscount) {
+      setDiscounts((ps) => {
+        const discounts = [...ps];
+        const lastAmount = discounts[discounts.length - 1]?.amount;
+        discounts.push({
+          label: "Non-Refundable Discount",
+          key: "nonRefundableDiscount",
+          discount: content?.nonRefundableDiscount,
+          amount:
+            lastAmount - (lastAmount / 100) * content.nonRefundableDiscount,
+        });
+        return discounts;
+      });
+    } else {
+      setDiscounts((ps) => {
+        const discounts = [...ps];
+        return discounts.filter(
+          (discount) => discount.label !== "Non-Refundable Discount"
+        );
+      });
+    }
   }
 
   const guestQuery = useQuery({
@@ -259,6 +297,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           };
 
       formData.append("pkgDetails", JSON.stringify(pkgDetails));
+      formData.append("discounts", JSON.stringify(discounts));
       // const requestData = {
       //   firstName,
       //   lastName,
@@ -307,7 +346,15 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
       console.log({ err });
     },
   });
+  const newPkgDetails = {};
 
+  if (pkgDetails) {
+    newPkgDetails.rooms = { ...pkgDetails };
+    newPkgDetails.noOfAdults = parseInt(noOfAdults);
+    newPkgDetails.noOfRooms = parseInt(noOfRooms);
+    newPkgDetails.amount = parseFloat(transactionAmuontBeforeDiscount);
+    newPkgDetails.discountedAmount = parseFloat(transactionAmount);
+  }
   const guests = guestQuery?.data?.guests;
 
   useEffect(() => {
@@ -479,6 +526,32 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
                     information about properties
                   </label>
                 </div> */}
+
+                {!!content?.nonRefundableDiscount && (
+                  <>
+                    <div style={{ width: "fit-content" }}>
+                      <CustomCheckbox
+                        label={`Apply Non-Refundable Discount ${content?.nonRefundableDiscount}%`}
+                        checked={hasNonRefundableDiscount}
+                        setChecked={handleRefundableDiscountToggle}
+                        leftSided
+                      />
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        color: "#ff4545",
+                      }}
+                    >
+                      <HiOutlineInformationCircle />
+                      <p>
+                        Non refundable discounts if applied you won&apos;t get
+                        any refund in case of cancelation of their bookings.
+                      </p>
+                    </div>
+                  </>
+                )}
                 <div style={{ color: "black" }}>
                   <CustomCheckbox
                     label=" Please email me great deals, last-minute offers and
@@ -571,6 +644,7 @@ function ConnectedCheckoutPage({ currentUser, isFetching, pushFlash }) {
           {property && (
             <div className={styles.roomContainer}>
               <CheckoutCard
+                discounts={discounts}
                 setCarouselImages={setCarouselImages}
                 checkoutDetails={{
                   photos: property?.photos,

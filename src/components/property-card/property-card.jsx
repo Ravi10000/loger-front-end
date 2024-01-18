@@ -22,11 +22,11 @@ function PropertyCard({ property = {} }) {
       <div
         className={styles.propertyImage}
         style={{
-          opacity: mainPhotoUrl ? 1 : 0.25,
+          // opacity: mainPhotoUrl ? 1 : 0.25,
           backgroundImage: `url("${
             mainPhotoUrl
               ? import.meta.env.VITE_SERVER_URL + "/images/" + mainPhotoUrl
-              : "/images/blank-image.png"
+              : "/images/property (2).png"
           }")`,
         }}
       ></div>
