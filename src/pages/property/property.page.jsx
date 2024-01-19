@@ -110,7 +110,8 @@ function ConnectedPropertyPage({ currentUser, pushFlash }) {
   const { pathname } = useLocation();
   let pkg = searchParams.get("pkg");
   pkg = pkg?.length && decrypt(pkg);
-  const promotion = (pkg && pkg?.promotion) || null;
+  let promotion = searchParams.get("promotion") || null;
+  promotion = promotion?.length && decrypt(promotion);
   console.log({ promotion: pkg?.promotion });
 
   const currentUrlParams = searchParams.toString();

@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import { useFilter } from "#hooks/use-filter";
 // import useSearchItem from "#hooks/search-item";
 import { useSearchParams } from "react-router-dom";
+import { GoInbox } from "react-icons/go";
 
 function SearchResultsPage() {
   const [searchParams] = useSearchParams();
@@ -127,6 +128,22 @@ function SearchResultsPage() {
           ) : propertiesQuery?.isError ? (
             <div className={styles.loaderContainer}>
               <p>Erros occured while fetching properties, please try again.</p>
+            </div>
+          ) : propertiesQuery?.data?.length < 1 ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "20px",
+                color: "#ccc",
+                marginTop: "50px",
+              }}
+            >
+              <GoInbox size={100} />
+              <h3>
+                <Balancer>Sorry, No properties matched your search.</Balancer>
+              </h3>
             </div>
           ) : (
             propertiesQuery?.data?.map((property) => {

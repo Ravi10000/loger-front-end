@@ -127,6 +127,7 @@ function ConnectedSearchResultCard({
           pkg?.rooms?.length ? `&rooms=${JSON.stringify(pkg?.rooms)}` : ""
         }`
       );
+      console.log({ res });
       if (!res?.data?.isAvailable) {
         pushFlash({
           type: "warning",
@@ -134,14 +135,14 @@ function ConnectedSearchResultCard({
         });
         return;
       }
-      if (promotion?.discount) pkg.promotion = promotion;
+      // if (promotion?.discount && pkg?.price) pkg.promotion = promotion;
       // pkg.initialPropertyPrice = initialPropertyPrice;
       navigate(
         `/property/${
           property?._id
         }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
           pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
-        }`
+        }${promotion?.discount ? `&promotion=${encrypt(promotion)}` : ""}`
       );
     },
     onError: (err) => {
@@ -362,9 +363,9 @@ function ConnectedSearchResultCard({
                   !!promotion?.discount) && (
                   <p className={styles.amount}>
                     {currencyFormator(
-                      promotion?.discount
-                        ? propertyPrice
-                        : discount?.discountedPrice
+                      discount?.appliedDiscount?.label
+                        ? discount?.discountedPrice
+                        : propertyPrice
                     )}
                   </p>
                 )}
