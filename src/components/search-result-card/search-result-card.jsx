@@ -77,17 +77,17 @@ function ConnectedSearchResultCard({
       const res = await api.get(
         `/property-promotions/max-discount?propertyId=${property?._id}&amount=${propertyPrice}`
       );
-      console.log({ res });
+      // console.log({ res });
       return res?.data?.promotion || {};
     },
   });
-  console.log({ promotion, promotionError, isPromotionFetching });
+  // console.log({ promotion, promotionError, isPromotionFetching });
 
   let propertyPrice = isHotel
     ? pkg?.price - (promotion?.discount || 0)
     : matchedApartmentPkg?.discountedPrice - (promotion?.discount || 0) ?? null;
 
-  console.log({ propertyPrice });
+  // console.log({ propertyPrice });
   const discount = calculateAdditionalDiscount({
     content,
     propertyPrice,
@@ -127,7 +127,7 @@ function ConnectedSearchResultCard({
           pkg?.rooms?.length ? `&rooms=${JSON.stringify(pkg?.rooms)}` : ""
         }`
       );
-      console.log({ res });
+      // console.log({ res });
       if (!res?.data?.isAvailable) {
         pushFlash({
           type: "warning",
@@ -138,9 +138,9 @@ function ConnectedSearchResultCard({
       // if (promotion?.discount && pkg?.price) pkg.promotion = promotion;
       // pkg.initialPropertyPrice = initialPropertyPrice;
       navigate(
-        `/property/${
+        `/property/${property?._id}?propertyId=${
           property?._id
-        }?checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
+        }&checkIn=${checkIn}&checkOut=${checkOut}&location=${location}&noOfRooms=${roomsCount}&noOfAdults=${adultsCount}${
           pkg?.price ? `&pkg=${encrypt(pkg)}` : ""
         }${promotion?.discount ? `&promotion=${encrypt(promotion)}` : ""}`
       );

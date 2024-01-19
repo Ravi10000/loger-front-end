@@ -79,6 +79,7 @@ function SearchResultsPage() {
     },
   });
   console.log({ properties: propertiesQuery?.data?.properties });
+  console.log({ errors: propertiesQuery?.error });
 
   const [showSidebar, setShowSidebar] = useState(false);
   return (

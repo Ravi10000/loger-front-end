@@ -12,7 +12,7 @@ import SearchOptionsList from "#components/search-options-list/search-options-li
 // import useSearchInputs from "#hooks/search-inputs.search-params";
 import { useDebounce } from "@uidotdev/usehooks";
 import PropTypes from "prop-types";
-import useSearchItem from "#hooks/search-item";
+// import useSearchItem from "#hooks/search-item";
 
 ConnectedSearch.propTypes = {
   pushFlash: PropTypes.func,
