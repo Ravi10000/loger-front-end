@@ -73,6 +73,8 @@ function App() {
   useFetchUser();
   const client = useQueryClient();
   console.log({ client });
+  console.log({ clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID });
+  console.log({ clientSecret: import.meta.env.VITE_GOOGLE_CLIENT_SECRET });
 
   return (
     <div className={styles.App}>
