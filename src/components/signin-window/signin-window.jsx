@@ -8,7 +8,7 @@ import SigninEmail from "#components/signin-email/signin-email";
 import SigninPhone from "#components/signin-phone/signin-phone";
 import { FaPhone } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
-import GoogleLoginButton from "#components/google-login-button/google-login-button";
+// import GoogleLoginButton from "#components/google-login-button/google-login-button";
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
 import { Link } from "react-router-dom";
 import ForgotPassword from "#components/forgot-password/forgot-password";
@@ -66,7 +66,7 @@ function ConnectedSigninWindow() {
                 </button>
               ))}
               <FaceBookLoginButton />
-              <GoogleLoginButton />
+              {/* <GoogleLoginButton /> */}
             </div>
             <div className={styles.seperator}>
               <p>or</p>

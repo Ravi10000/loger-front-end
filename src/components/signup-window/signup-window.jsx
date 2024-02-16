@@ -8,7 +8,7 @@ import { MdEmail } from "react-icons/md";
 import SignupEmail from "#components/signup-email/signup-email";
 import SigninPhone from "#components/signin-phone/signin-phone";
 import FaceBookLoginButton from "#components/facebook-login-button/facebook-login-button";
-import GoogleLoginButton from "#components/google-login-button/google-login-button";
+// import GoogleLoginButton from "#components/google-login-button/google-login-button";
 import { Link } from "react-router-dom";
 import EmailSent from "#components/email-sent-message/email-sent-message";
 
@@ -59,7 +59,7 @@ function ConnectedSignupWindow() {
                 </button>
               ))}
               <FaceBookLoginButton />
-              <GoogleLoginButton />
+              {/* <GoogleLoginButton /> */}
             </div>
             <div className={styles.seperator}>
               <p>or</p>
