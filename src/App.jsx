@@ -26,6 +26,7 @@ import useFetchUser from "#hooks/fetch-user";
 import WithShouldMount from "#components/withShouldMount";
 import ResetPasswordPage from "#pages/reset-password/reset-password.page";
 import ResetPasswordSuccessPage from "#pages/reset-password-success/reset-password-success.page";
+import { useQueryClient } from "@tanstack/react-query";
 const EmailVerified = lazy(() =>
   import("#pages/email-verified/email-verified")
 );
@@ -70,6 +71,8 @@ const BookingDetailsPage = lazy(() =>
 function App() {
   console.count("render... <App />");
   useFetchUser();
+  const client = useQueryClient();
+  console.log({ client });
 
   return (
     <div className={styles.App}>
